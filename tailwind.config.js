@@ -29,7 +29,11 @@ module.exports = {
         65: ".65",
         60: ".6",
         55: ".55",
-      }
+      },
+      transitionDuration: {
+        0: "0ms",
+        default: "200ms",
+      },
     },
   },
   plugins: [

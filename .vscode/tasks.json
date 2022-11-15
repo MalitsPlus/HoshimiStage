@@ -4,13 +4,24 @@
 		{
 			"type": "npm",
 			"script": "dev",
-			"problemMatcher": [],
+			"problemMatcher": {
+				"owner": "custom",
+				"pattern": {
+					"regexp": "ˆ$"
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "compiling...",
+					"endsPattern": "compiled successfully"
+				}
+			},
 			"label": "npm: dev",
 			"detail": "next dev",
+			"isBackground": true,
 			"group": {
-				"kind": "build",
+				"kind": "test",
 				"isDefault": true
-			}
+			},
 		}
 	]
 }

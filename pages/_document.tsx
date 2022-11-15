@@ -5,7 +5,7 @@ const META_TITLE = ""
 const META_DESCRIPTION = ""
 const BASEURL = ""
 const OG_IMAGE = ""
-let colorScheme: "light" | "dark" = "light"
+let colorScheme: "light" | "dark" = "dark"
 
 const getInitialProps = createGetInitialProps()
 
@@ -14,7 +14,8 @@ export default class _Document extends Document {
 
   render() {
     return (
-      <Html data-theme={colorScheme}>
+      // <Html>
+      <Html className={colorScheme}>
         <Head>
           <meta property="og:title" content={META_TITLE} />
           <meta property="twitter:title" content={META_TITLE} />
