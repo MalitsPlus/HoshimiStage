@@ -1,10 +1,17 @@
-import { ENV } from "../dev_conf"
+import { RESOURCE_ENV } from "../dev_conf"
 
 const Paths = {
-  music: (id: string) => ({
+  image: (id: string) => ({
     local: `/img/${id}.png`,
-    remote: `${id}`
+    remote: `${id}`,
   }),
+  others: (id: string) => ({
+    local: ``,
+    remote: ``,
+  })
 }
 
-export const MusicPath = (id: string) => Paths.music(id)[ENV]
+export const getAssetUri = (
+  _type: "image" | "others",
+  id: string
+) => Paths[_type](id)[RESOURCE_ENV]

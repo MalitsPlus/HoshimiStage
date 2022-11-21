@@ -52,17 +52,17 @@ export function NavbarMini() {
   ));
 
   return (
-    <Navbar width={{ base: 60 }} p="md" className='h-screen'>
+    <Navbar width={{ base: 64 }} p="md" className='h-screen shadow-md'>
       <Center>
         RootEx
       </Center>
       <Navbar.Section grow mt={50}>
-        <Stack justify="center" spacing={8}>
+        <Stack justify="center" spacing={8} className="overflow-visible">
           {links}
         </Stack>
       </Navbar.Section>
       <Navbar.Section mb={16}>
-        <Stack justify="center" spacing={0}>
+        <Stack justify="center" spacing={0} className="overflow-visible">
           <DarkToggler />
         </Stack>
       </Navbar.Section>
