@@ -13,8 +13,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "strictNullChecks": true,
+    "newLine": "lf",
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/theme.tsｘ"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/theme.tsx"],
   "exclude": ["node_modules"]
 }

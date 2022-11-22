@@ -1,22 +1,28 @@
-import { Card } from "hoshimi-venus/out/types/proto/proto_master";
+import { Card, Character } from "hoshimi-venus/out/types/proto/proto_master";
+import { getAllRawCard } from "hoshimi-venus/out/db/dao/card_dao";
+import { getCharacter } from "hoshimi-venus/out/db/dao/character_dao";
 import { DATA_ENV } from "../dev_conf";
 
-function gdt<T>(func: <R>() => R): <R>() => R{
+// export function getData<T>(func: () => T): T {
+//   return func()
+// }// export function getData<T>(func: () => T): T {
+//   return func()
+// }
+
+export const getData = <T extends () => any>(func: T): ReturnType<T> => {
   return func()
 }
 
-export function getData<T>(func: () => T): T {
-  return func()
-}
-
-type Fr<T> = () => T
-type PromiseReturnType<T> = T extends Fr<infer R> ? R : T
-
-export function getAllCards(): Partial<Card>[] {
+export const getAllCards = (): Card[] => {
   if (DATA_ENV === "pkg") {
-    return []
+    return getAllRawCard()
   }
-  return []
+  throw new Error("Unimplemented.")
 }
 
-const xx = getData(getAllCards)
+export const getChara = (id: string): Character => {
+  if (DATA_ENV === "pkg") {
+    return getCharacter(id)!  // FIXME
+  }
+  throw new Error("Unimplemented.")
+}
