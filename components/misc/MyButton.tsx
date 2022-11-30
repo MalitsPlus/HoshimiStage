@@ -23,3 +23,5 @@ const MyButton = ({
     </Button>
   )
 }
+
+export default MyButton

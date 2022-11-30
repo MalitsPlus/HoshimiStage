@@ -1,9 +1,11 @@
 import { UnstyledButton } from "@mantine/core";
 import { AttributeType, CardType } from "hoshimi-venus/out/types/proto/proto_enum";
+import { memo } from "react";
 import ImageAsset from "../misc/ImageAsset";
 
-export default function CharaIcon({ cid, aid, role, attribute, onCharaClick }:
-  { cid: string, aid: string, role: CardType, attribute: AttributeType, onCharaClick: (id: string) => void }) {
+const CharaIcon = ({ cid, aid, role, attribute, onCharaClick }:
+  { cid: string, aid: string, role: CardType, attribute: AttributeType, onCharaClick?: (id: string) => void }) => {
+  
   const getCardType = (_type: CardType) => {
     switch (_type) {
       case CardType.Appeal: return "icon_scorer_thumbnail"
@@ -21,15 +23,15 @@ export default function CharaIcon({ cid, aid, role, attribute, onCharaClick }:
     }
   }
   return (
-    <>
+    <div className="rounded-md aspect-square w-14 h-14">
       <UnstyledButton
-        onClick={() => onCharaClick(cid)}
-        className="relative border-transparent rounded-md border-orange-400 aspect-square w-14"
+        onClick={() => onCharaClick && onCharaClick(cid)}
+        className={`relative rounded-md aspect-square w-14 h-14 ${onCharaClick ? "cursor-pointer" : "cursor-default"}`}
       >
         <ImageAsset
           aid={"img_card_thumb_1_" + aid}
           aspect="1"
-          className="rounded-md"
+          className="rounded-md w-14 h-14"
         />
         <div className="absolute aspect-square w-4 top-0.5 left-0.5">
           <ImageAsset
@@ -46,7 +48,9 @@ export default function CharaIcon({ cid, aid, role, attribute, onCharaClick }:
           />
         </div>
       </UnstyledButton>
-    </>
+    </div>
 
   )
 }
+
+export default memo(CharaIcon)

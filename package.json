@@ -15,12 +15,13 @@
     "@mantine/hooks": "^5.6.3",
     "@mantine/next": "^5.6.3",
     "@tabler/icons": "^1.108.0",
-    "@types/react-beautiful-dnd": "^13.1.2",
     "classnames": "^2.3.2",
     "hoshimi-venus": "^0.1.2",
     "next": "13.0.0",
     "react": "18.2.0",
-    "react-beautiful-dnd": "^13.1.1",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
+    "react-dnd-touch-backend": "^16.0.1",
     "react-dom": "18.2.0"
   },
   "devDependencies": {

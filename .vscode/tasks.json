@@ -11,8 +11,8 @@
 				},
 				"background": {
 					"activeOnStart": true,
-					"beginsPattern": "compiling...",
-					"endsPattern": "compiled successfully"
+					"beginsPattern": "Debugger attached",
+					"endsPattern": "ready - started server on"
 				}
 			},
 			"label": "npm: dev",

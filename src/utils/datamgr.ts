@@ -9,7 +9,7 @@ import { DATA_ENV } from "../dev_conf";
 //   return func()
 // }
 
-export const getData = <T extends () => any>(func: T): ReturnType<T> => {
+export const getData = <T extends (...args: any) => any>(func: T): ReturnType<T> => {
   return func()
 }
 

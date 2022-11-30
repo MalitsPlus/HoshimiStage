@@ -52,7 +52,7 @@ export function NavbarMini() {
   ));
 
   return (
-    <Navbar width={{ base: 64 }} p="md" className='h-screen shadow-md'>
+    <Navbar width={{ base: 64 }} className='h-screen shadow-md py-4'>
       <Center>
         RootEx
       </Center>
