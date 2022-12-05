@@ -34,6 +34,10 @@ export default function Stage() {
     setParty(previous => switchPosition(previous, src, dest))
   }
 
+  const onChartClick = () => {
+    
+  }
+
   return (
     <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
       <div>

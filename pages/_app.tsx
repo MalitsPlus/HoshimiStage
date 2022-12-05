@@ -1,14 +1,30 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+import { ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
+import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { ColorScheme, ColorSchemeProvider, MantineProvider, Tuple } from '@mantine/core';
-import { IPR_THEME } from '../src/theme';
-import { useState } from 'react';
-import tailwindColors from "tailwindcss/colors"
-import { stringify } from 'querystring';
+import { createContext, useState } from 'react';
+import tailwindColors from "tailwindcss/colors";
 import Layout from '../components/layout/Layout';
+import { default as i18n } from '../src/i18n';
+import '../styles/globals.css';
+
+const defaultLang = "en"
+
+export const AppContext = createContext({
+  lng: defaultLang,
+  onLanguageChange: (nl: string) => { },
+})
 
 export default function App({ Component, pageProps }: AppProps) {
+  const [lang, setLang] = useState(defaultLang)
+
+  const appContext = {
+    lng: lang,
+    onLanguageChange: (nl: string) => {
+      setLang(nl)
+      i18n.changeLanguage(nl)
+    }
+  }
+
   const [colorScheme, setColorScheme] = useState<ColorScheme>('dark');
   const toggleColorScheme = (value?: ColorScheme) => {
     colorScheme === 'dark'
@@ -48,9 +64,11 @@ export default function App({ Component, pageProps }: AppProps) {
             }
           }}
         >
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+          <AppContext.Provider value={appContext}>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </AppContext.Provider>
         </MantineProvider>
       </ColorSchemeProvider>
     </>

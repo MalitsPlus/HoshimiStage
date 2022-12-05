@@ -1,8 +1,9 @@
 import { ReactNode } from 'react'
-import Home from '../../pages'
 import { NavbarMini } from './Navbar'
 
-export default function Layout({ children }: { children: ReactNode }) {
+export default function Layout({ children }: {
+  children: ReactNode,
+}) {
   return (
     <>
       <div className='flex flex-row justify-start'>

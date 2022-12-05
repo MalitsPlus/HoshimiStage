@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import Link from 'next/link';
 import { useState } from 'react';
 import { DarkToggler } from '../misc/DarkToggler';
+import { LanguageBtn } from '../misc/LanguageBtn';
 
 interface NavbarLinkProps {
   icon: TablerIcon;
@@ -62,7 +63,8 @@ export function NavbarMini() {
         </Stack>
       </Navbar.Section>
       <Navbar.Section mb={16}>
-        <Stack justify="center" spacing={0} className="overflow-visible">
+        <Stack justify="center" spacing={8} className="overflow-visible">
+          <LanguageBtn />
           <DarkToggler />
         </Stack>
       </Navbar.Section>
