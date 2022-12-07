@@ -1,4 +1,4 @@
-import { Chip, Divider, Modal, Select, Space } from "@mantine/core";
+import { Chip, Divider, Select, Space } from "@mantine/core";
 import { t } from "i18next";
 import { useEffect, useMemo, useState } from "react";
 import { QuestIdMap } from "../../src/static/quest_id_map";
@@ -6,20 +6,38 @@ import { getRawQuests } from "hoshimi-venus/out/db/dao/quest_dao";
 import { getQuest } from "hoshimi-venus/out/db/repository/quest_repository";
 import ImageAsset from "../misc/ImageAsset";
 import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps";
+import { AttributeType, MusicChartType } from "hoshimi-venus/out/types/proto/proto_enum";
+import SkillIcon from "../media/SkillIcon";
+import { WapLiveAbility } from "hoshimi-venus/out/types/wap/skill_waps";
+import { useSessionStorage } from "@mantine/hooks";
 
-export default function QuestSelect() {
+export default function QuestSelect({
+  wapQuest,
+  setWapQuest
+}: {
+  wapQuest: WapQuest | undefined,
+  setWapQuest: (wapQuest: WapQuest | undefined) => void,
+}) {
   const genre = Object.keys(QuestIdMap)
-  const [quest, setQuest] = useState<string | null>(null)
-  const [questType, setQuestType] = useState<string | null>(null)
-  const [wapQuest, setWapQuest] = useState<WapQuest | undefined>(undefined)
-  // let wapQuest: WapQuest | undefined = undefined
 
-  const selectorData = useMemo(() => {
-    return !!questType
-      ? getRawQuests(QuestIdMap[questType as keyof typeof QuestIdMap])
+  const [questTypeChip, setQuestTypeChip] = useSessionStorage<string | undefined>({
+    key: "QuestSelect_questType",
+    defaultValue: undefined,
+  })
+  const [selected, setSelected] = useSessionStorage<string | null>({
+    key: "QuestSelect_selected",
+    defaultValue: undefined,
+  })
+
+  const getSelectorData = (v: string | undefined): {
+    value: string,
+    label: string,
+  }[] => {
+    return !!v
+      ? getRawQuests(QuestIdMap[v as keyof typeof QuestIdMap])
         .sort().reverse().map(it => {
           let _label = it.name
-          if (questType === "DailySP" || questType === "MainLive") {
+          if (v === "DailySP" || v === "MainLive") {
             const flag = it.id.match(/\d+-\d+$/)
             _label += " " + flag
           }
@@ -29,24 +47,38 @@ export default function QuestSelect() {
           }
         })
       : []
-  }, [questType])
+  }
 
-  const onQuestTypeChange = (v: string) => {
+  let selectorData = useMemo(() => {
+    return getSelectorData(questTypeChip)
+  }, [questTypeChip])
+
+  const onQuestTypeChange = (v: string | undefined) => {
     console.log(`onQuestTypeChange ${v}`)
-    setQuestType(v)
+    setQuestTypeChip(v)
+    selectorData = getSelectorData(v)
+    if (selectorData.length) {
+      onSelectValueChange(selectorData[0].value)
+    }
   }
 
   const onSelectValueChange = (v: string) => {
     console.log(`onSelectValueChange ${v}`)
-    setQuest(v)
+    setSelected(v)
     setWapQuest(getQuest(v))
   }
 
   useEffect(() => {
-    if (selectorData.length) {
-      onSelectValueChange(selectorData[0].value)
+    if (!wapQuest) {
+      onQuestTypeChange(undefined)
     }
-  }, [questType])
+  }, [])
+
+  // useEffect(() => {
+  //   if (selectorData.length) {
+  //     onSelectValueChange(selectorData[0].value)
+  //   }
+  // }, [questTypeChip])
 
   const QuestTypeDivider = ({ keys }: { keys: string[] }) => {
     const quests: { [k: string]: string[] } = {
@@ -87,45 +119,104 @@ export default function QuestSelect() {
   const AttributeOrnament = ({ position }: {
     position: number
   }) => {
+    if (!wapQuest) {
+      return <></>
+    }
+    const k = "position" + position + "AttributeType" as keyof WapQuest
+    const attr = wapQuest[k] as AttributeType
+    let laneInfo = t("less")
+    let aCount = 0
+    for (const ptn of wapQuest.musicChartPatterns) {
+      if (ptn.position != position) {
+        continue
+      }
+      if (ptn.type === MusicChartType.SpecialSkill) {
+        laneInfo = t("SP")
+        break
+      } else if (ptn.type === MusicChartType.ActiveSkill) {
+        aCount++
+        if (aCount > 2) {
+          laneInfo = t("more")
+        }
+      }
+    }
     return (
-      <div className="text-center odd:bg-gray-100 even:bg-zinc-700">
-        <div className={"text-sm  " }>
-          {wapQuest?.areaId}
+      <div className="flex-1 text-center odd:bg-[#47474f] even:bg-[#31323c] first:rounded-l-md last:rounded-r-md">
+        <div className={"text-sm text-slate-200 font-medium"}>
+          {laneInfo}
         </div>
-        <div className="text-xs bg-vocal">
-          {wapQuest?.areaId}
+        <div className={`text-xs text-black font-medium ${attr == AttributeType.Dance ? "bg-dance" : attr == AttributeType.Vocal ? "bg-vocal" : "bg-visual"}`}>
+          {AttributeType[attr]}
         </div>
       </div>
+    )
+  }
+
+  const LiveInfo = ({ wapQuest }: { wapQuest: WapQuest }) => {
+    const getText = (fmt: string, permil: number): string => {
+      return `${t(fmt)} × ${permil / 1000 === 0 ? 1 : permil / 1000}`
+    }
+    return (
+      <div className="mt-4 grid grid-cols-3">
+        <div>{getText("specialSkillWeightPermil", wapQuest.specialSkillWeightPermil)}</div>
+        <div>{getText("activeSkillWeightPermil", wapQuest.activeSkillWeightPermil)}</div>
+        <div></div>
+        <div>{getText("skillStaminaWeightPermil", wapQuest.skillStaminaWeightPermil)}</div>
+        <div>{getText("staminaRecoveryWeightPermil", wapQuest.staminaRecoveryWeightPermil)}</div>
+        <div></div>
+        <div>{getText("beatDanceWeightPermil", wapQuest.beatDanceWeightPermil)}</div>
+        <div>{getText("beatVocalWeightPermil", wapQuest.beatVocalWeightPermil)}</div>
+        <div>{getText("beatVisualWeightPermil", wapQuest.beatVisualWeightPermil)}</div>
+      </div>
+    )
+  }
+
+  const LiveBonuses = ({ liveAbility }: { liveAbility: WapLiveAbility }) => {
+    return (
+      <>
+        <div className="mt-4 flex flex-row gap-2">
+          <div className="w-14 h-14 aspect-square self-center">
+            <SkillIcon wSkillLevel={liveAbility.skill} />
+          </div>
+          <div className="grow self-center text-start align-middle whitespace-pre-wrap">
+            {liveAbility.skill.description}
+          </div>
+        </div>
+      </>
     )
   }
 
   return (
     <>
       <Chip.Group position="center" className="gap-6 items-start"
-        onChange={onQuestTypeChange}
+        value={questTypeChip} onChange={onQuestTypeChange}
       >
         <QuestTypeDivider keys={genre} />
       </Chip.Group>
       <Space h="xl" />
       <Select label={t("Select a Live")} placeholder="input to search..."
-        searchable clearable nothingFound={t("No matches")}
+        searchable nothingFound={t("No matches")}
         maxDropdownHeight={270}
-        value={quest} onChange={onSelectValueChange} data={selectorData}
+        onChange={onSelectValueChange} data={selectorData} value={selected}
       />
       <Divider my="xl" />
       <div className="w-16 h-16 mx-auto">
-        <ImageAsset aid="img_card_thumb_1_kkr-04-casl-00" aspect="1" />
+        {wapQuest && <ImageAsset aid="img_card_thumb_1_kkr-04-casl-00" aspect="1" />}
       </div>
       <div className="text-center">
         <p>{wapQuest && wapQuest.musicName}</p>
       </div>
       <div className="flex flex-row justify-center gap-0">
-        <AttributeOrnament position={1} />
-        <AttributeOrnament position={2} />
-        <AttributeOrnament position={3} />
         <AttributeOrnament position={4} />
+        <AttributeOrnament position={2} />
+        <AttributeOrnament position={1} />
+        <AttributeOrnament position={3} />
         <AttributeOrnament position={5} />
       </div>
+      {wapQuest && <LiveInfo wapQuest={wapQuest} />}
+      {wapQuest?.liveBonuses?.map((liveBonus, idx) => (
+        <LiveBonuses liveAbility={liveBonus} key={idx} />
+      ))}
     </>
   )
 }

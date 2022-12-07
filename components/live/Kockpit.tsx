@@ -7,9 +7,11 @@ import { Modal } from "@mantine/core";
 import QuestSelect from "./QuestSelect";
 
 export default function Kockpit({
-  onChartClick
+  wapQuest,
+  setWapQuest
 }: {
-  onChartClick: () => void
+  wapQuest: WapQuest | undefined,
+  setWapQuest: (wapQuest: WapQuest | undefined) => void,
 }) {
   const [opened, setOpened] = useState(false)
   return (
@@ -19,10 +21,11 @@ export default function Kockpit({
         onClose={() => setOpened(false)}
         title={t("select a quest")}
         overlayOpacity={0.5}
+        transitionDuration={300}
         overlayBlur={2}
         size="lg"
       >
-        <QuestSelect />
+        <QuestSelect wapQuest={wapQuest} setWapQuest={setWapQuest} />
       </Modal>
       <div className="flex flex-row items-center overflow-visible h-20 p-4">
         <div className="flex flex-row items-center overflow-visible grow">
@@ -33,7 +36,7 @@ export default function Kockpit({
               <ImageAsset aid="img_card_thumb_1_kkr-04-casl-00" aspect="1" />
             </div>
             <div className="inline-block pl-4 text-3xl text-start align-middle">
-              {t("testt")}
+              {wapQuest?.musicName}
             </div>
           </div>
         </div>

@@ -5,7 +5,7 @@ import ImageAsset2 from "./ImageAsset2";
 const PLACEHOLDER_SVG =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOs3/a/HgAGpQK1AGcMqQAAAABJRU5ErkJggg=='
 
-export default function ImageAsset(
+export default function InlineImageAsset(
   props: {
     aid: string,
     aspect: string,
@@ -21,19 +21,7 @@ export default function ImageAsset(
         width: width,
       }}
     >
-      <Image
-        src={getAssetUri("image", aid)}
-        alt={aid}
-        fill
-        className="object-fill"
-        sizes="(max-width: 768px) 100vw,
-              (max-width: 1200px) 50vw,
-              33vw"
-        placeholder="blur"
-        blurDataURL={PLACEHOLDER_SVG}
-        {...others}
-      />
+      <ImageAsset2 aid={aid} {...others} />
     </div >
-
   )
 }

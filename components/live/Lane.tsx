@@ -19,7 +19,7 @@ export default function Lane({ card, index, live, onCharaClick, onCharaDrop }: {
   const _index = index as keyof typeof gameIndex2LaneIndex
 
   return (
-    <div className={`flex flex-col h-screen items-center justify-start p-4 border-y-0`}>
+    <div className={`flex flex-col grow items-center justify-start p-4 border-y-0`}>
       <CharaIconDropZone
         index={index}
         onCharaDrop={onCharaDrop}

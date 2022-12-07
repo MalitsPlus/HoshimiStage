@@ -17,5 +17,15 @@
   "TowerTri": "三位应援",
   "TowerLiz": "莉兹诺哇",
   "MainLive": "主线",
-  "TowerVenus": "主塔"
+  "TowerVenus": "主塔",
+  "less": "少",
+  "more": "多",
+  "SP": "SP",
+  "specialSkillWeightPermil": "SP 分值",
+  "activeSkillWeightPermil": "A 分值",
+  "skillStaminaWeightPermil": "体力消耗量",
+  "staminaRecoveryWeightPermil": "体力恢复量",
+  "beatDanceWeightPermil": "Da 权重",
+  "beatVocalWeightPermil": "Vo 权重",
+  "beatVisualWeightPermil": "Vi 权重"
 }

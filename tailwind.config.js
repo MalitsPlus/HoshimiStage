@@ -11,9 +11,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        vocal: '#ed60bb',
-        dance: '#1394ff',
-        visual: '#fca104',
+        vocal: '#fe4b9d',
+        dance: '#38bbff',
+        visual: '#feb100',
         stamina: '#99db66',
         default: 'blue',
       },

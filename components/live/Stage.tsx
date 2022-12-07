@@ -1,8 +1,10 @@
+import { Modal } from "@mantine/core";
+import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps";
 import { useState } from "react";
 import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from "react-dnd-touch-backend";
 import { getAllCards, getData } from "../../src/utils/datamgr";
+import Greenroom from "./Greenroom";
 import Kockpit from "./Kockpit";
 import Lane from "./Lane";
 
@@ -17,10 +19,13 @@ function switchPosition<T>(list: T[], srcIndex: number, destIndex: number): T[] 
 }
 
 export default function Stage() {
-  const [cards, setParty] = useState(ptCards)
+  const [party, setParty] = useState(ptCards)
+  const [wapQuest, setWapQuest] = useState<WapQuest | undefined>(undefined)
+  const [groomOpened, setGroomOpened] = useState(false)
 
   const onCharaClick = (id: string) => {
     console.log(id + "clicked")
+    setGroomOpened(true)
   }
 
   const onCharaDrop = (src: number, dest: number) => {
@@ -34,18 +39,22 @@ export default function Stage() {
     setParty(previous => switchPosition(previous, src, dest))
   }
 
-  const onChartClick = () => {
-    
-  }
-
   return (
     <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
       <div>
+        <Modal
+          opened={groomOpened}
+          onClose={() => setGroomOpened(false)}
+          title="Edit party"
+          size="xl"
+        >
+          <Greenroom party={party} setParty={setParty} />
+        </Modal>
         <div>
-          <Kockpit />
+          <Kockpit wapQuest={wapQuest} setWapQuest={setWapQuest} />
         </div>
         <div className="grid grid-cols-5 justify-items-stretch min-w-max divide-x divide-solid divide-slate-500/25">
-          {cards.map((card, index) => (
+          {party.map((card, index) => (
             <Lane
               card={card} index={index} key={card.id}
               onCharaClick={onCharaClick}
