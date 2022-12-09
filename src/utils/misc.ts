@@ -10,30 +10,37 @@ export const getAttrBgColor = (attr: AttributeType) => {
   }
 }
 
+const cardAttributeRepo: {
+  [id: string]: AttributeType
+} = {}
+
 export function getCardAttribute(
   card: Pick<
     Card,
-    'vocalRatioPermil' | 'danceRatioPermil' | 'visualRatioPermil'
+    'vocalRatioPermil' | 'danceRatioPermil' | 'visualRatioPermil' | 'id'
   >
 ): AttributeType {
-  const { vocalRatioPermil, danceRatioPermil, visualRatioPermil } = card
+  const { vocalRatioPermil, danceRatioPermil, visualRatioPermil, id } = card
+  let attr = cardAttributeRepo[id]
+  if (attr) {
+    return attr
+  }
   if (
     vocalRatioPermil > danceRatioPermil &&
     vocalRatioPermil > visualRatioPermil
   ) {
-    return AttributeType.Vocal
-  }
-  if (
+    attr = AttributeType.Vocal
+  } else if (
     danceRatioPermil > vocalRatioPermil &&
     danceRatioPermil > visualRatioPermil
   ) {
-    return AttributeType.Dance
-  }
-  if (
+    attr = AttributeType.Dance
+  } else if (
     visualRatioPermil > vocalRatioPermil &&
     visualRatioPermil > danceRatioPermil
   ) {
-    return AttributeType.Visual
+    attr = AttributeType.Visual
   }
-  return AttributeType.Unknown
+  cardAttributeRepo[id] = attr
+  return attr
 }

@@ -1,6 +1,5 @@
 import Image, { ImageProps } from "next/image";
 import { getAssetUri } from "../../src/utils/resmgr";
-import ImageAsset2 from "./ImageAsset2";
 
 const PLACEHOLDER_SVG =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOs3/a/HgAGpQK1AGcMqQAAAABJRU5ErkJggg=='
@@ -34,6 +33,5 @@ export default function ImageAsset(
         {...others}
       />
     </div >
-
   )
 }

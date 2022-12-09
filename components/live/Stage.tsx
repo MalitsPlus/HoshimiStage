@@ -2,8 +2,10 @@ import { Modal } from "@mantine/core";
 import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps";
 import { useState } from "react";
 import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { getAllCards, getData } from "../../src/utils/datamgr";
+import CustDragLayer from "../media/CustDragLayer";
 import Greenroom from "./Greenroom";
 import Kockpit from "./Kockpit";
 import Lane from "./Lane";
@@ -46,7 +48,8 @@ export default function Stage() {
           opened={groomOpened}
           onClose={() => setGroomOpened(false)}
           title="Edit party"
-          size="xl"
+          overflow="outside"
+          size="auto"
         >
           <Greenroom party={party} setParty={setParty} />
         </Modal>
@@ -63,6 +66,7 @@ export default function Stage() {
           ))}
         </div>
       </div>
+      <CustDragLayer />
     </DndProvider>
   )
 }
