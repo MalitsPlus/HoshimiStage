@@ -7,11 +7,6 @@ export const getMusicJacket = (musicId: string): string => {
   return `img_music_jacket_${id}`
 }
 
-export const getMusicJacket = (musicId: string): string => {
-  const id = musicId.match(/\w+-\d+$/)
-  return `img_music_jacket_${id}`
-}
-
 export const getAttrBgColor = (attr: AttributeType) => {
   switch (attr) {
     case AttributeType.Vocal: return "bg-vocal"
