@@ -10,6 +10,7 @@ import { AttributeType, MusicChartType } from "hoshimi-venus/out/types/proto/pro
 import SkillIcon from "../media/SkillIcon";
 import { WapLiveAbility } from "hoshimi-venus/out/types/wap/skill_waps";
 import { useSessionStorage } from "@mantine/hooks";
+import { getMusicJacket } from "../../src/utils/misc";
 
 export default function QuestSelect({
   wapQuest,
@@ -201,7 +202,7 @@ export default function QuestSelect({
       />
       <Divider my="xl" />
       <div className="w-16 h-16 mx-auto">
-        {wapQuest && <ImageAsset aid="img_card_thumb_1_kkr-04-casl-00" aspect="1" />}
+        {wapQuest && <ImageAsset aid={getMusicJacket(wapQuest.musicId)} aspect="1" />}
       </div>
       <div className="text-center">
         <p>{wapQuest && wapQuest.musicName}</p>

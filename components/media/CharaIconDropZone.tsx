@@ -1,4 +1,4 @@
-import React, { ComponentProps } from "react"
+import React, { ComponentProps, useEffect } from "react"
 import { useDrop } from "react-dnd"
 import { DraggableCharaIconProps, ItemTypes } from "./DraggableCharaIcon"
 
@@ -10,23 +10,32 @@ export default function CharaIconDropZone(
   }: {
     children: React.ReactNode,
     index: number,
-    onCharaDrop: (src: number, dest: number) => void
+    onCharaDrop: (srcId: string, dest: number) => void
   } & ComponentProps<"div">
 ) {
   const [{ isDropped, isOver }, dropRef] = useDrop(
     () => ({
       accept: ItemTypes.CharaIcon,
       drop: (item, monitor) => {
-        const src = monitor.getItem<DraggableCharaIconProps>().index
-        console.log(`dropping ${monitor.getItem<DraggableCharaIconProps>().aid}, index ${monitor.getItem<DraggableCharaIconProps>().index}, to ${index}`)
-        onCharaDrop(src, index)
+        const cid = monitor.getItem<DraggableCharaIconProps>().cid
+        console.log(`dropping ${monitor.getItem<DraggableCharaIconProps>().aid}, cid ${monitor.getItem<DraggableCharaIconProps>().cid}, to ${index}`)
+        onCharaDrop(cid, index)
       },
       collect: monitor => ({
         isDropped: !!monitor.didDrop(),
         isOver: !!monitor.isOver(),
       }),
-    }), [index]
+    }), [index, onCharaDrop]
   )
+
+  // useEffect(() => {
+  //   if (isOver) {
+  //     document.body.classList.add("hovering")
+  //   } else {
+  //     document.body.classList.remove("hovering")
+  //   }
+  // }, [isOver])
+
   return (
     <div ref={dropRef} {...others}>
       {children}

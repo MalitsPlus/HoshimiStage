@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { t } from "i18next";
 import { Modal } from "@mantine/core";
 import QuestSelect from "./QuestSelect";
+import { getMusicJacket } from "../../src/utils/misc";
 
 export default function Kockpit({
   wapQuest,
@@ -33,7 +34,7 @@ export default function Kockpit({
             onClick={() => setOpened(true)}
           >
             <div className="inline-block align-middle w-14 h-14">
-              <ImageAsset aid="img_card_thumb_1_kkr-04-casl-00" aspect="1" />
+              {wapQuest ? <ImageAsset aid={getMusicJacket(wapQuest.musicId)} aspect="1" /> : <ImageAsset aid={""} aspect="1" />}
             </div>
             <div className="inline-block pl-4 text-3xl text-start align-middle">
               {wapQuest?.musicName}

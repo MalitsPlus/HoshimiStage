@@ -1,5 +1,11 @@
 import { AttributeType } from "hoshimi-venus/out/types/proto/proto_enum"
 import { Card } from "hoshimi-venus/out/types/proto/proto_master"
+import { TParty } from "../../components/live/Stage"
+
+export const getMusicJacket = (musicId: string): string => {
+  const id = musicId.match(/\w+-\d+$/)
+  return `img_music_jacket_${id}`
+}
 
 export const getAttrBgColor = (attr: AttributeType) => {
   switch (attr) {
@@ -43,4 +49,12 @@ export function getCardAttribute(
   }
   cardAttributeRepo[id] = attr
   return attr
+}
+
+export const isCardInParty = (card: Card, party: TParty): boolean => {
+  return isIdInParty(card.id, party)
+}
+
+export const isIdInParty = (id: string, party: TParty): boolean => {
+  return Object.values(party).some(it => it.card.id === id)
 }

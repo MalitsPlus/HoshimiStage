@@ -2,20 +2,27 @@ import classNames from "classnames"
 import { Live } from "hoshimi-venus/out/types/concert_types"
 import { AttributeType } from "hoshimi-venus/out/types/proto/proto_enum"
 import { Card } from "hoshimi-venus/out/types/proto/proto_master"
-import { getChara } from "../../src/utils/datamgr"
+import { getChara, getData } from "../../src/utils/datamgr"
 import { getCardAttribute } from "../../src/utils/misc"
 import DraggableCharaIcon, { ItemTypes } from "../media/DraggableCharaIcon"
 import { useDrop } from "react-dnd";
 import CharaIconDropZone from "../media/CharaIconDropZone"
+import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps"
 
-export default function Lane({ card, index, live, onCharaClick, onCharaDrop }: {
-  card: Card, index: number, live?: Live,
-  onCharaClick: (id: string) => void,
-  onCharaDrop: (src: number, dest: number) => void,
+export default function Lane({ index, card, live, onCharaClick, onCharaDrop }: {
+  index: number, card?: Card, live?: Live,
+  onCharaClick: () => void,
+  onCharaDrop: (srcId: string, dest: number) => void,
 }) {
-  const { id, assetId, type, name, characterId } = card
-  const attribute = getCardAttribute(card)
-  const chara = getChara(characterId)
+  const { id, assetId, type, name, characterId } = card ?? {
+    id: undefined,
+    assetId: undefined,
+    type: undefined,
+    name: undefined,
+    characterId: undefined,
+  }
+  const attribute = (live?.quest[`position${index + 1}AttributeType` as keyof WapQuest] ?? AttributeType.Unknown) as AttributeType
+  const chara = getData(getChara, characterId)
   const _index = index as keyof typeof gameIndex2LaneIndex
 
   return (
@@ -25,12 +32,10 @@ export default function Lane({ card, index, live, onCharaClick, onCharaDrop }: {
         onCharaDrop={onCharaDrop}
         className="flex flex-col items-center justify-start border-y-0 w-full"
       >
-        <DraggableCharaIcon
-          cid={id}
-          aid={assetId}
-          role={type}
+        <DraggableCharaIcon 
+          card={card}
           index={index}
-          attribute={attribute}
+          canDrag={card ? true : false}
           onCharaClick={onCharaClick}
         />
         <p>{chara.name}</p>
@@ -38,8 +43,10 @@ export default function Lane({ card, index, live, onCharaClick, onCharaDrop }: {
           "w-full h-0.5 rounded-sm",
           attribute === AttributeType.Dance ? "bg-dance"
             : attribute === AttributeType.Vocal ? "bg-vocal"
-              : "bg-visual"
-        )} />
+              : attribute === AttributeType.Visual ? "bg-visual"
+                : "bg-slate-600"
+        )}
+        />
       </CharaIconDropZone>
     </div>
   )

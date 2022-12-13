@@ -4,45 +4,52 @@ import { Card } from "hoshimi-venus/out/types/proto/proto_master"
 import { t } from "i18next"
 import { ImageProps } from "next/image"
 import { useMemo, useReducer } from "react"
-import { getAllCards, getData } from "../../src/utils/datamgr"
-import { getCardAttribute } from "../../src/utils/misc"
-import CharaIcon from "../media/CharaIcon"
+import { getAllCards, getData, getRawCard } from "../../src/utils/datamgr"
+import { getCardAttribute, isCardInParty, isIdInParty } from "../../src/utils/misc"
 import CharaIconDropZone from "../media/CharaIconDropZone"
 import DraggableCharaIcon from "../media/DraggableCharaIcon"
 import ImageAsset from "../misc/ImageAsset"
 import MyButton from "../misc/MyButton"
+import { TParty } from "./Stage"
 
 type TState = {
   starChips: string[],
   typeChips: string[],
   attrChips: string[],
+  focusPosition: number | undefined,
 }
 
-function reducer(state: TState, action: any): TState {
+function reducer(state: TState, action: Partial<TState & { type: string }>): TState {
   switch (action.type) {
     case "star":
       return {
         ...state,
-        starChips: action.starChips,
+        starChips: action.starChips!,
       }
     case "type":
       return {
         ...state,
-        typeChips: action.typeChips,
+        typeChips: action.typeChips!,
       }
     case "attr":
       return {
         ...state,
-        attrChips: action.attrChips,
+        attrChips: action.attrChips!,
       }
     case "all":
       return {
-        starChips: action.starChips,
-        typeChips: action.typeChips,
-        attrChips: action.attrChips,
+        ...state,
+        starChips: action.starChips!,
+        typeChips: action.typeChips!,
+        attrChips: action.attrChips!,
       }
-    default: return state
+    case "focusPosition":
+      return {
+        ...state,
+        focusPosition: action.focusPosition,
+      }
   }
+  return state
 }
 
 function cardFilter(card: Card, state: TState): boolean {
@@ -63,11 +70,15 @@ function cardFilter(card: Card, state: TState): boolean {
 export default function Greenroom({
   party,
   setParty,
+  focusPosition,
+  onCharaDrop,
 }: {
-  party: Card[],
-  setParty: (pt: Card[]) => void,
+  party: TParty,
+  setParty: (pt: TParty) => void,
+  focusPosition: number | undefined,
+  onCharaDrop: (srcId: string, dest: number) => void,
 }) {
-  const [state, dispatch] = useReducer(reducer, { starChips: ["fivestar"], typeChips: [], attrChips: [] })
+  const [state, dispatch] = useReducer(reducer, { starChips: ["fivestar"], typeChips: [], attrChips: [], focusPosition })
   const allCards = useMemo(() => {
     return getData(getAllCards)
   }, [])
@@ -83,6 +94,26 @@ export default function Greenroom({
         <span>{t(name)}</span>
       </Chip>
     )
+  }
+
+  const onPartyCharaClick = (id: string, index: number) => {
+    dispatch({ focusPosition: index, type: "focusPosition" })
+  }
+
+  const onGreenCharaClick = (id: string, index: number) => {
+    if (state.focusPosition === undefined) {
+      return
+    }
+    if (isIdInParty(id, party)) {
+      console.log(id)
+      return
+    }
+    const newParty = { ...party }
+    newParty[state.focusPosition] = {
+      ...newParty[state.focusPosition],
+      card: getData(getRawCard, id)
+    }
+    setParty(newParty)
   }
 
   return (
@@ -122,21 +153,19 @@ export default function Greenroom({
         </div>
         <div className="grow">
           <div className="flex flex-row p-2 justify-evenly align-middle bg-sky-900 rounded-md">
-            {party.map((card, index) => {
+            {Object.entries(party).map(([k, ptcard]) => {
               return (
                 <CharaIconDropZone
-                  key={card.id}
-                  index={index}
-                  onCharaDrop={() => { }}
-                  className="flex flex-col items-center justify-start border-y-0 w-full"
+                  key={ptcard.card.id}
+                  index={+k}
+                  onCharaDrop={onCharaDrop}
+                  className={`flex flex-col items-center justify-start border-y-0 w-full ${state.focusPosition === +k ? "bg-orange-800" : ""}`}
                 >
                   <DraggableCharaIcon
-                    cid={card.id}
-                    aid={card.assetId}
-                    role={card.type}
-                    index={index}
-                    attribute={getCardAttribute(card)}
-                    onCharaClick={() => { }}
+                    card={ptcard.card}
+                    index={+k}
+                    canDrag={true}
+                    onCharaClick={() => onPartyCharaClick(ptcard.card.id, +k)}
                   />
                 </CharaIconDropZone>
               )
@@ -152,12 +181,10 @@ export default function Greenroom({
               .map((card, index) => (
                 <div key={card.id} className="">
                   <DraggableCharaIcon
-                    cid={card.id}
-                    aid={card.assetId}
-                    role={card.type}
+                    card={card}
                     index={index}
-                    attribute={getCardAttribute(card)}
-                    onCharaClick={() => { }}
+                    canDrag={!isCardInParty(card, party)}
+                    onCharaClick={() => onGreenCharaClick(card.id, index)}
                   />
                 </div>
               ))}
