@@ -27,9 +27,9 @@ export const getRawCard = (id: string): Card => {
   throw new Error("Unimplemented.")
 }
 
-export const getChara = (id: string): Character => {
+export const getChara = (id: string): Character | undefined => {
   if (DATA_ENV === "pkg") {
-    return getCharacter(id)!  // FIXME
+    return getCharacter(id)
   }
   throw new Error("Unimplemented.")
 }

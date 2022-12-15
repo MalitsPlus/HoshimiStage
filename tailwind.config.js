@@ -10,6 +10,9 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
+      width: {
+        '18': '4.5rem',
+      },
       colors: {
         vocal: '#fe4b9d',
         dance: '#38bbff',
@@ -34,6 +37,15 @@ module.exports = {
         0: "0ms",
         default: "200ms",
       },
+      keyframes: {
+        'pulse-strong': {
+          '0%, 100%': { opacity: 1 },
+          '50%': { opacity: .3 },
+        }
+      },
+      animation: {
+        'pulse-quick': 'pulse-strong 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;'
+      }
     },
   },
   plugins: [

@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { Card } from 'hoshimi-venus/out/types/proto/proto_master';
-import { useEffect } from 'react';
+import { ComponentProps, memo, useEffect } from 'react';
 import { useDrag } from "react-dnd";
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { getCardAttribute } from '../../src/utils/misc';
@@ -14,12 +14,13 @@ export type DraggableCharaIconProps = {
   card?: Card,
   index: number,
   canDrag: boolean,
-  onCharaClick?: () => void
-}
+  onCharaClick?: () => void,
+} & ComponentProps<"div">
 
-export default function DraggableCharaIcon({
-  card, index, canDrag, onCharaClick,
-}: DraggableCharaIconProps) {
+const DraggableCharaIcon = ({
+  card, index, canDrag, onCharaClick, className
+}: DraggableCharaIconProps) => {
+  console.log(`render draggable chara ${card?.id}`)
 
   const { id, assetId, type } = card ?? {
     id: undefined,
@@ -52,12 +53,16 @@ export default function DraggableCharaIcon({
   return (
     <>
       <div ref={dragRef} className={classNames(
-        isDragging ? "shadow opacity-0 pointer-events-none" : "opacity-100",
+        "",
+        isDragging ? "shadow !opacity-0 pointer-events-none" : "opacity-100",
         canDrag ? "" : "[filter:brightness(0.5)]",
-      )}>
-        <CharaIcon id={id} assetId={assetId} role={type} attribute={attribute} onCharaClick={canDrag ? onCharaClick : undefined} />
+        className,
+      )}
+        >
+        <CharaIcon id={id} assetId={assetId} role={type} attribute={attribute} onCharaClick={onCharaClick} />
       </div>
     </>
   )
 }
- 
+
+export default memo(DraggableCharaIcon)

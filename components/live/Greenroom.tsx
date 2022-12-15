@@ -1,9 +1,10 @@
+import update from "immutability-helper"
 import { Chip, Divider } from "@mantine/core"
 import { AttributeType, CardType } from "hoshimi-venus/out/types/proto/proto_enum"
 import { Card } from "hoshimi-venus/out/types/proto/proto_master"
 import { t } from "i18next"
 import { ImageProps } from "next/image"
-import { useMemo, useReducer } from "react"
+import { memo, SetStateAction, useCallback, useMemo, useReducer } from "react"
 import { getAllCards, getData, getRawCard } from "../../src/utils/datamgr"
 import { getCardAttribute, isCardInParty, isIdInParty } from "../../src/utils/misc"
 import CharaIconDropZone from "../media/CharaIconDropZone"
@@ -16,7 +17,6 @@ type TState = {
   starChips: string[],
   typeChips: string[],
   attrChips: string[],
-  focusPosition: number | undefined,
 }
 
 function reducer(state: TState, action: Partial<TState & { type: string }>): TState {
@@ -43,11 +43,6 @@ function reducer(state: TState, action: Partial<TState & { type: string }>): TSt
         typeChips: action.typeChips!,
         attrChips: action.attrChips!,
       }
-    case "focusPosition":
-      return {
-        ...state,
-        focusPosition: action.focusPosition,
-      }
   }
   return state
 }
@@ -71,14 +66,16 @@ export default function Greenroom({
   party,
   setParty,
   focusPosition,
+  setFocusPosition,
   onCharaDrop,
 }: {
   party: TParty,
-  setParty: (pt: TParty) => void,
+  setParty: (pt: SetStateAction<TParty>) => void,
   focusPosition: number | undefined,
-  onCharaDrop: (srcId: string, dest: number) => void,
+  setFocusPosition: (p: number) => void,
+  onCharaDrop: (srcId: string, srcIndex: number, dest: number) => void,
 }) {
-  const [state, dispatch] = useReducer(reducer, { starChips: ["fivestar"], typeChips: [], attrChips: [], focusPosition })
+  const [state, dispatch] = useReducer(reducer, { starChips: ["fivestar"], typeChips: [], attrChips: [] })
   const allCards = useMemo(() => {
     return getData(getAllCards)
   }, [])
@@ -96,25 +93,26 @@ export default function Greenroom({
     )
   }
 
-  const onPartyCharaClick = (id: string, index: number) => {
-    dispatch({ focusPosition: index, type: "focusPosition" })
+  const onPartyCharaClick = (index: number, id?: string) => {
+    setFocusPosition(index)
   }
 
-  const onGreenCharaClick = (id: string, index: number) => {
-    if (state.focusPosition === undefined) {
+  const onGreenCharaClick = useCallback((id: string, index: number) => {
+    if (focusPosition === undefined) {
       return
     }
     if (isIdInParty(id, party)) {
       console.log(id)
       return
     }
-    const newParty = { ...party }
-    newParty[state.focusPosition] = {
-      ...newParty[state.focusPosition],
-      card: getData(getRawCard, id)
-    }
-    setParty(newParty)
-  }
+    setParty(previous =>
+      update(previous, {
+        [focusPosition]: {
+          card: { $set: getData(getRawCard, id) }
+        }
+      })
+    )
+  }, [focusPosition, party, setParty])
 
   return (
     <>
@@ -122,7 +120,7 @@ export default function Greenroom({
         <div>
           <div>
             <MyButton onClick={() => { dispatch({ starChips: [], typeChips: [], attrChips: [], type: "all" }) }}>
-              {t("clear")}
+              {t("reset")}
             </MyButton>
           </div>
           <div>
@@ -152,20 +150,21 @@ export default function Greenroom({
           </div>
         </div>
         <div className="grow">
-          <div className="flex flex-row p-2 justify-evenly align-middle bg-sky-900 rounded-md">
+          <div className="flex flex-row p-2 justify-evenly items-center align-middle bg-neutral-300 dark:bg-neutral-800 rounded-lg">
             {Object.entries(party).map(([k, ptcard]) => {
               return (
                 <CharaIconDropZone
-                  key={ptcard.card.id}
+                  key={k}
                   index={+k}
                   onCharaDrop={onCharaDrop}
-                  className={`flex flex-col items-center justify-start border-y-0 w-full ${state.focusPosition === +k ? "bg-orange-800" : ""}`}
+                  className={`flex flex-row items-center justify-center aspect-square w-16 rounded-md border-y-0`}
                 >
                   <DraggableCharaIcon
                     card={ptcard.card}
                     index={+k}
-                    canDrag={true}
-                    onCharaClick={() => onPartyCharaClick(ptcard.card.id, +k)}
+                    canDrag={ptcard.card ? true : false}
+                    className={focusPosition === +k ? "animate-pulse-quick" : ""}
+                    onCharaClick={() => onPartyCharaClick(+k, ptcard.card?.id)}
                   />
                 </CharaIconDropZone>
               )
