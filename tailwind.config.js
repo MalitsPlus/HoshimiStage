@@ -6,6 +6,13 @@ module.exports = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  safelist: [
+    'bg-vocal',
+    {
+      pattern: /bg-.*$/,
+    },
   ],
   darkMode: 'class',
   theme: {
@@ -17,7 +24,12 @@ module.exports = {
         vocal: '#fe4b9d',
         dance: '#38bbff',
         visual: '#feb100',
+        'vocal-acc': '#cb015c',
+        'dance-acc': '#0088d1',
+        'visual-acc': '#b37d00',
         stamina: '#99db66',
+        'stamina-acc': '#49ba43',
+        'skill-success-rate-up': '#38bdf8',
         default: 'blue',
       },
       fontFamily: {

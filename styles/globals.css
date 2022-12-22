@@ -6,6 +6,20 @@ body.dragging {
   cursor: grabbing !important;
 }
 
+@layer utilities {
+  .grid-start-at-1 {
+    grid-column-start: 1;
+  }
+}
+
+grid-start-at-2 {
+  grid-column-start: 2;
+}
+
+grid-start-at-3 {
+  grid-column-start: 3;
+}
+
 /* @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

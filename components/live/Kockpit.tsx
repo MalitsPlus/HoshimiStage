@@ -9,10 +9,12 @@ import { getMusicJacket } from "../../src/utils/misc";
 
 export default function Kockpit({
   wapQuest,
-  setWapQuest
+  setWapQuest,
+  onSimulateClick,
 }: {
   wapQuest: WapQuest | undefined,
   setWapQuest: (wapQuest: WapQuest | undefined) => void,
+  onSimulateClick: () => void,
 }) {
   const [opened, setOpened] = useState(false)
   return (
@@ -42,7 +44,7 @@ export default function Kockpit({
           </div>
         </div>
         <div>
-          <MyButton className="w-24 h-10">{t("simulate")}</MyButton>
+          <MyButton className="w-24 h-10" onClick={onSimulateClick}>{t("simulate")}</MyButton>
         </div>
       </div>
     </>

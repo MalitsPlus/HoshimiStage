@@ -58,3 +58,7 @@ export const isCardInParty = (card: Card, party: TParty): boolean => {
 export const isIdInParty = (id: string, party: TParty): boolean => {
   return Object.values(party).some(it => it.card?.id === id)
 }
+
+export const isPartyFull = (party: TParty): boolean => {
+  return Object.values(party).every(it => !!it.card)
+}

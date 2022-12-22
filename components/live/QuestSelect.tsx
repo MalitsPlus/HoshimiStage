@@ -54,7 +54,7 @@ export default function QuestSelect({
     return getSelectorData(questTypeChip)
   }, [questTypeChip])
 
-  const onQuestTypeChange = (v: string | undefined) => {
+  const onQuestTypeChange = (v: string) => {
     console.log(`onQuestTypeChange ${v}`)
     setQuestTypeChip(v)
     selectorData = getSelectorData(v)
@@ -71,7 +71,7 @@ export default function QuestSelect({
 
   useEffect(() => {
     if (!wapQuest) {
-      onQuestTypeChange(undefined)
+      onQuestTypeChange("")
     }
   }, [])
 
