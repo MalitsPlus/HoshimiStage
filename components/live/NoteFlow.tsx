@@ -1,8 +1,9 @@
-import { Center, HoverCard } from "@mantine/core"
+import { Center, Divider, HoverCard } from "@mantine/core"
 import classNames from "classnames"
 import { Live } from "hoshimi-venus/out/types/concert_types"
-import { AttributeType, MusicChartType } from "hoshimi-venus/out/types/proto/proto_enum"
+import { AttributeType, MusicChartType, SkillEfficacyType } from "hoshimi-venus/out/types/proto/proto_enum"
 import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps"
+import { t } from "i18next"
 import { memo } from "react"
 
 type NoteFlowProps = {
@@ -24,12 +25,24 @@ const NoteFlow = ({
   }
 
   const patterns = live?.quest.musicChartPatterns ?? wapQuest?.musicChartPatterns!
+  let prevASequence = 0
 
   return (
     <div className="flex flex-col h-[98%] w-20 justify-start items-center">
-      {patterns.map(ptn => {
+      {patterns.map((ptn, idx, arr) => {
+        let interval = 0
+        if (ptn.position === ingameIndex) {
+          if (ptn.type === MusicChartType.ActiveSkill) {
+            if (prevASequence !== 0) {
+              interval = ptn.sequence - prevASequence
+            }
+            prevASequence = ptn.sequence
+          }
+        }
+        const chart = live?.charts.find(chart => chart.sequence === ptn.sequence)
+        const status = chart?.getCardStatus(ingameIndex)
         return (
-          <HoverCard width={140} shadow="md" key={ptn.sequence} position="left" offset={15} withArrow openDelay={80} closeDelay={0} >
+          <HoverCard width="auto" shadow="md" key={ptn.sequence} position="left" offset={15} transitionDuration={0} withArrow openDelay={80} closeDelay={0} >
             <HoverCard.Target>
               <div className="h-1 w-1 grow shrink flex justify-center items-center cursor-pointer">
                 {ptn.position === ingameIndex
@@ -56,12 +69,36 @@ const NoteFlow = ({
               </div>
             </HoverCard.Target>
             <HoverCard.Dropdown>
-              <div>{ptn.sequence}</div>
+              <div className="grid grid-cols-[2fr_1fr] gap-x-2 [direction:ltr]">
+                <div className="col-span-2 text-sm">{ptn.sequence}</div>
+                {interval ? <><div>{t("Interval")}</div><div>{interval}</div></> : null}
+                {
+                  chart && status
+                    ? (<>
+                      <Divider my={4} className="col-span-2" />
+                      <div className="text-dance">Dance</div><div className="text-dance">{status.dance}</div>
+                      <div className="text-vocal">Vocal</div><div className="text-vocal">{status.vocal}</div>
+                      <div className="text-visual">Visual</div><div className="text-visual">{status.visual}</div>
+                      <div className="text-stamina">Stamina</div><div className="text-stamina">{status.stamina}</div>
+                      <Divider my={4} className="col-span-2" />
+                      {status.skillStatuses.map((skillStat, idx) => (<>
+                        <div>Skill {skillStat.skillIndex}</div>
+                        <div>{skillStat.coolTime}</div>
+                      </>))}
+                      <Divider my={4} className="col-span-2" />
+                      {status.effects.map((eff, idx) => (<>
+                        <div>{t(SkillEfficacyType[eff.efficacyType])}</div>
+                        <div>{eff.grade}</div>
+                      </>))}
+                    </>)
+                    : null
+                }
+              </div>
             </HoverCard.Dropdown>
           </HoverCard>
         )
       })}
-    </div>
+    </div >
   )
 }
 
