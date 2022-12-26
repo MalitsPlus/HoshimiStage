@@ -41,6 +41,7 @@ const NoteFlow = ({
         }
         const chart = live?.charts.find(chart => chart.sequence === ptn.sequence)
         const status = chart?.getCardStatus(ingameIndex)
+        const effSet = new Set(status?.effects.map(eff => eff.efficacyType))
         return (
           <HoverCard width="auto" shadow="md" key={ptn.sequence} position="left" offset={15} transitionDuration={0} withArrow openDelay={80} closeDelay={0} >
             <HoverCard.Target>
@@ -83,13 +84,16 @@ const NoteFlow = ({
                       <Divider my={4} className="col-span-2" />
                       {status.skillStatuses.map((skillStat, idx) => (<>
                         <div>Skill {skillStat.skillIndex}</div>
-                        <div>{skillStat.coolTime}</div>
+                        <div className={skillStat.coolTime ? "text-red-600" : "text-green-600"} >{skillStat.coolTime ? skillStat.coolTime : "Ready"}</div>
                       </>))}
                       <Divider my={4} className="col-span-2" />
-                      {status.effects.map((eff, idx) => (<>
-                        <div>{t(SkillEfficacyType[eff.efficacyType])}</div>
-                        <div>{eff.grade}</div>
-                      </>))}
+                      {[...new Set(status.effects.map(eff => eff.efficacyType))].map(effType => {
+                        return (<>
+                          <div>{t(SkillEfficacyType[effType])}</div>
+                          <div>{status.getEffectSumOrMaxGrade(effType)}</div>
+                        </>
+                        )
+                      })}
                     </>)
                     : null
                 }
