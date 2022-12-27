@@ -7,6 +7,7 @@ import { t } from "i18next"
 import { memo } from "react"
 import { EffColor } from "../../src/static/efficacy_static"
 import { getPrivilegedEfficacyList } from "../../src/utils/datamgr"
+import EffectRich from "./EffectRich";
 
 type EffIdxDictType = { [uuid: string]: number }
 
@@ -86,7 +87,7 @@ const EffRow = ({ prevEffs, curEffs, sequence, category, effIdxDict, ingameIndex
         return (
           <HoverCard width="auto" shadow="md" key={idx}
             position={category == "privileged" ? "left" : "right"}
-            offset={15} withArrow openDelay={80} closeDelay={0} transitionDuration={0}
+            offset={15} withArrow transitionDuration={0} openDelay={100} closeDelay={0}
           >
             <HoverCard.Target>
               <div className={classNames("h-full w-1 grow shrink cursor-pointer",
@@ -107,19 +108,21 @@ const EffRow = ({ prevEffs, curEffs, sequence, category, effIdxDict, ingameIndex
             <HoverCard.Dropdown>
               <div className="grid grid-cols-[2fr_1fr] gap-x-2 [direction:ltr]">
                 <div className="col-span-2 text-sm">{sequence + 1}</div>
-                <div className="col-span-2 text-sm font-medium">{t(SkillEfficacyType[eff.efficacyType])}</div>
+                <EffectRich type={eff.efficacyType} grade={eff.grade} className="col-span-2 text-sm font-medium" />
+                {/* <div className="col-span-2 text-sm font-medium">{t(SkillEfficacyType[eff.efficacyType])}</div> */}
                 <Divider className="col-span-2 my-1" />
                 <div>{t("Grade")}</div><div>{eff.grade}</div>
                 {eff.value !== 0 ? <><div>{t("Value")}</div><div>{eff.value}</div></> : null}
                 <div>{t("Remain")}</div><div>{eff.remain}</div>
                 <div>{t("Source")}</div><div>{eff.sourceIndex} - {eff.sourceSkillIndex}</div>
                 <div className="col-span-2">
-                  {isStart
-                    ? eff.include
-                      ? <Badge mr={4} variant="filled" color="green" className="normal-case">{t("Included")}</Badge>
-                      : <Badge mr={4} variant="filled" color="pink" className="normal-case">{t("Unincluded")}</Badge>
-                    : null}
-                  {eff.isInstant ? <Badge variant="filled" className="normal-case">{t("Instant")}</Badge> : ""}
+                  {eff.include
+                    ? <Badge mr={4} variant="filled" color="green" className="normal-case">{t("Included")}</Badge>
+                    : <Badge mr={4} variant="filled" color="pink" className="normal-case">{t("Unincluded")}</Badge>
+                  }
+                  {eff.isInstant ? <Badge mr={4} variant="filled" className="normal-case">{t("Instant")}</Badge> : null}
+                  {eff.migrated ? <Badge mr={4} variant="filled" color="violet" className="normal-case">{t("Migrated")}</Badge> : null}
+                  {eff.ajusted ? <Badge mr={4} variant="filled" color="indigo" className="normal-case">{t("Ajusted")}</Badge> : null}
                 </div>
               </div>
             </HoverCard.Dropdown>

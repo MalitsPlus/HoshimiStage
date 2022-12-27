@@ -1,15 +1,16 @@
 import Image, { ImageProps } from "next/image";
+import { memo } from "react";
 import { getAssetUri } from "../../src/utils/resmgr";
 
 const PLACEHOLDER_SVG =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOs3/a/HgAGpQK1AGcMqQAAAABJRU5ErkJggg=='
 
-export default function ImageAsset(
+const ImageAsset = (
   props: {
     aid: string,
     aspect: string,
   } & Partial<ImageProps>
-) {
+) => {
   const { aid, aspect, width, height, ...others } = props
   return (
     <div
@@ -35,3 +36,5 @@ export default function ImageAsset(
     </div >
   )
 }
+
+export default memo(ImageAsset)

@@ -1,16 +1,41 @@
-import { Center, Divider, HoverCard } from "@mantine/core"
+import { Badge, Center, Divider, HoverCard } from "@mantine/core"
+import { IconStar } from "@tabler/icons"
 import classNames from "classnames"
-import { Live } from "hoshimi-venus/out/types/concert_types"
-import { AttributeType, MusicChartType, SkillEfficacyType } from "hoshimi-venus/out/types/proto/proto_enum"
+import { LiveCard } from "hoshimi-venus/out/types/card_types"
+import { ActSkill, Live } from "hoshimi-venus/out/types/concert_types"
+import { AttributeType, MusicChartType, SkillFailureType } from "hoshimi-venus/out/types/proto/proto_enum"
 import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps"
 import { t } from "i18next"
 import { memo } from "react"
+import SkillIcon from "../media/SkillIcon"
+import EffectRich from "./EffectRich"
 
 type NoteFlowProps = {
   attribute: AttributeType,
   ingameIndex: number,
   live?: Live,
   wapQuest?: WapQuest,
+}
+
+const ActivatedSkill = ({
+  card,
+  skills,
+}: {
+  card: LiveCard,
+  skills: ActSkill[],
+}) => {
+  return (
+    <div className="whitespace-pre-wrap text-sm">
+      {skills.map(aSkill => {
+        const skill = card.getSkill(aSkill.skillIndex)
+        return (<>
+          <SkillIcon wSkillLevel={skill} />
+          <div>{t("Order") + ": " + aSkill.order}</div>
+          <div>{skill.description}</div>
+        </>)
+      })}
+    </div>
+  )
 }
 
 const NoteFlow = ({
@@ -41,9 +66,16 @@ const NoteFlow = ({
         }
         const chart = live?.charts.find(chart => chart.sequence === ptn.sequence)
         const status = chart?.getCardStatus(ingameIndex)
-        const effSet = new Set(status?.effects.map(eff => eff.efficacyType))
+        const card = live?.liveDeck.getCard(ingameIndex)
+        const { aSkill, failureFlag } = chart?.actPosition === ingameIndex
+          ? { aSkill: chart.actSkill, failureFlag: chart.failureFlag }
+          : { aSkill: undefined, failureFlag: undefined }
+        const pSkills = chart?.actPSkills
+          .filter(p => p.cardIndex === ingameIndex)
+        const activating = [aSkill, ...pSkills ?? [undefined]].filter(it => it !== undefined)
+
         return (
-          <HoverCard width="auto" shadow="md" key={ptn.sequence} position="left" offset={15} transitionDuration={0} withArrow openDelay={80} closeDelay={0} >
+          <HoverCard width="auto" shadow="md" key={ptn.sequence} position="left" offset={15} withArrow transitionDuration={0} openDelay={100} closeDelay={0} >
             <HoverCard.Target>
               <div className="h-1 w-1 grow shrink flex justify-center items-center cursor-pointer">
                 {ptn.position === ingameIndex
@@ -66,37 +98,77 @@ const NoteFlow = ({
                       </Center>
                     </div>
                   )
-                  : <div className="h-0.5 w-0.5 bg-neutral-600/75 rounded-full z-10"></div>}
+                  : <div className={`${pSkills?.length ? "h-1 w-1 bg-rose-500" : "h-0.5 w-0.5 bg-neutral-600/75"} rounded-full z-10`}></div>}
               </div>
             </HoverCard.Target>
             <HoverCard.Dropdown>
-              <div className="grid grid-cols-[2fr_1fr] gap-x-2 [direction:ltr]">
-                <div className="col-span-2 text-sm">{ptn.sequence}</div>
-                {interval ? <><div>{t("Interval")}</div><div>{interval}</div></> : null}
-                {
-                  chart && status
+              <div className="flex flex-row gap-2">
+                {aSkill !== undefined || failureFlag !== undefined || pSkills?.length
+                  ? <>
+                    <div>
+                      {failureFlag
+                        ? <div>
+                          <Badge variant="filled" color="red" className="normal-case">{t(SkillFailureType[failureFlag])}</Badge>
+                        </div>
+                        : null
+                      }
+                      {aSkill && card
+                        ? (<>
+                          <Divider label={<><IconStar size={14} color="#fbbf24" fill="#fbbf24" />{t("Active Skill")}</>} labelPosition="center" />
+                          <ActivatedSkill card={card} skills={[aSkill]} />
+                        </>)
+                        : null
+                      }
+                      {pSkills?.length && card
+                        ? (<>
+                          <Divider label={<><IconStar size={14} color="#38bdf8" fill="#38bdf8" />{t("Passive Skills")}</>} labelPosition="center" />
+                          <ActivatedSkill card={card} skills={pSkills} />
+                        </>)
+                        : null
+                      }
+                    </div>
+                    <Divider orientation="vertical" />
+                  </>
+                  : null
+                }
+
+                <div className="grid grid-cols-2 gap-x-2 [direction:ltr] content-start">
+                  <div className="col-span-2 text-sm">{ptn.sequence}</div>
+                  {interval ? <><div>{t("Interval")}</div><div>{interval}</div></> : null}
+                  {chart && status
                     ? (<>
                       <Divider my={4} className="col-span-2" />
                       <div className="text-dance">Dance</div><div className="text-dance">{status.dance}</div>
                       <div className="text-vocal">Vocal</div><div className="text-vocal">{status.vocal}</div>
                       <div className="text-visual">Visual</div><div className="text-visual">{status.visual}</div>
-                      <div className="text-stamina">Stamina</div><div className="text-stamina">{status.stamina}</div>
+                      <div className="text-stamina">Stamina</div><div className="text-stamina">{status.stamina} ({(status.stamina / (card?.deckStamina ?? 1) * 100).toFixed(1)}%)</div>
                       <Divider my={4} className="col-span-2" />
-                      {status.skillStatuses.map((skillStat, idx) => (<>
-                        <div>Skill {skillStat.skillIndex}</div>
-                        <div className={skillStat.coolTime ? "text-red-600" : "text-green-600"} >{skillStat.coolTime ? skillStat.coolTime : "Ready"}</div>
-                      </>))}
-                      <Divider my={4} className="col-span-2" />
-                      {[...new Set(status.effects.map(eff => eff.efficacyType))].map(effType => {
+                      {status.skillStatuses.map((skillStat, idx) => {
+                        const isActivating = activating.some(act => act?.skillIndex === skillStat.skillIndex)
                         return (<>
-                          <div>{t(SkillEfficacyType[effType])}</div>
-                          <div>{status.getEffectSumOrMaxGrade(effType)}</div>
+                          <div>Skill {skillStat.skillIndex}</div>
+                          <div className={isActivating ? "text-sky-400"
+                            : skillStat.coolTime || !skillStat.hasTimes() ? "text-rose-500" : "text-emerald-500"
+                          } >
+                            {isActivating ? "Activating"
+                              : !skillStat.hasTimes() ? "Exhausted"
+                                : skillStat.coolTime ? skillStat.coolTime : "Ready"}
+                          </div>
+                        </>)
+                      })}
+                      {status.effects.length ? <Divider my={4} className="col-span-2" /> : null}
+                      {[...new Set(status.effects.map(eff => eff.efficacyType))].map(effType => {
+                        const sumGrade = status.getEffectSumOrMaxGrade(effType, true, true)
+                        return (<>
+                          <EffectRich type={effType} grade={sumGrade} />
+                          <div>{sumGrade}</div>
                         </>
                         )
                       })}
                     </>)
                     : null
-                }
+                  }
+                </div>
               </div>
             </HoverCard.Dropdown>
           </HoverCard>
