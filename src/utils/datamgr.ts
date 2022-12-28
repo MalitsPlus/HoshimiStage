@@ -3,6 +3,7 @@ import { getAllRawCard, getRawCard as _getRawCard } from "hoshimi-venus/out/db/d
 import { getCharacter } from "hoshimi-venus/out/db/dao/character_dao";
 import { DATA_ENV } from "../dev_conf";
 import { SkillEfficacyType } from "hoshimi-venus/out/types/proto/proto_enum";
+import { PrivilegedEfficacyList } from "hoshimi-venus/out/concert/consts/efficacy_list"
 
 // export function getData<T>(func: () => T): T {
 //   return func()
@@ -35,19 +36,6 @@ export const getChara = (id: string): Character | undefined => {
   throw new Error("Unimplemented.")
 }
 
-// FIXME: import { PrivilegedEfficacyList } from "hoshimi-venus/out/concert/consts/efficacy_list"
 export const getPrivilegedEfficacyList = (): SkillEfficacyType[] => {
-  return [
-    SkillEfficacyType.VocalUp,
-    SkillEfficacyType.VocalBoost,
-    SkillEfficacyType.VocalDown,
-    SkillEfficacyType.DanceUp,
-    SkillEfficacyType.DanceBoost,
-    SkillEfficacyType.DanceDown,
-    SkillEfficacyType.VisualUp,
-    SkillEfficacyType.VisualBoost,
-    SkillEfficacyType.VisualDown,
-    SkillEfficacyType.SkillSuccessRateUp,
-    SkillEfficacyType.SkillImpossible,
-  ]
+  return PrivilegedEfficacyList
 }
