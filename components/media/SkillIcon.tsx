@@ -1,44 +1,90 @@
-import { WeaknessAllList } from "hoshimi-venus/out/concert/consts/efficacy_list";
-import { GameSetting } from "hoshimi-venus/out/db/repository/setting_repository";
-import { SkillCategoryType } from "hoshimi-venus/out/types/proto/proto_enum";
+import classNames from "classnames";
+import { AttributeType, CardType, SkillCategoryType } from "hoshimi-venus/out/types/proto/proto_enum";
 import { WapSkillLevel } from "hoshimi-venus/out/types/wap/skill_waps";
+import { memo } from "react";
+import { getAssetUri } from "../../src/utils/resmgr";
+import { getSkillAssetId, getSkillBg } from "../../src/utils/skill_icon";
+import ImageAsset from "../misc/ImageAsset";
 
-const concatNormal = (prefab: string) => {
-  return "img_icon_skill-normal_" + prefab
-}
-
-export function getSkillAssetId(
-  skill: WapSkillLevel
-): (string | undefined)[] {
-  const iconParts: string[] = []
-  if (skill.categoryType === SkillCategoryType.Special) {
-    iconParts[0] = "img_icon_skill_" + skill.assetId
-  } else {
-    skill.wapSkillDetails.forEach(detail => {
-      const [, asset, , target, targetType] = detail.efficacyId.split('-')
-      const prefab = asset.replaceAll('_', '-')
-      if (!iconParts[0]) {
-        // put first efficacy to main position
-        iconParts[0] = concatNormal(prefab)
-      } else {
-        if (!iconParts[1] && GameSetting.skillEfficacyTypeScoreList.includes(detail.efficacy.type)) {
-          // put first score-get efficacy to second position
-          iconParts[1] = concatNormal(prefab)
-        }
-        if (!iconParts[2] && WeaknessAllList.includes(detail.efficacy.type)) {
-          // put first debuff efficacy to third position
-          iconParts[2] = concatNormal(prefab)
-          // put target type to fourth position
-          if (detail.efficacy.skillTarget?.isOpponent) {
-            iconParts[3] = "opponent"
-          } else if (GameSetting.skillEfficacyTypeWeaknessDownList.includes(detail.efficacy.type)) {
-            iconParts[3] = "negative"
-          } else {
-            iconParts[3] = "neutral"
-          }
-        }
-      }
-    })
+const getCardType = (_type: CardType) => {
+  switch (_type) {
+    case CardType.Appeal: return "icon_scorer_thumbnail"
+    case CardType.Technique: return "icon_buffer_thumbnail"
+    case CardType.Support: return "icon_supporter_thumbnail"
+    default: return "unknown"
   }
-  return iconParts
 }
+const getCardAttribute = (_attribute: AttributeType) => {
+  switch (_attribute) {
+    case AttributeType.Dance: return "icon_rarity_dance"
+    case AttributeType.Vocal: return "icon_rarity_vocal"
+    case AttributeType.Visual: return "icon_rarity_visual"
+    default: return "unknown"
+  }
+}
+
+const SkillIcon = ({
+  wSkillLevel
+}: {
+  wSkillLevel: WapSkillLevel
+}) => {
+  const bg = getSkillBg(wSkillLevel)
+  const [part1, part2, part3, corner] = getSkillAssetId(wSkillLevel)
+  return (
+    <div className="relative rounded-md aspect-square w-14 h-14 border-solid border-2 border-zinc-700">
+      <ImageAsset
+        aid={getAssetUri("image", bg)}
+        aspect="1"
+        className=""
+      />
+
+      {part1
+        ? <div className={`absolute aspect-square bottom-0 left-0 ${part2 ? "w-4/5 h-4/5" : "w-full h-full"}`}>
+          <ImageAsset
+            aid={getAssetUri("image", part1)}
+            aspect="1"
+            className="z-20 overflow-hidden"
+          />
+        </div>
+        : null
+      }
+      {part2
+        ? <div className="absolute aspect-square top-0 right-0 w-1/2 h-1/2">
+          <ImageAsset
+            aid={getAssetUri("image", part2)}
+            aspect="1"
+            className="z-20 overflow-hidden"
+          />
+        </div>
+        : null
+      }
+      {part3
+        ? <>
+          <div className="absolute aspect-square bottom-0 right-0 w-[30%] h-[30%]">
+            <ImageAsset
+              aid={getAssetUri("image", part3)}
+              aspect="1"
+              className="z-20 overflow-hidden"
+            />
+          </div>
+          <div className={classNames("absolute w-3/4 h-[30%] bottom-0 right-[-7.5] -rotate-45 z-10",
+            corner === "opponent" ? "bg-[#fc7e44]"
+              : corner === "negative" ? "bg-[#d80032]" : "bg-[#d7d7d6]")}>
+          </div>
+        </>
+        : null
+      }
+      <div className="absolute top-0 left-0 z-20 leading-none text-sm text-slate-200 bg-zinc-700">
+        {wSkillLevel.categoryType === SkillCategoryType.Special
+          ? "SP"
+          : wSkillLevel.categoryType === SkillCategoryType.Active
+            ? "A" : "P"}
+      </div>
+      <div className="absolute bottom-0 left-0 z-20 leading-none text-xs text-slate-200 bg-zinc-700">
+        {"Lv" + wSkillLevel.level}
+      </div>
+    </div>
+  )
+}
+
+export default memo(SkillIcon)

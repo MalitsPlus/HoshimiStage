@@ -7,6 +7,24 @@ const concatNormal = (prefab: string) => {
   return "img_icon_skill-normal_" + prefab
 }
 
+export function getSkillBg(skill: WapSkillLevel): string {
+  let bg: string
+  if (skill.categoryType === SkillCategoryType.Special) {
+    bg = "bg_special_"
+  } else {
+    const efficacies = skill.wapSkillDetails.map(detail => detail.efficacy)
+    if (efficacies.length === 1 && GameSetting.skillEfficacyTypeScoreList.includes(efficacies[0].type)) {
+      bg = "bg_score_"
+    } else if (efficacies.some(eff => GameSetting.skillEfficacyTypeStrengthList.includes(eff.type))) {
+      bg = "bg_strength_"
+    } else {
+      bg = "bg_support_"
+    }
+  }
+  bg += skill.level >= 6 ? "3" : skill.level >= 4 ? "2" : "1"
+  return bg
+}
+
 export function getSkillAssetId(
   skill: WapSkillLevel
 ): (string | undefined)[] {
