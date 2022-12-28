@@ -3,7 +3,7 @@ import { AttributeType, CardType, SkillCategoryType } from "hoshimi-venus/out/ty
 import { WapSkillLevel } from "hoshimi-venus/out/types/wap/skill_waps";
 import { memo } from "react";
 import { getAssetUri } from "../../src/utils/resmgr";
-import { getSkillAssetId, getSkillBg } from "../../src/utils/skill_icon";
+import { getSkillAssets, getSkillBg } from "../../src/utils/skill_icon";
 import ImageAsset from "../misc/ImageAsset";
 
 const getCardType = (_type: CardType) => {
@@ -29,11 +29,11 @@ const SkillIcon = ({
   wSkillLevel: WapSkillLevel
 }) => {
   const bg = getSkillBg(wSkillLevel)
-  const [part1, part2, part3, corner] = getSkillAssetId(wSkillLevel)
+  const [part1, part2, part3, corner] = getSkillAssets(wSkillLevel)
   return (
-    <div className="relative rounded-md aspect-square w-14 h-14 border-solid border-2 border-zinc-700">
+    <div className="relative rounded-lg aspect-square w-14 h-14 overflow-hidden border-solid border-2 border-zinc-700">
       <ImageAsset
-        aid={getAssetUri("image", bg)}
+        aid={bg}
         aspect="1"
         className=""
       />
@@ -41,9 +41,9 @@ const SkillIcon = ({
       {part1
         ? <div className={`absolute aspect-square bottom-0 left-0 ${part2 ? "w-4/5 h-4/5" : "w-full h-full"}`}>
           <ImageAsset
-            aid={getAssetUri("image", part1)}
+            aid={part1}
             aspect="1"
-            className="z-20 overflow-hidden"
+            className="z-20 overflow-hidden invert"
           />
         </div>
         : null
@@ -51,9 +51,9 @@ const SkillIcon = ({
       {part2
         ? <div className="absolute aspect-square top-0 right-0 w-1/2 h-1/2">
           <ImageAsset
-            aid={getAssetUri("image", part2)}
+            aid={part2}
             aspect="1"
-            className="z-20 overflow-hidden"
+            className="z-20 overflow-hidden invert"
           />
         </div>
         : null
@@ -62,12 +62,12 @@ const SkillIcon = ({
         ? <>
           <div className="absolute aspect-square bottom-0 right-0 w-[30%] h-[30%]">
             <ImageAsset
-              aid={getAssetUri("image", part3)}
+              aid={part3}
               aspect="1"
-              className="z-20 overflow-hidden"
+              className="z-20 overflow-hidden invert"
             />
           </div>
-          <div className={classNames("absolute w-3/4 h-[30%] bottom-0 right-[-7.5] -rotate-45 z-10",
+          <div className={classNames("absolute w-3/4 h-[30%] bottom-0 -right-4 -rotate-45 z-10",
             corner === "opponent" ? "bg-[#fc7e44]"
               : corner === "negative" ? "bg-[#d80032]" : "bg-[#d7d7d6]")}>
           </div>

@@ -1,7 +1,8 @@
 import { WeaknessAllList } from "hoshimi-venus/out/concert/consts/efficacy_list";
 import { GameSetting } from "hoshimi-venus/out/db/repository/setting_repository";
 import { SkillCategoryType } from "hoshimi-venus/out/types/proto/proto_enum";
-import { WapSkillLevel } from "hoshimi-venus/out/types/wap/skill_waps";
+import { WapSkillEfficacy, WapSkillLevel } from "hoshimi-venus/out/types/wap/skill_waps";
+import { EffIcon } from "../static/efficacy_asset_id";
 
 const concatNormal = (prefab: string) => {
   return "img_icon_skill-normal_" + prefab
@@ -25,36 +26,46 @@ export function getSkillBg(skill: WapSkillLevel): string {
   return bg
 }
 
-export function getSkillAssetId(
+export function getEfficacyAsset(
+  efficacy: WapSkillEfficacy
+): string | undefined {
+  const prefab = EffIcon[efficacy.type]
+  // const [, asset] = efficacy.id.split('-')
+  // const prefab = asset.replaceAll('_', '-')
+  return prefab ? concatNormal(prefab) : undefined
+}
+
+export function getSkillAssets(
   skill: WapSkillLevel
 ): (string | undefined)[] {
-  const iconParts: string[] = []
+  const iconParts: (string | undefined)[] = []
   if (skill.categoryType === SkillCategoryType.Special) {
     iconParts[0] = "img_icon_skill_" + skill.assetId
   } else {
-    skill.wapSkillDetails.forEach(detail => {
-      const [, asset, , target, targetType] = detail.efficacyId.split('-')
-      const prefab = asset.replaceAll('_', '-')
-      if (!iconParts[0]) {
-        // put first efficacy to main position
-        iconParts[0] = concatNormal(prefab)
-      } else {
-        if (!iconParts[1] && GameSetting.skillEfficacyTypeScoreList.includes(detail.efficacy.type)) {
-          // put first score-get efficacy to second position
-          iconParts[1] = concatNormal(prefab)
+    skill.wapSkillDetails.forEach((detail, _, arr) => {
+      const count = arr.length
+
+      if (GameSetting.skillEfficacyTypeScoreList.includes(detail.efficacy.type)) {
+        if (count === 1) {
+          iconParts[0] = getEfficacyAsset(detail.efficacy)
+        } else {
+          iconParts[1] = getEfficacyAsset(detail.efficacy)
         }
-        if (!iconParts[2] && WeaknessAllList.includes(detail.efficacy.type)) {
-          // put first debuff efficacy to third position
-          iconParts[2] = concatNormal(prefab)
-          // put target type to fourth position
-          if (detail.efficacy.skillTarget?.isOpponent) {
-            iconParts[3] = "opponent"
-          } else if (GameSetting.skillEfficacyTypeWeaknessDownList.includes(detail.efficacy.type)) {
-            iconParts[3] = "negative"
-          } else {
-            iconParts[3] = "neutral"
-          }
+      } else if (!iconParts[2] && WeaknessAllList.includes(detail.efficacy.type)) {
+        // put first debuff efficacy to third position
+        iconParts[2] = getEfficacyAsset(detail.efficacy)
+        // put target type to fourth position
+        if (detail.efficacy.skillTarget?.isOpponent) {
+          iconParts[3] = "opponent"
+        } else if (GameSetting.skillEfficacyTypeWeaknessDownList.includes(detail.efficacy.type)) {
+          iconParts[3] = "negative"
+        } else {
+          iconParts[3] = "neutral"
         }
+      } else if (!iconParts[0]) {
+        iconParts[0] = getEfficacyAsset(detail.efficacy)
+      } else if (!iconParts[1]) {
+        iconParts[1] = getEfficacyAsset(detail.efficacy)
       }
     })
   }

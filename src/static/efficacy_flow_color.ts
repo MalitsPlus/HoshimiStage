@@ -48,9 +48,3 @@ export const EffColor: {
   [SkillEfficacyType.CriticalRateUp]: "bg-cyan-200",
   [SkillEfficacyType.CriticalBonusPermilUp]: "bg-cyan-400",
 }
-
-export const EffIcon: {
-  [type in SkillEfficacyType]?: string
-} = {
-  [SkillEfficacyType.VocalUp]: "xxx",
-}

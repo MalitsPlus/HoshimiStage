@@ -5,9 +5,10 @@ import { Effect, Live } from "hoshimi-venus/out/types/concert_types"
 import { SkillEfficacyType } from "hoshimi-venus/out/types/proto/proto_enum"
 import { t } from "i18next"
 import { memo } from "react"
-import { EffColor } from "../../src/static/efficacy_static"
+import { EffColor } from "../../src/static/efficacy_flow_color"
 import { getPrivilegedEfficacyList } from "../../src/utils/datamgr"
 import EffectRich from "./EffectRich";
+import { WeaknessAllList } from "hoshimi-venus/out/concert/consts/efficacy_list";
 
 type EffIdxDictType = { [uuid: string]: number }
 
@@ -15,19 +16,11 @@ const findMinAvaliableIdx = (
   effIdxDict: { [uuid: string]: number }, effs: Effect[]
 ): number => {
   const unavaliables = effs.map(eff => effIdxDict[eff.id])
-  console.log("===start===")
-  console.log(unavaliables)
   for (let i = 1; i <= 12; i++) {
-    console.log(`i: ${i}`)
     if (!unavaliables.includes(i)) {
-      console.log("not included!")
-      console.log(`returned: ${i}`)
-      console.log("===end===")
       return i
     }
   }
-  console.log(`after added: ${unavaliables}`)
-  console.log(`returned: ${unavaliables.length}`)
   return 0
 }
 
@@ -47,11 +40,6 @@ const flowPosition: {
   11: "col-start-11 order-11",
   12: "col-start-12 order-12",
 }
-
-const weaknessList = [
-  ...GameSetting.skillEfficacyTypeWeaknessDownList,
-  ...GameSetting.skillEfficacyTypeWeaknessOtherList,
-]
 
 type EffFlowProps = {
   ingameIndex: number,
@@ -95,7 +83,7 @@ const EffRow = ({ prevEffs, curEffs, sequence, category, effIdxDict, ingameIndex
                 isStart ? "rounded-t-full" : "",
                 isEnd ? "rounded-b-full" : "",
                 (() => {
-                  if (weaknessList.includes(eff.efficacyType)) {
+                  if (WeaknessAllList.includes(eff.efficacyType)) {
                     if (sequence % 3 === 1) {
                       return `${EffColor[eff.efficacyType]}/80` ?? "bg-slate-500"
                     }
@@ -108,7 +96,7 @@ const EffRow = ({ prevEffs, curEffs, sequence, category, effIdxDict, ingameIndex
             <HoverCard.Dropdown>
               <div className="grid grid-cols-[2fr_1fr] gap-x-2 [direction:ltr]">
                 <div className="col-span-2 text-sm">{sequence + 1}</div>
-                <EffectRich type={eff.efficacyType} grade={eff.grade} className="col-span-2 text-sm font-medium" />
+                <div className="col-span-2 text-sm font-medium"><EffectRich type={eff.efficacyType} /></div>
                 {/* <div className="col-span-2 text-sm font-medium">{t(SkillEfficacyType[eff.efficacyType])}</div> */}
                 <Divider className="col-span-2 my-1" />
                 <div>{t("Grade")}</div><div>{eff.grade}</div>
@@ -117,12 +105,12 @@ const EffRow = ({ prevEffs, curEffs, sequence, category, effIdxDict, ingameIndex
                 <div>{t("Source")}</div><div>{eff.sourceIndex} - {eff.sourceSkillIndex}</div>
                 <div className="col-span-2">
                   {eff.include
-                    ? <Badge mr={4} variant="filled" color="green" className="normal-case">{t("Included")}</Badge>
+                    ? <Badge mr={4} variant="filled" className="normal-case">{t("Included")}</Badge>
                     : <Badge mr={4} variant="filled" color="pink" className="normal-case">{t("Unincluded")}</Badge>
                   }
-                  {eff.isInstant ? <Badge mr={4} variant="filled" className="normal-case">{t("Instant")}</Badge> : null}
+                  {eff.isInstant ? <Badge mr={4} variant="filled" color="grape" className="normal-case">{t("Instant")}</Badge> : null}
                   {eff.migrated ? <Badge mr={4} variant="filled" color="violet" className="normal-case">{t("Migrated")}</Badge> : null}
-                  {eff.ajusted ? <Badge mr={4} variant="filled" color="indigo" className="normal-case">{t("Ajusted")}</Badge> : null}
+                  {eff.ajusted ? <Badge mr={4} variant="filled" color="orange" className="normal-case">{t("Ajusted")}</Badge> : null}
                 </div>
               </div>
             </HoverCard.Dropdown>

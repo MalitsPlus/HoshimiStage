@@ -133,8 +133,9 @@ const NoteFlow = ({
                 }
 
                 <div className="grid grid-cols-2 gap-x-2 [direction:ltr] content-start">
-                  <div className="col-span-2 text-sm">{ptn.sequence}</div>
-                  {interval ? <><div>{t("Interval")}</div><div>{interval}</div></> : null}
+                  <div className="text-sm">{ptn.sequence}</div>
+                  <div className="text-sm">{chart ? chart.userStatuses[0].combo + " " + t("Combo") : null}</div>
+                  {interval ? <><Divider my={4} className="col-span-2" /><div className="text-sm">{t("Interval")}</div><div className="text-sm">{interval}</div></> : null}
                   {chart && status
                     ? (<>
                       <Divider my={4} className="col-span-2" />
@@ -160,7 +161,7 @@ const NoteFlow = ({
                       {[...new Set(status.effects.map(eff => eff.efficacyType))].map(effType => {
                         const sumGrade = status.getEffectSumOrMaxGrade(effType, true, true)
                         return (<>
-                          <EffectRich type={effType} grade={sumGrade} />
+                          <EffectRich type={effType} />
                           <div>{sumGrade}</div>
                         </>
                         )
