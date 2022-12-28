@@ -9,7 +9,7 @@ const concatNormal = (prefab: string) => {
 
 export function getSkillAssetId(
   skill: WapSkillLevel
-): string[] {
+): (string | undefined)[] {
   const iconParts: string[] = []
   if (skill.categoryType === SkillCategoryType.Special) {
     iconParts[0] = "img_icon_skill_" + skill.assetId
