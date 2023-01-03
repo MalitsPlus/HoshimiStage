@@ -10,8 +10,18 @@ import DraggableCharaIcon from "../media/DraggableCharaIcon"
 import { index2GamePos } from "./Stage"
 import LiveNoteFlow from "./LiveNoteFlow"
 
-export default function Lane({ index, card, wapQuest, live, onCharaClick, onCharaDrop }: {
-  index: number, card?: Card, wapQuest?: WapQuest, live?: Live,
+export default function Lane({
+  index,
+  card,
+  wapQuest,
+  live,
+  onCharaClick,
+  onCharaDrop
+}: {
+  index: number,
+  card?: Card,
+  wapQuest?: WapQuest,
+  live?: Live,
   onCharaClick: () => void,
   onCharaDrop: (srcId: string, srcIndex: number, dest: number) => void,
 }) {

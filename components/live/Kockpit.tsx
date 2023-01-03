@@ -11,10 +11,12 @@ export default function Kockpit({
   wapQuest,
   setWapQuest,
   onSimulateClick,
+  onStatusEditClick,
 }: {
   wapQuest: WapQuest | undefined,
   setWapQuest: (wapQuest: WapQuest | undefined) => void,
   onSimulateClick: () => void,
+  onStatusEditClick: () => void,
 }) {
   const [opened, setOpened] = useState(false)
   return (
@@ -42,6 +44,9 @@ export default function Kockpit({
               {wapQuest?.musicName}
             </div>
           </div>
+        </div>
+        <div>
+          <MyButton className="w-24 h-10" onClick={onStatusEditClick}>{t("status")}</MyButton>
         </div>
         <div>
           <MyButton className="w-24 h-10" onClick={onSimulateClick}>{t("simulate")}</MyButton>

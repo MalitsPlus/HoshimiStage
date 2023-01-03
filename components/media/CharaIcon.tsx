@@ -11,7 +11,13 @@ type CharaIconProps = {
   onCharaClick?: () => void,
 }
 
-const CharaIcon = ({ id, assetId, role, attribute, onCharaClick }: CharaIconProps) => {
+const CharaIcon = ({
+  id,
+  assetId,
+  role,
+  attribute,
+  onCharaClick
+}: CharaIconProps) => {
   if (assetId === undefined || role === undefined || attribute === undefined) {
     return (
       <div className="rounded-md aspect-square w-14 h-14">

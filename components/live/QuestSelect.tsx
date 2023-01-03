@@ -9,7 +9,7 @@ import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps";
 import { AttributeType, MusicChartType } from "hoshimi-venus/out/types/proto/proto_enum";
 import SkillIcon from "../media/SkillIcon";
 import { WapLiveAbility } from "hoshimi-venus/out/types/wap/skill_waps";
-import { useSessionStorage } from "@mantine/hooks";
+import { useLocalStorage, useSessionStorage } from "@mantine/hooks";
 import { getMusicJacket } from "../../src/utils/misc";
 
 export default function QuestSelect({
@@ -21,11 +21,11 @@ export default function QuestSelect({
 }) {
   const genre = Object.keys(QuestIdMap)
 
-  const [questTypeChip, setQuestTypeChip] = useSessionStorage<string | undefined>({
+  const [questTypeChip, setQuestTypeChip] = useLocalStorage<string | undefined>({
     key: "QuestSelect_questType",
     defaultValue: undefined,
   })
-  const [selected, setSelected] = useSessionStorage<string | null>({
+  const [selected, setSelected] = useLocalStorage<string | null>({
     key: "QuestSelect_selected",
     defaultValue: undefined,
   })
@@ -73,6 +73,7 @@ export default function QuestSelect({
     if (!wapQuest) {
       onQuestTypeChange("")
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // useEffect(() => {

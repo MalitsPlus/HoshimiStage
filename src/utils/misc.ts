@@ -1,6 +1,6 @@
 import { AttributeType } from "hoshimi-venus/out/types/proto/proto_enum"
 import { Card } from "hoshimi-venus/out/types/proto/proto_master"
-import { TParty } from "../../components/live/Stage"
+import { AllyParty } from "../../components/live/Stage"
 
 export const getMusicJacket = (musicId: string): string => {
   const id = musicId.match(/\w+-\d+$/)
@@ -51,14 +51,14 @@ export function getCardAttribute(
   return attr
 }
 
-export const isCardInParty = (card: Card, party: TParty): boolean => {
+export const isCardInParty = (card: Card, party: AllyParty): boolean => {
   return isIdInParty(card.id, party)
 }
 
-export const isIdInParty = (id: string, party: TParty): boolean => {
+export const isIdInParty = (id: string, party: AllyParty): boolean => {
   return Object.values(party).some(it => it.card?.id === id)
 }
 
-export const isPartyFull = (party: TParty): boolean => {
+export const isPartyFull = (party: AllyParty): boolean => {
   return Object.values(party).every(it => !!it.card)
 }
