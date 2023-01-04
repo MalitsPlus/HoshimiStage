@@ -4,6 +4,7 @@ import { memo } from "react";
 import ImageAsset from "../misc/ImageAsset";
 
 type CharaIconProps = {
+  pointer: boolean,
   id?: string,
   assetId?: string,
   role?: CardType,
@@ -12,6 +13,7 @@ type CharaIconProps = {
 }
 
 const CharaIcon = ({
+  pointer,
   id,
   assetId,
   role,
@@ -23,7 +25,7 @@ const CharaIcon = ({
       <div className="rounded-md aspect-square w-14 h-14">
         <UnstyledButton
           onClick={onCharaClick}
-          className={`relative rounded-md aspect-square w-14 h-14 ${onCharaClick ? "cursor-pointer" : "cursor-default"}`}
+          className={`relative rounded-md aspect-square w-14 h-14 ${pointer ? "cursor-pointer" : "cursor-default"}`}
         >
           <ImageAsset
             aid="chara_icon_placeholder"
@@ -54,7 +56,7 @@ const CharaIcon = ({
     <div className="rounded-md aspect-square w-14 h-14">
       <UnstyledButton
         onClick={onCharaClick}
-        className={`relative rounded-md aspect-square w-14 h-14 ${onCharaClick ? "cursor-pointer" : "cursor-default"}`}
+        className={`relative rounded-md aspect-square w-14 h-14 ${pointer ? "cursor-pointer" : "cursor-default"}`}
       >
         <ImageAsset
           aid={"img_card_thumb_1_" + assetId}

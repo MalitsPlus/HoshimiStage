@@ -12,13 +12,14 @@ export const ItemTypes = {
 
 export type DraggableCharaIconProps = {
   card?: Card,
+  pointer: boolean,
   index: number,
   canDrag: boolean,
   onCharaClick?: () => void,
 } & ComponentProps<"div">
 
 const DraggableCharaIcon = ({
-  card, index, canDrag, onCharaClick, className
+  card, pointer, index, canDrag, onCharaClick, className
 }: DraggableCharaIconProps) => {
   console.log(`render draggable chara ${card?.id}`)
 
@@ -53,13 +54,13 @@ const DraggableCharaIcon = ({
   return (
     <>
       <div ref={dragRef} className={classNames(
-        "",
+        "rounded-md aspect-square w-14 h-14",
         isDragging ? "shadow !opacity-0 pointer-events-none" : "opacity-100",
         canDrag ? "" : "[filter:brightness(0.5)]",
         className,
       )}
-        >
-        <CharaIcon id={id} assetId={assetId} role={type} attribute={attribute} onCharaClick={onCharaClick} />
+      >
+        <CharaIcon pointer={pointer} id={id} assetId={assetId} role={type} attribute={attribute} onCharaClick={onCharaClick} />
       </div>
     </>
   )

@@ -56,9 +56,9 @@ export const isCardInParty = (card: Card, party: AllyParty): boolean => {
 }
 
 export const isIdInParty = (id: string, party: AllyParty): boolean => {
-  return Object.values(party).some(it => it.card?.id === id)
+  return Object.values(party).some(it => it.cardId === id)
 }
 
 export const isPartyFull = (party: AllyParty): boolean => {
-  return Object.values(party).every(it => !!it.card)
+  return Object.values(party).every(it => !!it.cardId)
 }

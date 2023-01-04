@@ -6,6 +6,7 @@ import { t } from "i18next";
 import { Modal } from "@mantine/core";
 import QuestSelect from "./QuestSelect";
 import { getMusicJacket } from "../../src/utils/misc";
+import { useClickOutside } from "@mantine/hooks";
 
 export default function Kockpit({
   wapQuest,
@@ -19,6 +20,11 @@ export default function Kockpit({
   onStatusEditClick: () => void,
 }) {
   const [opened, setOpened] = useState(false)
+  const ref = useClickOutside<HTMLDivElement>(() => {
+    console.log("erajwgphbweig")
+   
+    
+  })
   return (
     <>
       <Modal
@@ -30,7 +36,7 @@ export default function Kockpit({
         overlayBlur={2}
         size="lg"
       >
-        <QuestSelect wapQuest={wapQuest} setWapQuest={setWapQuest} />
+        <QuestSelect ref={ref} wapQuest={wapQuest} setWapQuest={setWapQuest} />
       </Modal>
       <div className="flex flex-row items-center overflow-visible h-20 p-4">
         <div className="flex flex-row items-center overflow-visible grow">

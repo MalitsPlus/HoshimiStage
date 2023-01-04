@@ -10,7 +10,7 @@ export default function CharaIconDropZone(
   }: {
     children: React.ReactNode,
     index: number,
-    onCharaDrop: (srcId: string, srcIndex: number, dest: number) => void
+    onCharaDrop: (srcId: string, dest: number) => void
   } & ComponentProps<"div">
 ) {
   const [{ isDropped, isOver }, dropRef] = useDrop(
@@ -19,7 +19,7 @@ export default function CharaIconDropZone(
       drop(item: {id: string, index: number}) {
         // const { id, index } = monitor.getItem<{ id: string, index: number }>()
         console.log(`dropping ${item.id}, id ${item.id}, to ${item.index}`)
-        onCharaDrop(item.id, item.index, index)
+        onCharaDrop(item.id, index)
       },
       collect: monitor => ({
         isDropped: !!monitor.didDrop(),

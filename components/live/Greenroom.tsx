@@ -1,52 +1,17 @@
-import update from "immutability-helper"
 import { Chip, Divider } from "@mantine/core"
+import { useSessionStorage } from "@mantine/hooks"
 import { AttributeType, CardType } from "hoshimi-venus/out/types/proto/proto_enum"
 import { Card } from "hoshimi-venus/out/types/proto/proto_master"
 import { t } from "i18next"
 import { ImageProps } from "next/image"
-import { memo, SetStateAction, useCallback, useMemo, useReducer } from "react"
-import { getAllCards, getData, getRawCard, getWapCard } from "../../src/utils/datamgr"
-import { getCardAttribute, isCardInParty, isIdInParty } from "../../src/utils/misc"
+import { useCallback, useMemo } from "react"
+import { getAllCards, getData } from "../../src/utils/datamgr"
+import { getCardAttribute, isCardInParty } from "../../src/utils/misc"
 import CharaIconDropZone from "../media/CharaIconDropZone"
 import DraggableCharaIcon from "../media/DraggableCharaIcon"
 import ImageAsset from "../misc/ImageAsset"
 import MyButton from "../misc/MyButton"
 import { AllyParty } from "./Stage"
-import { useSessionStorage } from "@mantine/hooks"
-
-// type TState = {
-//   starChips: string[],
-//   typeChips: string[],
-//   attrChips: string[],
-// }
-
-// function reducer(state: TState, action: Partial<TState & { type: string }>): TState {
-//   switch (action.type) {
-//     case "star":
-//       return {
-//         ...state,
-//         starChips: action.starChips!,
-//       }
-//     case "type":
-//       return {
-//         ...state,
-//         typeChips: action.typeChips!,
-//       }
-//     case "attr":
-//       return {
-//         ...state,
-//         attrChips: action.attrChips!,
-//       }
-//     case "all":
-//       return {
-//         ...state,
-//         starChips: action.starChips!,
-//         typeChips: action.typeChips!,
-//         attrChips: action.attrChips!,
-//       }
-//   }
-//   return state
-// }
 
 function cardFilter(card: Card, starChips: string[], typeChips: string[], attrChips: string[]): boolean {
   const rarity = !!!starChips.length
@@ -65,22 +30,15 @@ function cardFilter(card: Card, starChips: string[], typeChips: string[], attrCh
 
 export default function Greenroom({
   party,
-  setParty,
-  focusPosition,
-  setFocusPosition,
   onCharaDrop,
 }: {
   party: AllyParty,
-  setParty: (pt: SetStateAction<AllyParty>) => void,
-  focusPosition: number | undefined,
-  setFocusPosition: (p: number) => void,
-  onCharaDrop: (srcId: string, srcIndex: number, dest: number) => void,
+  onCharaDrop: (srcId: string, dest: number) => void,
 }) {
-  // const [state, dispatch] = useReducer(reducer, { starChips: ["fivestar"], typeChips: [], attrChips: [] })
-
   const [starChips, setStarChips] = useSessionStorage<string[]>({ key: "Greenroom_starChips", defaultValue: ["fivestar"] })
   const [typeChips, setTypeChips] = useSessionStorage<string[]>({ key: "Greenroom_typeChips", defaultValue: [] })
   const [attrChips, setAttrChips] = useSessionStorage<string[]>({ key: "Greenroom_attrChips", defaultValue: [] })
+  // const [focusPosition, setFocusPosition] = useState(clickedCard)
 
   const setChips = useCallback((
     starChips: string[],
@@ -109,26 +67,20 @@ export default function Greenroom({
     )
   }
 
-  const onPartyCharaClick = (index: number, id?: string) => {
-    setFocusPosition(index)
-  }
+  // const onPartyCharaClick = useCallback((index: number, id?: string) => {
+  //   setFocusPosition(index)
+  // }, [])
 
-  const onGreenCharaClick = useCallback((id: string, index: number) => {
-    if (focusPosition === undefined) {
-      return
-    }
-    if (isIdInParty(id, party)) {
-      console.log(id)
-      return
-    }
-    setParty(previous =>
-      update(previous, {
-        [focusPosition]: {
-          card: { $set: getData(getWapCard, id) }
-        }
-      })
-    )
-  }, [focusPosition, party, setParty])
+  // const onGreenCharaClick = useCallback((id: string) => {
+  //   if (focusPosition === undefined) {
+  //     return
+  //   }
+  //   if (isIdInParty(id, party)) {
+  //     console.log(id)
+  //     return
+  //   }
+  //   onCharaDrop(id, focusPosition)
+  // }, [])
 
   return (
     <>
@@ -168,6 +120,7 @@ export default function Greenroom({
         <div className="grow">
           <div className="flex flex-row p-2 justify-evenly items-center align-middle bg-neutral-300 dark:bg-neutral-800 rounded-lg">
             {Object.entries(party).map(([k, ptcard]) => {
+              const card = allCards.find(it => it.id === ptcard.cardId)
               return (
                 <CharaIconDropZone
                   key={k}
@@ -176,11 +129,12 @@ export default function Greenroom({
                   className={`flex flex-row items-center justify-center aspect-square w-16 rounded-md border-y-0`}
                 >
                   <DraggableCharaIcon
-                    card={ptcard.card}
+                    card={card}
                     index={+k}
-                    canDrag={ptcard.card ? true : false}
-                    className={focusPosition === +k ? "animate-pulse-quick" : ""}
-                    onCharaClick={() => onPartyCharaClick(+k, ptcard.card?.id)}
+                    canDrag={card ? true : false}
+                    pointer={true}
+                  // className={focusPosition === +k ? "animate-pulse-quick" : ""}
+                  // onCharaClick={() => onPartyCharaClick(+k, ptcard.card?.id)}
                   />
                 </CharaIconDropZone>
               )
@@ -193,16 +147,20 @@ export default function Greenroom({
           xl:grid-cols-[repeat(12,_minmax(min-content,_1fr))]">
             {allCards
               .filter(card => cardFilter(card, starChips, typeChips, attrChips))
-              .map((card, index) => (
-                <div key={card.id} className="">
-                  <DraggableCharaIcon
-                    card={card}
-                    index={index}
-                    canDrag={!isCardInParty(card, party)}
-                    onCharaClick={() => onGreenCharaClick(card.id, index)}
-                  />
-                </div>
-              ))}
+              .map((card, index) => {
+                const canDrag = !isCardInParty(card, party)
+                return (
+                  <div key={card.id} className="">
+                    <DraggableCharaIcon
+                      card={card}
+                      index={index}
+                      canDrag={canDrag}
+                      pointer={canDrag}
+                    // onCharaClick={() => onGreenCharaClick(card.id)}
+                    />
+                  </div>
+                )
+              })}
           </div>
         </div>
       </div>

@@ -23,7 +23,7 @@ export default function Lane({
   wapQuest?: WapQuest,
   live?: Live,
   onCharaClick: () => void,
-  onCharaDrop: (srcId: string, srcIndex: number, dest: number) => void,
+  onCharaDrop: (srcId: string, dest: number) => void,
 }) {
   const ingameIndex = index2GamePos[index]
   const { id, assetId, type, name, characterId } = card ?? {
@@ -70,6 +70,7 @@ export default function Lane({
           index={index}
           canDrag={card ? true : false}
           onCharaClick={onCharaClick}
+          pointer={true}
         />
         <div className="w-full my-2 text-center">{chara?.name ?? "unselected"}</div>
         <div className="w-full text-center text-xs">{(live || wapQuest) && `${noteInfo} ${minGap === 9999 ? "" : minGap}`}</div>

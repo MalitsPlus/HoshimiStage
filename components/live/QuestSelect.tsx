@@ -1,6 +1,6 @@
 import { Chip, Divider, Select, Space } from "@mantine/core";
 import { t } from "i18next";
-import { useEffect, useMemo, useState } from "react";
+import { ForwardedRef, useEffect, useMemo, useState } from "react";
 import { QuestIdMap } from "../../src/static/quest_id_map";
 import { getRawQuests } from "hoshimi-venus/out/db/dao/quest_dao";
 import { getQuest } from "hoshimi-venus/out/db/repository/quest_repository";
@@ -9,16 +9,25 @@ import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps";
 import { AttributeType, MusicChartType } from "hoshimi-venus/out/types/proto/proto_enum";
 import SkillIcon from "../media/SkillIcon";
 import { WapLiveAbility } from "hoshimi-venus/out/types/wap/skill_waps";
-import { useLocalStorage, useSessionStorage } from "@mantine/hooks";
+import { useClickOutside, useLocalStorage, useSessionStorage } from "@mantine/hooks";
 import { getMusicJacket } from "../../src/utils/misc";
+import { forwardRef } from "react"
 
-export default function QuestSelect({
-  wapQuest,
-  setWapQuest
-}: {
+const QuestSelect = forwardRef<HTMLDivElement, QuestSelectProps>(_QuestSelect)
+export default QuestSelect
+
+type QuestSelectProps = {
   wapQuest: WapQuest | undefined,
   setWapQuest: (wapQuest: WapQuest | undefined) => void,
-}) {
+} & Partial<HTMLDivElement>
+
+function _QuestSelect({
+  wapQuest,
+  setWapQuest,
+  ...others
+}: QuestSelectProps,
+  ref: ForwardedRef<HTMLDivElement>,
+) {
   const genre = Object.keys(QuestIdMap)
 
   const [questTypeChip, setQuestTypeChip] = useLocalStorage<string | undefined>({
@@ -28,6 +37,12 @@ export default function QuestSelect({
   const [selected, setSelected] = useLocalStorage<string | null>({
     key: "QuestSelect_selected",
     defaultValue: undefined,
+  })
+
+  // useCLickOUtside 不行，在click下拉菜单时也会触发 。考虑把model搬进来
+  const ref2 = useClickOutside<HTMLDivElement>(() => {
+    console.log("rrrrrreeeeeeeeeeffffffffffffff2222222222222")
+    selected && setWapQuest(getQuest(selected))
   })
 
   const getSelectorData = (v: string | undefined): {
@@ -66,14 +81,14 @@ export default function QuestSelect({
   const onSelectValueChange = (v: string) => {
     console.log(`onSelectValueChange ${v}`)
     setSelected(v)
-    setWapQuest(getQuest(v))
+    // setWapQuest(getQuest(v))
   }
 
   useEffect(() => {
     if (!wapQuest) {
       onQuestTypeChange("")
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // useEffect(() => {
@@ -189,7 +204,7 @@ export default function QuestSelect({
   }
 
   return (
-    <>
+    <div ref={ref2}>
       <Chip.Group position="center" className="gap-6 items-start"
         value={questTypeChip} onChange={onQuestTypeChange}
       >
@@ -219,6 +234,6 @@ export default function QuestSelect({
       {wapQuest?.liveBonuses?.map((liveBonus, idx) => (
         <LiveBonuses liveAbility={liveBonus} key={idx} />
       ))}
-    </>
+    </div>
   )
 }

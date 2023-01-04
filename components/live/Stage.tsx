@@ -1,7 +1,6 @@
 import { Modal } from "@mantine/core";
 import { useLocalStorage } from '@mantine/hooks';
 import simulate from 'hoshimi-venus';
-import { getQuest } from 'hoshimi-venus/out/db/repository/quest_repository';
 import { UserCard } from 'hoshimi-venus/out/types/card_types';
 import { Live } from 'hoshimi-venus/out/types/concert_types';
 import { TransDeck } from 'hoshimi-venus/out/types/trans_types';
@@ -20,30 +19,20 @@ import Lane from "./Lane";
 import StatusPannel from './StatusPannel';
 
 const allCards = getData(getAllCards)
-// const ptCards = [allCards[1], allCards[65], allCards[34], allCards[91], allCards[45]]
 
 export type AllyParty = {
   [k: number]: {
-    card?: UserCard,
+    cardId?: string,
     readonly ingamePos: number,
   }
 }
-
-const ptCards: AllyParty = {
-  0: { card: getDefaultUserCard("card-ai-03-schl-00"), ingamePos: 4 },
-  1: { card: getDefaultUserCard("card-mna-05-fest-00"), ingamePos: 2 },
-  2: { card: getDefaultUserCard("card-kkr-04-casl-00"), ingamePos: 1 },
-  3: { card: getDefaultUserCard("card-chs-03-schl-00"), ingamePos: 3 },
-  4: { card: getDefaultUserCard("card-smr-04-casl-00"), ingamePos: 5 },
+const testPtCards: AllyParty = {
+  0: { cardId: "card-ai-03-schl-00", ingamePos: 4 },
+  1: { cardId: "card-mna-05-fest-00", ingamePos: 2 },
+  2: { cardId: "card-kkr-04-casl-00", ingamePos: 1 },
+  3: { cardId: "card-chs-03-schl-00", ingamePos: 3 },
+  4: { cardId: "card-smr-04-casl-00", ingamePos: 5 },
 }
-
-// const ptCards: TParty = {
-//   0: { card: undefined, ingamePos: 4 },
-//   1: { card: undefined, ingamePos: 2 },
-//   2: { card: undefined, ingamePos: 1 },
-//   3: { card: undefined, ingamePos: 3 },
-//   4: { card: undefined, ingamePos: 5 },
-// }
 
 export default function Stage() {
   console.log("render stage state")
@@ -53,33 +42,29 @@ export default function Stage() {
   const [statPnlOpened, setstatPnlOpened] = useState(false)
 
   // data model states
-  const [focusPosition, setFocusPosition] = useState<number | undefined>(undefined)
-  const [party, setParty] = useState(ptCards)
-  const [wapQuest, setWapQuest] = useState<WapQuest | undefined>(undefined)
   const [live, setLive] = useState<Live | undefined>(undefined)
 
   // persistent data
-  const [userData, setUserData] = useLocalStorage({
+  const [userData, setUserData, cleanUserData] = useLocalStorage({
     key: "UserData",
     defaultValue: getDefaultUserData(),
     serialize: stringifyUserData,
     deserialize: parseUserData,
   })
-  const [lastQuest, setLastQuest] = useLocalStorage<string | undefined>({
-    key: "UserData_lastQuest",
-    defaultValue: undefined,
+  const [party, setParty, cleanParty] = useLocalStorage({
+    key: "UserData_lastParty",
+    defaultValue: testPtCards,
   })
-  const [lastDeck, setLastDeck] = useLocalStorage<string | undefined>({
-    key: "UserData_lastDeck",
+  const [wapQuest, setWapQuest, cleanQuest] = useLocalStorage<WapQuest | undefined>({
+    key: "UserData_lastQuest",
     defaultValue: undefined,
   })
 
   const onCharaClick = useCallback((index: number, id?: string) => {
-    setFocusPosition(index)
     setGroomOpened(true)
   }, [])
 
-  const onSetQuest = useCallback((wapQuest: SetStateAction<WapQuest | undefined>) => {
+  const onSetQuest = useCallback((wapQuest: WapQuest | undefined) => {
     setLive(undefined)
     setWapQuest(wapQuest)
   }, [])
@@ -90,12 +75,12 @@ export default function Stage() {
   }, [])
 
   const findCardIndex = useCallback((srcId: string) => {
-    const src = +(Object.entries(party).find(([, v]) => v.card?.id === srcId)?.at(0) ?? -1)
+    const src = +(Object.entries(party).find(([, v]) => v.cardId === srcId)?.at(0) ?? -1)
     console.log(`called find card ${srcId}`)
     return src
   }, [party])
 
-  const onCharaDrop = useCallback((srcId: string, srcIndex: number, dest: number) => {
+  const onCharaDrop = useCallback((srcId: string, dest: number) => {
     const src = findCardIndex(srcId)
     if (src !== -1) {
       if (src === dest) {
@@ -108,24 +93,23 @@ export default function Stage() {
       onSetParty(previous =>
         update(previous, {
           [dest]: {
-            card: { $set: previous[src].card }
+            cardId: { $set: previous[src].cardId }
           },
           [src]: {
-            card: { $set: previous[dest].card }
+            cardId: { $set: previous[dest].cardId }
           },
         })
       )
-      setFocusPosition(undefined)
     } else {
       onSetParty(previous =>
         update(previous, {
           [dest]: {
-            card: { $set: userData.getCard(srcId) }
+            cardId: { $set: srcId }
           }
         })
       )
     }
-  }, [userData, findCardIndex, onSetParty])
+  }, [findCardIndex, onSetParty])
 
   const onSimulateClick = useCallback(() => {
     if (!wapQuest || !isPartyFull(party)) {
@@ -138,7 +122,7 @@ export default function Stage() {
       userCards: []
     }
     transDeck.userCards = Object.values(party).map(it => ({
-      card: it.card!,
+      card: userData.getCard(it.cardId!),
       index: it.ingamePos,
     }))
     const result = simulate(wapQuest?.id, transDeck)
@@ -147,7 +131,7 @@ export default function Stage() {
       return
     }
     setLive(result)
-  }, [party, wapQuest])
+  }, [userData, party, wapQuest])
 
   const onStatusEditClick = useCallback(() => {
     if (!isPartyFull(party)) {
@@ -160,24 +144,24 @@ export default function Stage() {
 
   // retrieve last scene at first render
   useEffect(() => {
-    if (lastQuest) {
-      const wapQuest = getQuest(lastQuest)
-      onSetQuest(wapQuest)
-    }
-    if (lastDeck) {
-      const deck = userData.getDeck(lastDeck)
-      if (deck) {
-        const lastParty = {
-          0: { card: userData.getCard(deck.party[0]), ingamePos: 4 },
-          1: { card: userData.getCard(deck.party[1]), ingamePos: 2 },
-          2: { card: userData.getCard(deck.party[2]), ingamePos: 1 },
-          3: { card: userData.getCard(deck.party[3]), ingamePos: 3 },
-          4: { card: userData.getCard(deck.party[4]), ingamePos: 5 },
-        }
-        onSetParty(lastParty)
-      }
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // if (lastQuest) {
+    //   const wapQuest = getQuest(lastQuest)
+    //   onSetQuest(wapQuest)
+    // }
+    // if (lastDeck) {
+    //   const deck = userData.getDeck(lastDeck)
+    //   if (deck) {
+    //     const lastParty = {
+    //       0: { card: userData.getCard(deck.party[0]), ingamePos: 4 },
+    //       1: { card: userData.getCard(deck.party[1]), ingamePos: 2 },
+    //       2: { card: userData.getCard(deck.party[2]), ingamePos: 1 },
+    //       3: { card: userData.getCard(deck.party[3]), ingamePos: 3 },
+    //       4: { card: userData.getCard(deck.party[4]), ingamePos: 5 },
+    //     }
+    //     onSetParty(lastParty)
+    //   }
+    // }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
@@ -192,14 +176,13 @@ export default function Stage() {
         >
           <Greenroom
             party={party}
-            setParty={onSetParty}
-            focusPosition={focusPosition}
-            setFocusPosition={setFocusPosition}
             onCharaDrop={onCharaDrop} />
         </Modal>
         <Modal
           opened={statPnlOpened}
-          onClose={() => setstatPnlOpened(false)}
+          onClose={() => {
+            setstatPnlOpened(false)
+          }}
           title="Edit status"
           overflow="outside"
           size="auto"
@@ -220,10 +203,10 @@ export default function Stage() {
         <div className="grid grid-cols-5 justify-items-stretch h-full min-w-max grow divide-x divide-solid divide-slate-500/25">
           {Object.entries(party).map(([k, v]) => (
             <Lane
-              card={v.card} index={+k} key={k}
+              card={v.cardId ? userData.getCard(v.cardId) : undefined} index={+k} key={k}
               wapQuest={wapQuest}
               live={live}
-              onCharaClick={() => onCharaClick(+k, v.card?.id)}
+              onCharaClick={() => onCharaClick(+k, v.cardId)}
               onCharaDrop={onCharaDrop}
             />
           ))}
