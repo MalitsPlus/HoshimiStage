@@ -20,24 +20,14 @@ export default function Kockpit({
   onStatusEditClick: () => void,
 }) {
   const [opened, setOpened] = useState(false)
-  const ref = useClickOutside<HTMLDivElement>(() => {
-    console.log("erajwgphbweig")
-   
-    
-  })
   return (
     <>
-      <Modal
+      <QuestSelect
         opened={opened}
-        onClose={() => setOpened(false)}
-        title={t("select a quest")}
-        overlayOpacity={0.5}
-        transitionDuration={300}
-        overlayBlur={2}
-        size="lg"
-      >
-        <QuestSelect ref={ref} wapQuest={wapQuest} setWapQuest={setWapQuest} />
-      </Modal>
+        setOpened={setOpened}
+        initQuestId={wapQuest?.id}
+        setWapQuest={setWapQuest}
+      />
       <div className="flex flex-row items-center overflow-visible h-20 p-4">
         <div className="flex flex-row items-center overflow-visible grow">
           <div className="cursor-pointer overflow-visible"

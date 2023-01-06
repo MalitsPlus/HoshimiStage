@@ -1,15 +1,13 @@
 import { Modal } from "@mantine/core";
 import { useLocalStorage } from '@mantine/hooks';
 import simulate from 'hoshimi-venus';
-import { UserCard } from 'hoshimi-venus/out/types/card_types';
 import { Live } from 'hoshimi-venus/out/types/concert_types';
 import { TransDeck } from 'hoshimi-venus/out/types/trans_types';
 import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps";
-import update from 'immutability-helper';
 import { SetStateAction, useCallback, useEffect, useState } from "react";
 import { DndProvider } from 'react-dnd';
 import { TouchBackend } from "react-dnd-touch-backend";
-import { getAllCards, getData, getDefaultUserCard } from "../../src/utils/datamgr";
+import { charaDropAction } from "../../src/utils/live_utils";
 import { isPartyFull } from '../../src/utils/misc';
 import { getDefaultUserData, parseUserData, stringifyUserData } from '../../src/utils/user_data';
 import CustDragLayer from "../media/CustDragLayer";
@@ -18,20 +16,25 @@ import Kockpit from "./Kockpit";
 import Lane from "./Lane";
 import StatusPannel from './StatusPannel';
 
-const allCards = getData(getAllCards)
-
-export type AllyParty = {
+export type StageParty = {
   [k: number]: {
     cardId?: string,
     readonly ingamePos: number,
   }
 }
-const testPtCards: AllyParty = {
-  0: { cardId: "card-ai-03-schl-00", ingamePos: 4 },
-  1: { cardId: "card-mna-05-fest-00", ingamePos: 2 },
-  2: { cardId: "card-kkr-04-casl-00", ingamePos: 1 },
-  3: { cardId: "card-chs-03-schl-00", ingamePos: 3 },
-  4: { cardId: "card-smr-04-casl-00", ingamePos: 5 },
+// const testPtCards: StageParty = {
+//   0: { cardId: "card-ai-03-schl-00", ingamePos: 4 },
+//   1: { cardId: "card-mna-05-fest-00", ingamePos: 2 },
+//   2: { cardId: "card-kkr-04-casl-00", ingamePos: 1 },
+//   3: { cardId: "card-chs-03-schl-00", ingamePos: 3 },
+//   4: { cardId: "card-smr-04-casl-00", ingamePos: 5 },
+// }
+const testPtCards: StageParty = {
+  0: { cardId: undefined, ingamePos: 4 },
+  1: { cardId: undefined, ingamePos: 2 },
+  2: { cardId: undefined, ingamePos: 1 },
+  3: { cardId: undefined, ingamePos: 3 },
+  4: { cardId: undefined, ingamePos: 5 },
 }
 
 export default function Stage() {
@@ -69,47 +72,23 @@ export default function Stage() {
     setWapQuest(wapQuest)
   }, [])
 
-  const onSetParty = useCallback((party: SetStateAction<AllyParty>) => {
-    setLive(undefined)
+  const onSetParty = useCallback((
+    party: SetStateAction<StageParty>,
+    cleanLive: boolean = true
+  ) => {
+    if (cleanLive) {
+      setLive(undefined)
+    }
     setParty(party)
   }, [])
 
-  const findCardIndex = useCallback((srcId: string) => {
-    const src = +(Object.entries(party).find(([, v]) => v.cardId === srcId)?.at(0) ?? -1)
-    console.log(`called find card ${srcId}`)
-    return src
-  }, [party])
-
   const onCharaDrop = useCallback((srcId: string, dest: number) => {
-    const src = findCardIndex(srcId)
-    if (src !== -1) {
-      if (src === dest) {
-        console.log(`same. src: ${src}, dest: ${dest}.`)
-        return
-      }
-      console.log(`different. src: ${src}, dest: ${dest}.`)
-      // Update based on previous states.
-      // See https://reactjs.org/docs/hooks-reference.html#functional-updates
-      onSetParty(previous =>
-        update(previous, {
-          [dest]: {
-            cardId: { $set: previous[src].cardId }
-          },
-          [src]: {
-            cardId: { $set: previous[dest].cardId }
-          },
-        })
-      )
-    } else {
-      onSetParty(previous =>
-        update(previous, {
-          [dest]: {
-            cardId: { $set: srcId }
-          }
-        })
-      )
+    const newParty = charaDropAction(srcId, dest, party)
+    if (newParty === undefined) {
+      return
     }
-  }, [findCardIndex, onSetParty])
+    onSetParty(newParty, true)
+  }, [party, onSetParty])
 
   const onSimulateClick = useCallback(() => {
     if (!wapQuest || !isPartyFull(party)) {
@@ -167,31 +146,19 @@ export default function Stage() {
   return (
     <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
       <div className='flex flex-col h-screen'>
-        <Modal
+        <Greenroom
           opened={groomOpened}
-          onClose={() => setGroomOpened(false)}
-          title="Edit party"
-          overflow="outside"
-          size="auto"
-        >
-          <Greenroom
-            party={party}
-            onCharaDrop={onCharaDrop} />
-        </Modal>
-        <Modal
+          setOpened={setGroomOpened}
+          initParty={party}
+          onSetParty={onSetParty}
+        />
+        <StatusPannel
           opened={statPnlOpened}
-          onClose={() => {
-            setstatPnlOpened(false)
-          }}
-          title="Edit status"
-          overflow="outside"
-          size="auto"
-        >
-          <StatusPannel
-            party={party}
-            setParty={onSetParty}
-          />
-        </Modal>
+          setOpened={setstatPnlOpened}
+          initParty={party}
+          userData={userData}
+          setUserData={setUserData}
+        />
         <div>
           <Kockpit
             wapQuest={wapQuest}

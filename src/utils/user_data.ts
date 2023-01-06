@@ -36,5 +36,14 @@ export const stringifyUserData = (userData: UserData): string => {
 }
 
 export const parseUserData = (userDataStr: string): UserData => {
-  return JSON.parse(userDataStr) as UserData
+  const userData = JSON.parse(userDataStr) as UserData
+  return {
+    ...userData,
+    getCard(this, id) {
+      return this.cards[id] ?? getDefaultUserCard(id)
+    },
+    getDeck(this, id) {
+      return this.decks.find(deck => deck.id === id) ?? undefined
+    },
+  }
 }

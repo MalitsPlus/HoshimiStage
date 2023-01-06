@@ -1,17 +1,18 @@
-import { Chip, Divider } from "@mantine/core"
+import { Chip, Divider, Modal } from "@mantine/core"
 import { useSessionStorage } from "@mantine/hooks"
 import { AttributeType, CardType } from "hoshimi-venus/out/types/proto/proto_enum"
 import { Card } from "hoshimi-venus/out/types/proto/proto_master"
 import { t } from "i18next"
 import { ImageProps } from "next/image"
-import { useCallback, useMemo } from "react"
-import { getAllCards, getData } from "../../src/utils/datamgr"
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react"
+import { AllCards } from "../../src/utils/data_repository"
+import { charaDropAction } from "../../src/utils/live_utils"
 import { getCardAttribute, isCardInParty } from "../../src/utils/misc"
 import CharaIconDropZone from "../media/CharaIconDropZone"
 import DraggableCharaIcon from "../media/DraggableCharaIcon"
 import ImageAsset from "../misc/ImageAsset"
 import MyButton from "../misc/MyButton"
-import { AllyParty } from "./Stage"
+import { StageParty } from "./Stage"
 
 function cardFilter(card: Card, starChips: string[], typeChips: string[], attrChips: string[]): boolean {
   const rarity = !!!starChips.length
@@ -29,16 +30,36 @@ function cardFilter(card: Card, starChips: string[], typeChips: string[], attrCh
 }
 
 export default function Greenroom({
-  party,
-  onCharaDrop,
+  initParty,
+  onSetParty,
+  opened,
+  setOpened,
 }: {
-  party: AllyParty,
-  onCharaDrop: (srcId: string, dest: number) => void,
+  initParty: StageParty,
+  onSetParty: (party: SetStateAction<StageParty>) => void
+  opened: boolean,
+  setOpened: Dispatch<SetStateAction<boolean>>,
 }) {
+  
   const [starChips, setStarChips] = useSessionStorage<string[]>({ key: "Greenroom_starChips", defaultValue: ["fivestar"] })
   const [typeChips, setTypeChips] = useSessionStorage<string[]>({ key: "Greenroom_typeChips", defaultValue: [] })
   const [attrChips, setAttrChips] = useSessionStorage<string[]>({ key: "Greenroom_attrChips", defaultValue: [] })
   // const [focusPosition, setFocusPosition] = useState(clickedCard)
+
+  console.log("render greenroom")
+  const [localParty, setLocalParty] = useState<StageParty>(initParty)
+
+  useEffect(() => {
+    setLocalParty(initParty)
+  }, [initParty])
+
+  const onCharaDrop = useCallback((srcId: string, dest: number) => {
+    const newParty = charaDropAction(srcId, dest, localParty)
+    if (newParty === undefined) {
+      return
+    }
+    setLocalParty(newParty)
+  }, [localParty])
 
   const setChips = useCallback((
     starChips: string[],
@@ -49,10 +70,6 @@ export default function Greenroom({
     setTypeChips(typeChips)
     setAttrChips(attrChips)
   }, [setStarChips, setTypeChips, setAttrChips])
-
-  const allCards = useMemo(() => {
-    return getData(getAllCards)
-  }, [])
 
   const IconChip = ({ name, iconAid }: {
     name: string, iconAid: string
@@ -65,6 +82,13 @@ export default function Greenroom({
         <span>{t(name)}</span>
       </Chip>
     )
+  }
+
+  const onClose = () => {
+    if (!Object.is(initParty, localParty)) {
+      onSetParty(localParty)
+    }
+    setOpened(false)
   }
 
   // const onPartyCharaClick = useCallback((index: number, id?: string) => {
@@ -83,7 +107,13 @@ export default function Greenroom({
   // }, [])
 
   return (
-    <>
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      title="Edit party"
+      overflow="outside"
+      size="auto"
+    >
       <div className="flex flex-row gap-4">
         <div>
           <div>
@@ -119,8 +149,8 @@ export default function Greenroom({
         </div>
         <div className="grow">
           <div className="flex flex-row p-2 justify-evenly items-center align-middle bg-neutral-300 dark:bg-neutral-800 rounded-lg">
-            {Object.entries(party).map(([k, ptcard]) => {
-              const card = allCards.find(it => it.id === ptcard.cardId)
+            {Object.entries(localParty).map(([k, ptcard]) => {
+              const card = AllCards.find(it => it.id === ptcard.cardId)
               return (
                 <CharaIconDropZone
                   key={k}
@@ -145,10 +175,10 @@ export default function Greenroom({
           md:grid-cols-[repeat(5,_minmax(min-content,_1fr))]
           lg:grid-cols-[repeat(8,_minmax(min-content,_1fr))]
           xl:grid-cols-[repeat(12,_minmax(min-content,_1fr))]">
-            {allCards
+            {AllCards
               .filter(card => cardFilter(card, starChips, typeChips, attrChips))
               .map((card, index) => {
-                const canDrag = !isCardInParty(card, party)
+                const canDrag = !isCardInParty(card, localParty)
                 return (
                   <div key={card.id} className="">
                     <DraggableCharaIcon
@@ -164,6 +194,6 @@ export default function Greenroom({
           </div>
         </div>
       </div>
-    </>
+    </Modal>
   )
 }

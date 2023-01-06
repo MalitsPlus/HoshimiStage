@@ -6,7 +6,7 @@ export default function NumberComp({
   setValue,
 }: {
   value: number
-  setValue: Dispatch<SetStateAction<number>>
+  setValue: (val: number) => void,
 }) {
   const handlers = useRef<NumberInputHandlers>();
   return (

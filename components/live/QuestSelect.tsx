@@ -1,28 +1,31 @@
-import { Chip, Divider, Select, Space } from "@mantine/core";
-import { t } from "i18next";
-import { ForwardedRef, useEffect, useMemo, useState } from "react";
-import { QuestIdMap } from "../../src/static/quest_id_map";
+import { Chip, Divider, Modal, Select, Space } from "@mantine/core";
+import { useLocalStorage } from "@mantine/hooks";
 import { getRawQuests } from "hoshimi-venus/out/db/dao/quest_dao";
 import { getQuest } from "hoshimi-venus/out/db/repository/quest_repository";
-import ImageAsset from "../misc/ImageAsset";
-import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps";
 import { AttributeType, MusicChartType } from "hoshimi-venus/out/types/proto/proto_enum";
-import SkillIcon from "../media/SkillIcon";
+import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps";
 import { WapLiveAbility } from "hoshimi-venus/out/types/wap/skill_waps";
-import { useClickOutside, useLocalStorage, useSessionStorage } from "@mantine/hooks";
+import { t } from "i18next";
+import { Dispatch, ForwardedRef, forwardRef, SetStateAction, useEffect, useMemo } from "react";
+import { QuestIdMap } from "../../src/static/quest_id_map";
 import { getMusicJacket } from "../../src/utils/misc";
-import { forwardRef } from "react"
+import SkillIcon from "../media/SkillIcon";
+import ImageAsset from "../misc/ImageAsset";
 
 const QuestSelect = forwardRef<HTMLDivElement, QuestSelectProps>(_QuestSelect)
 export default QuestSelect
 
 type QuestSelectProps = {
-  wapQuest: WapQuest | undefined,
+  opened: boolean,
+  setOpened: Dispatch<SetStateAction<boolean>>,
+  initQuestId: string | undefined,
   setWapQuest: (wapQuest: WapQuest | undefined) => void,
 } & Partial<HTMLDivElement>
 
 function _QuestSelect({
-  wapQuest,
+  opened,
+  setOpened,
+  initQuestId,
   setWapQuest,
   ...others
 }: QuestSelectProps,
@@ -34,16 +37,20 @@ function _QuestSelect({
     key: "QuestSelect_questType",
     defaultValue: undefined,
   })
-  const [selected, setSelected] = useLocalStorage<string | null>({
+  // questId
+  const [selected, setSelected] = useLocalStorage<string | undefined>({
     key: "QuestSelect_selected",
-    defaultValue: undefined,
+    defaultValue: initQuestId,
   })
 
-  // useCLickOUtside 不行，在click下拉菜单时也会触发 。考虑把model搬进来
-  const ref2 = useClickOutside<HTMLDivElement>(() => {
-    console.log("rrrrrreeeeeeeeeeffffffffffffff2222222222222")
-    selected && setWapQuest(getQuest(selected))
-  })
+  const wapQuest = selected ? getQuest(selected) : undefined
+
+  const onClose = () => {
+    if (initQuestId !== selected) {
+      selected && setWapQuest(getQuest(selected))
+    }
+    setOpened(false)
+  }
 
   const getSelectorData = (v: string | undefined): {
     value: string,
@@ -81,7 +88,6 @@ function _QuestSelect({
   const onSelectValueChange = (v: string) => {
     console.log(`onSelectValueChange ${v}`)
     setSelected(v)
-    // setWapQuest(getQuest(v))
   }
 
   useEffect(() => {
@@ -90,12 +96,6 @@ function _QuestSelect({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  // useEffect(() => {
-  //   if (selectorData.length) {
-  //     onSelectValueChange(selectorData[0].value)
-  //   }
-  // }, [questTypeChip])
 
   const QuestTypeDivider = ({ keys }: { keys: string[] }) => {
     const quests: { [k: string]: string[] } = {
@@ -169,21 +169,21 @@ function _QuestSelect({
     )
   }
 
-  const LiveInfo = ({ wapQuest }: { wapQuest: WapQuest }) => {
+  const LiveInfo = ({ wQuest }: { wQuest: WapQuest }) => {
     const getText = (fmt: string, permil: number): string => {
       return `${t(fmt)} × ${permil / 1000 === 0 ? 1 : permil / 1000}`
     }
     return (
       <div className="mt-4 grid grid-cols-3">
-        <div>{getText("specialSkillWeightPermil", wapQuest.specialSkillWeightPermil)}</div>
-        <div>{getText("activeSkillWeightPermil", wapQuest.activeSkillWeightPermil)}</div>
+        <div>{getText("specialSkillWeightPermil", wQuest.specialSkillWeightPermil)}</div>
+        <div>{getText("activeSkillWeightPermil", wQuest.activeSkillWeightPermil)}</div>
         <div></div>
-        <div>{getText("skillStaminaWeightPermil", wapQuest.skillStaminaWeightPermil)}</div>
-        <div>{getText("staminaRecoveryWeightPermil", wapQuest.staminaRecoveryWeightPermil)}</div>
+        <div>{getText("skillStaminaWeightPermil", wQuest.skillStaminaWeightPermil)}</div>
+        <div>{getText("staminaRecoveryWeightPermil", wQuest.staminaRecoveryWeightPermil)}</div>
         <div></div>
-        <div>{getText("beatDanceWeightPermil", wapQuest.beatDanceWeightPermil)}</div>
-        <div>{getText("beatVocalWeightPermil", wapQuest.beatVocalWeightPermil)}</div>
-        <div>{getText("beatVisualWeightPermil", wapQuest.beatVisualWeightPermil)}</div>
+        <div>{getText("beatDanceWeightPermil", wQuest.beatDanceWeightPermil)}</div>
+        <div>{getText("beatVocalWeightPermil", wQuest.beatVocalWeightPermil)}</div>
+        <div>{getText("beatVisualWeightPermil", wQuest.beatVisualWeightPermil)}</div>
       </div>
     )
   }
@@ -204,36 +204,46 @@ function _QuestSelect({
   }
 
   return (
-    <div ref={ref2}>
-      <Chip.Group position="center" className="gap-6 items-start"
-        value={questTypeChip} onChange={onQuestTypeChange}
-      >
-        <QuestTypeDivider keys={genre} />
-      </Chip.Group>
-      <Space h="xl" />
-      <Select label={t("Select a Live")} placeholder="input to search..."
-        searchable nothingFound={t("No matches")}
-        maxDropdownHeight={270}
-        onChange={onSelectValueChange} data={selectorData} value={selected}
-      />
-      <Divider my="xl" />
-      <div className="w-16 h-16 mx-auto">
-        {wapQuest && <ImageAsset aid={getMusicJacket(wapQuest.musicId)} aspect="1" />}
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      title={t("select a quest")}
+      overlayOpacity={0.5}
+      transitionDuration={300}
+      overlayBlur={2}
+      size="lg"
+    >
+      <div>
+        <Chip.Group position="center" className="gap-6 items-start"
+          value={questTypeChip} onChange={onQuestTypeChange}
+        >
+          <QuestTypeDivider keys={genre} />
+        </Chip.Group>
+        <Space h="xl" />
+        <Select label={t("Select a Live")} placeholder="input to search..."
+          searchable nothingFound={t("No matches")}
+          maxDropdownHeight={270}
+          onChange={onSelectValueChange} data={selectorData} value={selected}
+        />
+        <Divider my="xl" />
+        <div className="w-16 h-16 mx-auto">
+          {wapQuest && <ImageAsset aid={getMusicJacket(wapQuest.musicId)} aspect="1" />}
+        </div>
+        <div className="text-center">
+          <p>{wapQuest && wapQuest.musicName}</p>
+        </div>
+        <div className="flex flex-row justify-center gap-0">
+          <AttributeOrnament position={4} />
+          <AttributeOrnament position={2} />
+          <AttributeOrnament position={1} />
+          <AttributeOrnament position={3} />
+          <AttributeOrnament position={5} />
+        </div>
+        {wapQuest && <LiveInfo wQuest={wapQuest} />}
+        {wapQuest?.liveBonuses?.map((liveBonus, idx) => (
+          <LiveBonuses liveAbility={liveBonus} key={idx} />
+        ))}
       </div>
-      <div className="text-center">
-        <p>{wapQuest && wapQuest.musicName}</p>
-      </div>
-      <div className="flex flex-row justify-center gap-0">
-        <AttributeOrnament position={4} />
-        <AttributeOrnament position={2} />
-        <AttributeOrnament position={1} />
-        <AttributeOrnament position={3} />
-        <AttributeOrnament position={5} />
-      </div>
-      {wapQuest && <LiveInfo wapQuest={wapQuest} />}
-      {wapQuest?.liveBonuses?.map((liveBonus, idx) => (
-        <LiveBonuses liveAbility={liveBonus} key={idx} />
-      ))}
-    </div>
+    </Modal>
   )
 }
