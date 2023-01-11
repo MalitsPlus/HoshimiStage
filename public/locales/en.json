@@ -1,5 +1,6 @@
 {
   "testt": "eng text",
+  "edit status": "Modify",
   "simulate": "Simulate",
   "select a quest": "Choose a quest type",
   "Select a Live": "Select a Live",
@@ -33,6 +34,7 @@
   "less": "less",
   "more": "more",
   "SP": "SP",
+  "Live Bonus": "Live Bonus",
   "specialSkillWeightPermil": "SP Score",
   "activeSkillWeightPermil": "A Score",
   "skillStaminaWeightPermil": "St. Consumption",

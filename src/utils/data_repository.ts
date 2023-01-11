@@ -1,3 +1,3 @@
-import { getAllCards, getData } from "./datamgr";
+import { getAllCards, getData } from "./data_mgr";
 
 export const AllCards = getData(getAllCards)

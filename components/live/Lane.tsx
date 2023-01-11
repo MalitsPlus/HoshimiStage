@@ -4,7 +4,7 @@ import { Live } from "hoshimi-venus/out/types/concert_types"
 import { AttributeType, MusicChartType } from "hoshimi-venus/out/types/proto/proto_enum"
 import { Card } from "hoshimi-venus/out/types/proto/proto_master"
 import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps"
-import { getChara, getData } from "../../src/utils/datamgr"
+import { getChara, getData } from "../../src/utils/data_mgr"
 import CharaIconDropZone from "../media/CharaIconDropZone"
 import DraggableCharaIcon from "../media/DraggableCharaIcon"
 import { index2GamePos } from "./Stage"
@@ -72,14 +72,14 @@ export default function Lane({
           onCharaClick={onCharaClick}
           pointer={true}
         />
-        <div className="w-full my-2 text-center">{chara?.name ?? "unselected"}</div>
+        <div className="w-full my-2 text-center">{chara?.name ?? " "}</div>
         <div className="w-full text-center text-xs">{(live || wapQuest) && `${noteInfo} ${minGap === 9999 ? "" : minGap}`}</div>
         <div className={classNames( // FIXME: color value shall be connected with the music pattern, not the card type.
           "w-full h-0.5 rounded-sm mb-1",
           attribute === AttributeType.Dance ? "bg-dance"
             : attribute === AttributeType.Vocal ? "bg-vocal"
               : attribute === AttributeType.Visual ? "bg-visual"
-                : "bg-slate-600"
+                : "bg-transparent"
         )}>
         </div>
       </CharaIconDropZone>

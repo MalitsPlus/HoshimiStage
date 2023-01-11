@@ -1,42 +1,24 @@
-import { Modal, NumberInput } from "@mantine/core"
-import { useLocalStorage } from "@mantine/hooks"
+import { Modal } from "@mantine/core"
+import { getDefaultParam } from "hoshimi-venus/out/satomi/card"
 import { UserCard } from "hoshimi-venus/out/types/card_types"
-import { AttributeType } from "hoshimi-venus/out/types/proto/proto_enum"
-import { Card } from "hoshimi-venus/out/types/proto/proto_master"
-import { WapCard } from "hoshimi-venus/out/types/wap/card_waps"
-import { Dispatch, memo, SetStateAction, useCallback, useEffect, useReducer, useState } from "react"
-import { getChara, getData } from "../../src/utils/datamgr"
-import { getCardAttribute, isPartyFull } from "../../src/utils/misc"
+import update from 'immutability-helper'
+import { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from "react"
+import { getChara, getData } from "../../src/utils/data_mgr"
+import { getCardAttribute } from "../../src/utils/misc"
 import { UserData } from "../../src/utils/user_data"
 import CharaIcon from "../media/CharaIcon"
 import NumberComp from "../misc/NumberComp"
 import { StageParty } from "./Stage"
-import update from 'immutability-helper'
-import { getCardParameter, getCardRarity } from "hoshimi-venus/out/db/repository/card_repository"
-import { calcParam } from "hoshimi-venus/out/utils/calc_utils";
 
 function reducer(
   state: UserCard,
   action: Partial<UserCard> & { rtype: string }
 ): UserCard {
-  return update(state, {
-
-  })
   switch (action.rtype) {
     case "dance":
       return {
         ...state,
         dance: action.dance!,
-      }
-    case "vocal":
-      return {
-        ...state,
-        vocal: action.vocal!,
-      }
-    case "visual":
-      return {
-        ...state,
-        visual: action.visual!,
       }
   }
   return state
@@ -54,9 +36,7 @@ const StatusCard = memo(function _StatusCard({
   const attribute = getCardAttribute(userCard)
   const chara = getData(getChara, userCard.characterId)
 
-  // const [dance, setDance] = useState(card.dance)
-
-  const getSetFunction = (type: string): (_: number) => void => {
+  const createSetFunction = (type: string): (_: number) => void => {
     return (newValue: number) => {
       const newCard = {
         ...userCard,
@@ -64,27 +44,59 @@ const StatusCard = memo(function _StatusCard({
       }
       setUserCard(newCard, uiPos)
     }
-    // return (newValue: number) => {
-    //   const newCard = update(userCard, {
-    //     [type]: { $set: newValue }
-    //   })
-    //   setUserCard(newCard, uiPos)
-    // }
   }
-
-  // const [visual, setDance] = useLocalStorage({ key: `${card.id}-visual`, defaultValue: 0 })
-  // const [dance, setDance] = useLocalStorage({ key: `${card.id}-dance`, defaultValue: 0 })
-  // const [dance, setDance] = useLocalStorage({ key: `${card.id}-dance`, defaultValue: 0 })
+  const createSetSkillLevelFunction = (
+    type: "1" | "2" | "3"
+  ): (_: number) => void => {
+    return (newLevel: number) => {
+      if (newLevel > 0) {
+        const wapSkillLevel = userCard[`skill${type}`].wapSkillLevels.find(it => it.level === newLevel)
+        const newCard = {
+          ...userCard,
+          [`skillLevel${type}`]: newLevel,
+        }
+        if (wapSkillLevel) {
+          newCard.skills.find(it => it.index === +type)!.skill = wapSkillLevel
+        }
+        setUserCard(newCard, uiPos)
+      }
+    }
+  }
 
   return (
     <>
-      <div className="flex flex-col items-center justify-start">
+      <div className="flex flex-col items-center">
         <div>
           <CharaIcon id={userCard.id} assetId={userCard.assetId} role={userCard.type} attribute={attribute} pointer={false} />
         </div>
         <div className="my-2 text-center">{chara?.name ?? "unselected"}</div>
-        <NumberComp value={userCard.dance} setValue={getSetFunction("dance")} />
-        <NumberComp value={userCard.vocal} setValue={getSetFunction("vocal")} />
+        <NumberComp label="dance" value={userCard.dance} setValue={createSetFunction("dance")} iconId="icon_parameter_dance" />
+        <NumberComp label="vocal" value={userCard.vocal} setValue={createSetFunction("vocal")} iconId="icon_parameter_vocal" />
+        <NumberComp label="visual" value={userCard.visual} setValue={createSetFunction("visual")} iconId="icon_parameter_visual" />
+        <NumberComp label="stamina" value={userCard.stamina} setValue={createSetFunction("stamina")}
+          iconId="icon_parameter_stamina"
+          step={1000}
+        />
+        <NumberComp label="mental" value={userCard.mental} setValue={createSetFunction("mental")}
+          iconId="icon_parameter_mental"
+          step={1000}
+        />
+        <NumberComp label="technique" value={userCard.technique} setValue={createSetFunction("technique")}
+          iconId="icon_parameter_technique"
+          step={1000}
+        />
+        <NumberComp label="skill 1" value={userCard.skillLevel1} setValue={createSetSkillLevelFunction("1")}
+          iconId=""
+          step={1}
+        />
+        <NumberComp label="skill 2" value={userCard.skillLevel2} setValue={createSetSkillLevelFunction("2")}
+          iconId=""
+          step={1}
+        />
+        <NumberComp label="skill 3" value={userCard.skillLevel3} setValue={createSetSkillLevelFunction("3")}
+          iconId=""
+          step={1}
+        />
       </div>
     </>
   )
@@ -96,6 +108,19 @@ const createInitState = (
 ): (UserCard | undefined)[] => {
   return Object.entries(party).map(([uiPos, partycard]) => {
     return partycard.cardId ? userData.getCard(partycard.cardId) : undefined
+  })
+}
+
+const regulateParams = (cards: { [id: string]: UserCard }) => {
+  Object.values(cards).forEach(it => {
+    if (!it.dance) it.dance = getDefaultParam(it, "dance")
+    if (!it.vocal) it.vocal = getDefaultParam(it, "vocal")
+    if (!it.visual) it.visual = getDefaultParam(it, "visual")
+    if (!it.mental) it.mental = 5000
+    if (!it.technique) it.technique = 8000
+    if (!it.skillLevel1) it.skillLevel1 = 4
+    if (!it.skillLevel2) it.skillLevel2 = 4
+    if (!it.skillLevel3) it.skillLevel3 = 2
   })
 }
 
@@ -113,7 +138,6 @@ const StatusPannel = ({
   setOpened: Dispatch<SetStateAction<boolean>>,
 }) => {
 
-  // const [state, dispatch] = useReducer(reducer, [initParty, userData], createInitState)
   const [localCards, setLocalCards] = useState(createInitState(initParty, userData))
 
   const setUserCard = useCallback((userCard: UserCard, uiPos: number) => {
@@ -127,23 +151,23 @@ const StatusPannel = ({
   useEffect(() => {
     setLocalCards(createInitState(initParty, userData))
     console.log("running statuspannel effect")
-    // dispatch({ state: createInitState(initParty, userData), type: "all" })
   }, [initParty, userData])
 
   console.log("rendering StatusPannel")
 
   const onClose = () => {
     if (localCards.every(it => it !== undefined)) {
+      const newCards = localCards.reduce((acc: { [id: string]: UserCard }, cur) => {
+        acc[cur!.id] = cur!
+        return acc
+      }, {})
+      regulateParams(newCards)
       setUserData(prev => {
         return {
           ...prev,
           cards: {
             ...prev.cards,
-            [localCards[0]!.id]: localCards[0]!,
-            [localCards[1]!.id]: localCards[1]!,
-            [localCards[2]!.id]: localCards[2]!,
-            [localCards[3]!.id]: localCards[3]!,
-            [localCards[4]!.id]: localCards[4]!,
+            ...newCards,
           }
         }
       })

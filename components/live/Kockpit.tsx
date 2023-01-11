@@ -3,7 +3,7 @@ import ImageAsset from "../misc/ImageAsset";
 import MyButton from "../misc/MyButton";
 import { useEffect, useState } from "react";
 import { t } from "i18next";
-import { Modal } from "@mantine/core";
+import { Modal, Space } from "@mantine/core";
 import QuestSelect from "./QuestSelect";
 import { getMusicJacket } from "../../src/utils/misc";
 import { useClickOutside } from "@mantine/hooks";
@@ -42,8 +42,9 @@ export default function Kockpit({
           </div>
         </div>
         <div>
-          <MyButton className="w-24 h-10" onClick={onStatusEditClick}>{t("status")}</MyButton>
+          <MyButton className="w-24 h-10" onClick={onStatusEditClick}>{t("edit status")}</MyButton>
         </div>
+        <Space w={16} />
         <div>
           <MyButton className="w-24 h-10" onClick={onSimulateClick}>{t("simulate")}</MyButton>
         </div>

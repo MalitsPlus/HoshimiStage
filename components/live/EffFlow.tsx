@@ -1,14 +1,12 @@
-import { Badge, Divider, HoverCard } from "@mantine/core"
-import { GameSetting } from "hoshimi-venus/out/db/repository/setting_repository";
-import classNames from "classnames"
-import { Effect, Live } from "hoshimi-venus/out/types/concert_types"
-import { SkillEfficacyType } from "hoshimi-venus/out/types/proto/proto_enum"
-import { t } from "i18next"
-import { memo } from "react"
-import { EffColor } from "../../src/static/efficacy_flow_color"
-import { getPrivilegedEfficacyList } from "../../src/utils/datamgr"
-import EffectRich from "./EffectRich";
+import { Badge, Divider, HoverCard } from "@mantine/core";
+import classNames from "classnames";
 import { WeaknessAllList } from "hoshimi-venus/out/concert/consts/efficacy_list";
+import { Effect, Live } from "hoshimi-venus/out/types/concert_types";
+import { t } from "i18next";
+import { memo } from "react";
+import { EffColor } from "../../src/static/efficacy_flow_color";
+import { getPrivilegedEfficacyList } from "../../src/utils/data_mgr";
+import EffectRich from "./EffectRich";
 
 type EffIdxDictType = { [uuid: string]: number }
 
@@ -99,10 +97,21 @@ const EffRow = ({ prevEffs, curEffs, sequence, category, effIdxDict, ingameIndex
                 <div className="col-span-2 text-sm font-medium"><EffectRich type={eff.efficacyType} /></div>
                 {/* <div className="col-span-2 text-sm font-medium">{t(SkillEfficacyType[eff.efficacyType])}</div> */}
                 <Divider className="col-span-2 my-1" />
-                <div>{t("Grade")}</div><div>{eff.grade}</div>
-                {eff.value !== 0 ? <><div>{t("Value")}</div><div>{eff.value}</div></> : null}
-                <div>{t("Remain")}</div><div>{eff.remain}</div>
-                <div>{t("Source")}</div><div>{eff.sourceIndex} - {eff.sourceSkillIndex}</div>
+                <div>{t("Grade")}</div>
+                <div>{eff.grade + (eff.strengthenValue ? ` (+${eff.strengthenValue})` : "")}</div>
+                {eff.value !== 0
+                  ? <>
+                    <div>{t("Value")}</div>
+                    <div>{eff.value}</div>
+                  </>
+                  : null}
+                <div>{t("Remain")}</div>
+                <div>{eff.remain + (eff.lengthenValue ? ` (+${eff.lengthenValue})` : "")}</div>
+                <div>{t("Source")}</div>
+                <div>{eff.sourceIndex > 100
+                  ? t("Live Bonus")
+                  : `${eff.sourceIndex} - ${eff.sourceSkillIndex}`}
+                </div>
                 <div className="col-span-2">
                   {eff.include
                     ? <Badge mr={4} variant="filled" className="normal-case">{t("Included")}</Badge>

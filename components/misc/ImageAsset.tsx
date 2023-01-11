@@ -1,6 +1,6 @@
 import Image, { ImageProps } from "next/image";
 import { memo } from "react";
-import { getAssetUri } from "../../src/utils/resmgr";
+import { getAssetUri } from "../../src/utils/res_mgr";
 
 const PLACEHOLDER_SVG =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOs3/a/HgAGpQK1AGcMqQAAAABJRU5ErkJggg=='

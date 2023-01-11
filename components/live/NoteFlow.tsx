@@ -6,7 +6,8 @@ import { ActSkill, Live } from "hoshimi-venus/out/types/concert_types"
 import { AttributeType, MusicChartType, SkillFailureType } from "hoshimi-venus/out/types/proto/proto_enum"
 import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps"
 import { t } from "i18next"
-import { memo } from "react"
+import { Fragment, memo } from "react"
+import { HighlightEfficacies } from "../../src/static/highlight_efficacies"
 import SkillIcon from "../media/SkillIcon"
 import EffectRich from "./EffectRich"
 
@@ -64,18 +65,30 @@ const NoteFlow = ({
             prevASequence = ptn.sequence
           }
         }
+        // a chart snapshot at just before beat activating
+        const snapshot = live?.snapshot.find(snapshot => snapshot.sequence === ptn.sequence)
+        // a chart at the ending of a turn
         const chart = live?.charts.find(chart => chart.sequence === ptn.sequence)
-        const status = chart?.getCardStatus(ingameIndex)
+        // a status object at just before beat activating
+        const status = snapshot?.getCardStatus(ingameIndex)
+        // a status object at the ending of a turn
+        const finalStatus = chart?.getCardStatus(ingameIndex)
         const card = live?.liveDeck.getCard(ingameIndex)
+        // active skill in this turn, should use the ending chart
         const { aSkill, failureFlag } = chart?.actPosition === ingameIndex
           ? { aSkill: chart.actSkill, failureFlag: chart.failureFlag }
           : { aSkill: undefined, failureFlag: undefined }
+        // p skills in this turn, also should use the ending chart
         const pSkills = chart?.actPSkills
           .filter(p => p.cardIndex === ingameIndex)
         const activating = [aSkill, ...pSkills ?? [undefined]].filter(it => it !== undefined)
 
+        const efficacies = status ? [...new Set(status.effects.map(eff => eff.efficacyType))] : undefined
+        const pickupEfficacies = efficacies?.filter(it => HighlightEfficacies.includes(it))
+        const normalEfficacies = efficacies?.filter(it => !HighlightEfficacies.includes(it))
+
         return (
-          <HoverCard width="auto" shadow="md" key={ptn.sequence} position="left" offset={15} withArrow transitionDuration={0} openDelay={100} closeDelay={0} >
+          <HoverCard width="auto" shadow="md" key={idx} position="left" offset={15} withArrow transitionDuration={0} openDelay={100} closeDelay={0} >
             <HoverCard.Target>
               <div className="h-1 w-1 grow shrink flex justify-center items-center cursor-pointer">
                 {ptn.position === ingameIndex
@@ -131,12 +144,11 @@ const NoteFlow = ({
                   </>
                   : null
                 }
-
                 <div className="grid grid-cols-2 gap-x-2 [direction:ltr] content-start">
                   <div className="text-sm">{ptn.sequence}</div>
-                  <div className="text-sm">{chart ? chart.userStatuses[0].combo + " " + t("Combo") : null}</div>
+                  <div className="text-sm">{snapshot ? snapshot.userStatuses[0].combo + " " + t("Combo") : null}</div>
                   {interval ? <><Divider my={4} className="col-span-2" /><div className="text-sm">{t("Interval")}</div><div className="text-sm">{interval}</div></> : null}
-                  {chart && status
+                  {snapshot && status && finalStatus
                     ? (<>
                       <Divider my={4} className="col-span-2" />
                       <div className="text-dance">Dance</div><div className="text-dance">{status.dance}</div>
@@ -144,9 +156,9 @@ const NoteFlow = ({
                       <div className="text-visual">Visual</div><div className="text-visual">{status.visual}</div>
                       <div className="text-stamina">Stamina</div><div className="text-stamina">{status.stamina} ({(status.stamina / (card?.deckStamina ?? 1) * 100).toFixed(1)}%)</div>
                       <Divider my={4} className="col-span-2" />
-                      {status.skillStatuses.map((skillStat, idx) => {
+                      {finalStatus.skillStatuses.map((skillStat, idx) => {
                         const isActivating = activating.some(act => act?.skillIndex === skillStat.skillIndex)
-                        return (<>
+                        return (<Fragment key={idx}>
                           <div>Skill {skillStat.skillIndex}</div>
                           <div className={isActivating ? "text-sky-400"
                             : skillStat.coolTime || !skillStat.hasTimes() ? "text-rose-500" : "text-emerald-500"
@@ -155,15 +167,24 @@ const NoteFlow = ({
                               : !skillStat.hasTimes() ? "Exhausted"
                                 : skillStat.coolTime ? skillStat.coolTime : "Ready"}
                           </div>
-                        </>)
+                        </Fragment>)
                       })}
-                      {status.effects.length ? <Divider my={4} className="col-span-2" /> : null}
-                      {[...new Set(status.effects.map(eff => eff.efficacyType))].map(effType => {
+                      {pickupEfficacies?.length ? <Divider my={4} className="col-span-2" /> : null}
+                      {pickupEfficacies?.map((effType, idx) => {
                         const sumGrade = status.getEffectSumOrMaxGrade(effType, true, true)
-                        return (<>
+                        return (<Fragment key={idx}>
                           <EffectRich type={effType} />
                           <div>{sumGrade}</div>
-                        </>
+                        </Fragment>
+                        )
+                      })}
+                      {normalEfficacies?.length ? <Divider my={4} className="col-span-2" /> : null}
+                      {normalEfficacies?.map((effType, idx) => {
+                        const sumGrade = status.getEffectSumOrMaxGrade(effType, true, true)
+                        return (<Fragment key={idx}>
+                          <EffectRich type={effType} />
+                          <div>{sumGrade}</div>
+                        </Fragment>
                         )
                       })}
                     </>)
@@ -175,7 +196,7 @@ const NoteFlow = ({
           </HoverCard>
         )
       })}
-    </div >
+    </div>
   )
 }
 

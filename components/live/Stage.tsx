@@ -1,4 +1,3 @@
-import { Modal } from "@mantine/core";
 import { useLocalStorage } from '@mantine/hooks';
 import simulate from 'hoshimi-venus';
 import { Live } from 'hoshimi-venus/out/types/concert_types';
@@ -170,7 +169,9 @@ export default function Stage() {
         <div className="grid grid-cols-5 justify-items-stretch h-full min-w-max grow divide-x divide-solid divide-slate-500/25">
           {Object.entries(party).map(([k, v]) => (
             <Lane
-              card={v.cardId ? userData.getCard(v.cardId) : undefined} index={+k} key={k}
+              card={v.cardId ? userData.getCard(v.cardId) : undefined}
+              index={+k}
+              key={k}
               wapQuest={wapQuest}
               live={live}
               onCharaClick={() => onCharaClick(+k, v.cardId)}

@@ -1,5 +1,5 @@
 import { UserCard } from "hoshimi-venus/out/types/card_types"
-import { getDefaultUserCard } from "./datamgr"
+import { getDefaultUserCard } from "./data_mgr"
 
 type UserDeck = {
   id: string,

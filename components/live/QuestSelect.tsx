@@ -1,6 +1,6 @@
 import { Chip, Divider, Modal, Select, Space } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
-import { getRawQuests } from "hoshimi-venus/out/db/dao/quest_dao";
+import { getRawGvgQuests, getRawInsideDbQuests, getRawLeagueQuests, getRawPvpQuests } from "hoshimi-venus/out/db/dao/quest_dao";
 import { getQuest } from "hoshimi-venus/out/db/repository/quest_repository";
 import { AttributeType, MusicChartType } from "hoshimi-venus/out/types/proto/proto_enum";
 import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps";
@@ -52,34 +52,52 @@ function _QuestSelect({
     setOpened(false)
   }
 
-  const getSelectorData = (v: string | undefined): {
+  const getSelectorData = (chipType: string | undefined): {
     value: string,
     label: string,
   }[] => {
-    return !!v
-      ? getRawQuests(QuestIdMap[v as keyof typeof QuestIdMap])
-        .sort().reverse().map(it => {
-          let _label = it.name
-          if (v === "DailySP" || v === "MainLive") {
-            const flag = it.id.match(/\d+-\d+$/)
-            _label += " " + flag
-          }
-          return {
-            value: it.id,
-            label: _label,
-          }
-        })
-      : []
+    if (chipType === undefined) return []
+    if (!chipType.startsWith("Battle")) {
+      const insideDbQuests = !!chipType
+        ? getRawInsideDbQuests(QuestIdMap[chipType as keyof typeof QuestIdMap])
+          .sort().reverse().map(it => {
+            let _label = it.name ?? "null_name"
+            if (chipType === "DailySP" || chipType === "MainLive") {
+              const flag = it.id.match(/\d+-\d+$/)
+              _label += " " + flag
+            }
+            return {
+              value: it.id,
+              label: _label,
+            }
+          })
+        : []
+      return insideDbQuests
+    }
+    const getDataFunction = (() => {
+      switch (chipType) {
+        case "BattlePvp": return getRawPvpQuests
+        case "BattleGvg": return getRawGvgQuests
+        case "BattleLeague": return getRawLeagueQuests
+        default: return () => []
+      }
+    })()
+    return getDataFunction().sort().reverse().map(questBase => {
+      return {
+        value: questBase.id,
+        label: questBase.id,
+      }
+    })
   }
 
   let selectorData = useMemo(() => {
     return getSelectorData(questTypeChip)
   }, [questTypeChip])
 
-  const onQuestTypeChange = (v: string) => {
-    console.log(`onQuestTypeChange ${v}`)
-    setQuestTypeChip(v)
-    selectorData = getSelectorData(v)
+  const onQuestTypeChange = (chipType: string) => {
+    console.log(`onQuestTypeChange ${chipType}`)
+    setQuestTypeChip(chipType)
+    selectorData = getSelectorData(chipType)
     if (selectorData.length) {
       onSelectValueChange(selectorData[0].value)
     }
@@ -101,6 +119,7 @@ function _QuestSelect({
     const quests: { [k: string]: string[] } = {
       "Daily": [],
       "Tower": [],
+      "Battle": [],
       "Misc": [],
     }
     keys.forEach(key => {
@@ -108,9 +127,11 @@ function _QuestSelect({
         quests["Daily"].push(key)
       } else if (key.startsWith("Tower")) {
         quests["Tower"].push(key)
+      } else if (key.startsWith("Battle")) {
+        quests["Battle"].push(key)
       } else {
         quests["Misc"].push(key)
-      }
+      } 
     })
     const group = (key: string) => {
       return (
@@ -128,6 +149,7 @@ function _QuestSelect({
       <>
         {group("Daily")}
         {group("Tower")}
+        {group("Battle")}
         {group("Misc")}
       </>
     )
@@ -220,7 +242,7 @@ function _QuestSelect({
           <QuestTypeDivider keys={genre} />
         </Chip.Group>
         <Space h="xl" />
-        <Select label={t("Select a Live")} placeholder="input to search..."
+        <Select label={t("Select a Live")} placeholder="type to search..."
           searchable nothingFound={t("No matches")}
           maxDropdownHeight={270}
           onChange={onSelectValueChange} data={selectorData} value={selected}
