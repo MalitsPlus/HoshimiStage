@@ -5,16 +5,17 @@ import { Effect, Live } from "hoshimi-venus/out/types/concert_types";
 import { t } from "i18next";
 import { memo } from "react";
 import { EffColor } from "../../src/static/efficacy_flow_color";
-import { getPrivilegedEfficacyList } from "../../src/utils/data_mgr";
+import { getLeftEfficacyList } from "../../src/utils/data_mgr";
 import EffectRich from "./EffectRich";
 
+const MAX_EFF_NUM = 15
 type EffIdxDictType = { [uuid: string]: number }
 
 const findMinAvaliableIdx = (
   effIdxDict: { [uuid: string]: number }, effs: Effect[]
 ): number => {
   const unavaliables = effs.map(eff => effIdxDict[eff.id])
-  for (let i = 1; i <= 12; i++) {
+  for (let i = 1; i <= MAX_EFF_NUM; i++) {
     if (!unavaliables.includes(i)) {
       return i
     }
@@ -37,6 +38,12 @@ const flowPosition: {
   10: "col-start-10 order-10",
   11: "col-start-11 order-11",
   12: "col-start-12 order-12",
+  13: "col-start-13 order-13",
+  14: "col-start-14 order-14",
+  15: "col-start-15 order-15",
+  16: "col-start-16 order-16",
+  17: "col-start-17 order-17",
+  18: "col-start-18 order-18",
 }
 
 type EffFlowProps = {
@@ -54,13 +61,13 @@ const EffRow = ({ prevEffs, curEffs, sequence, category, effIdxDict, ingameIndex
   ingameIndex: number,
   isLastNote: boolean,
 }) => {
-
+  const displayEffs = curEffs.filter(eff =>
+    category == "privileged" && getLeftEfficacyList().includes(eff.efficacyType)
+    || category == "general" && !getLeftEfficacyList().includes(eff.efficacyType)
+  )
   return (
-    <div className={`grid grid-cols-12 h-[98%] w-full justify-items-center items-stretch ${category == "privileged" ? "[direction:rtl]" : ""}`}>
-      {curEffs.filter(eff =>
-        category == "privileged" && getPrivilegedEfficacyList().includes(eff.efficacyType)
-        || category == "general" && !getPrivilegedEfficacyList().includes(eff.efficacyType)
-      ).map((eff, idx, specifiedEffs) => {
+    <div className={`grid grid-cols-15 h-[98%] w-full justify-items-center items-stretch ${category == "privileged" ? "[direction:rtl]" : ""}`}>
+      {displayEffs.map((eff, idx, specifiedEffs) => {
         const isStart = !prevEffs.some(preEff => preEff.id === eff.id)
         const isEnd = eff.remain === 0 || isLastNote
         if (isStart) {

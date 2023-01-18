@@ -1,15 +1,9 @@
-import { GameSetting } from "hoshimi-venus/out/db/repository/setting_repository";
 import { SkillEfficacyType } from "hoshimi-venus/out/types/proto/proto_enum";
+import { getPrivilegedEfficacyList } from "../utils/data_mgr";
+
+export const PrivilegedEfficacies = getPrivilegedEfficacyList()
 
 export const HighlightEfficacies = [
-  ...GameSetting.skillEfficacyTypeWeaknessDownList,
-  ...GameSetting.skillEfficacyTypeWeaknessOtherList,
-  SkillEfficacyType.DanceBoost,
-  SkillEfficacyType.DanceUp,
-  SkillEfficacyType.VocalBoost,
-  SkillEfficacyType.VocalUp,
-  SkillEfficacyType.VisualBoost,
-  SkillEfficacyType.VisualUp,
   SkillEfficacyType.ScoreUp,
   SkillEfficacyType.ActiveSkillScoreUp,
   SkillEfficacyType.SpecialSkillScoreUp,
@@ -18,7 +12,11 @@ export const HighlightEfficacies = [
   SkillEfficacyType.SpecialScoreMultiplierAdd,
   SkillEfficacyType.ActiveScoreMultiplierAdd,
   SkillEfficacyType.ComboScoreUp,
-  SkillEfficacyType.SkillSuccessRateUp,
   SkillEfficacyType.TensionUp,
   SkillEfficacyType.AudienceAmountIncrease,
+]
+
+export const PriviAndHighlightEfficacies = [
+  ...PrivilegedEfficacies,
+  ...HighlightEfficacies,
 ]

@@ -14,7 +14,10 @@ const MyButton = ({
   return (
     <Button
       className={classNames(
-        "active:transform-none transition duration-150",
+        "bg-sky-600 hover:bg-sky-700 active:bg-sky-800",
+        "dark:bg-sky-600 dark:hover:bg-sky-700 dark:active:bg-sky-800 ",
+        "disabled:dark:bg-zinc-600",
+        "active:transform-none transition duration-150 p-2",
         className
       )}
       {...theirProps}

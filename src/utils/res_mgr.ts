@@ -2,8 +2,8 @@ import { RESOURCE_ENV } from "../dev_conf"
 
 const Paths = {
   image: (id: string) => ({
-    local: `/img/${id}.png`,
-    remote: `${id}`,
+    local: `/img/${id}.webp`,
+    remote: `https://idoly-assets-curator.vercel.app/api/img/${id}`,
   }),
   others: (id: string) => ({
     local: ``,
@@ -13,5 +13,12 @@ const Paths = {
 
 export const getAssetUri = (
   _type: "image" | "others",
-  id: string
-) => Paths[_type](id)[RESOURCE_ENV]
+  id: string,
+  env?: "local" | "remote"
+) => {
+  let useEnv = env ?? RESOURCE_ENV
+  if (RESOURCE_ENV === "local") {
+    useEnv = RESOURCE_ENV
+  }
+  return Paths[_type](id)[useEnv]
+}

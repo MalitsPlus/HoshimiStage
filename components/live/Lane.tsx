@@ -1,29 +1,33 @@
-import { Center, HoverCard } from "@mantine/core"
 import classNames from "classnames"
 import { Live } from "hoshimi-venus/out/types/concert_types"
 import { AttributeType, MusicChartType } from "hoshimi-venus/out/types/proto/proto_enum"
 import { Card } from "hoshimi-venus/out/types/proto/proto_master"
+import { CustomNote } from "hoshimi-venus/out/types/trans_types"
 import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps"
 import { getChara, getData } from "../../src/utils/data_mgr"
 import CharaIconDropZone from "../media/CharaIconDropZone"
 import DraggableCharaIcon from "../media/DraggableCharaIcon"
-import { index2GamePos } from "./Stage"
 import LiveNoteFlow from "./LiveNoteFlow"
+import { index2GamePos } from "./Stage"
 
 export default function Lane({
   index,
+  customNotes,
   card,
   wapQuest,
   live,
   onCharaClick,
-  onCharaDrop
+  onCharaDrop,
+  onToggleNote,
 }: {
   index: number,
+  customNotes: CustomNote[],
   card?: Card,
   wapQuest?: WapQuest,
   live?: Live,
   onCharaClick: () => void,
   onCharaDrop: (srcId: string, dest: number) => void,
+  onToggleNote: (ingamePos: number, sequence: number) => void,
 }) {
   const ingameIndex = index2GamePos[index]
   const { id, assetId, type, name, characterId } = card ?? {
@@ -72,8 +76,8 @@ export default function Lane({
           onCharaClick={onCharaClick}
           pointer={true}
         />
-        <div className="w-full my-2 text-center">{chara?.name ?? " "}</div>
-        <div className="w-full text-center text-xs">{(live || wapQuest) && `${noteInfo} ${minGap === 9999 ? "" : minGap}`}</div>
+        <div className="w-full h-7 my-2 text-center">{chara?.name ?? " "}</div>
+        <div className="w-full h-4 text-center text-xs">{(live || wapQuest) && `${noteInfo} ${minGap === 9999 ? "" : minGap}`}</div>
         <div className={classNames( // FIXME: color value shall be connected with the music pattern, not the card type.
           "w-full h-0.5 rounded-sm mb-1",
           attribute === AttributeType.Dance ? "bg-dance"
@@ -88,6 +92,8 @@ export default function Lane({
         ingameIndex={ingameIndex}
         live={live}
         wapQuest={wapQuest}
+        customNotes={customNotes}
+        onToggleNote={onToggleNote}
       />
     </div >
   )

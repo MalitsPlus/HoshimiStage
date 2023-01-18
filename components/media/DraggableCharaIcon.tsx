@@ -56,7 +56,7 @@ const DraggableCharaIcon = ({
       <div ref={dragRef} className={classNames(
         "rounded-md aspect-square w-14 h-14",
         isDragging ? "shadow !opacity-0 pointer-events-none" : "opacity-100",
-        canDrag ? "" : "[filter:brightness(0.5)]",
+        !canDrag && !!card ? "[filter:brightness(0.35)]" : "",
         className,
       )}
       >

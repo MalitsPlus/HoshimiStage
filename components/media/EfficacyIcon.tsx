@@ -20,6 +20,7 @@ const EfficacyIcon = ({
         <ImageAsset
           aid={isDebuff ? "frame_debuff" : "frame_buff"}
           aspect="1"
+          env="local"
           className=""
         />
       </div>

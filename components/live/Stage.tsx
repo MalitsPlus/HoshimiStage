@@ -1,9 +1,11 @@
+import { Overlay } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
+import { IconRefreshDot } from '@tabler/icons';
 import simulate from 'hoshimi-venus';
 import { Live } from 'hoshimi-venus/out/types/concert_types';
-import { TransDeck } from 'hoshimi-venus/out/types/trans_types';
+import { CustomNote, TransDeck } from 'hoshimi-venus/out/types/trans_types';
 import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps";
-import { SetStateAction, useCallback, useEffect, useState } from "react";
+import { SetStateAction, useCallback, useState } from "react";
 import { DndProvider } from 'react-dnd';
 import { TouchBackend } from "react-dnd-touch-backend";
 import { charaDropAction } from "../../src/utils/live_utils";
@@ -21,13 +23,7 @@ export type StageParty = {
     readonly ingamePos: number,
   }
 }
-// const testPtCards: StageParty = {
-//   0: { cardId: "card-ai-03-schl-00", ingamePos: 4 },
-//   1: { cardId: "card-mna-05-fest-00", ingamePos: 2 },
-//   2: { cardId: "card-kkr-04-casl-00", ingamePos: 1 },
-//   3: { cardId: "card-chs-03-schl-00", ingamePos: 3 },
-//   4: { cardId: "card-smr-04-casl-00", ingamePos: 5 },
-// }
+
 const testPtCards: StageParty = {
   0: { cardId: undefined, ingamePos: 4 },
   1: { cardId: undefined, ingamePos: 2 },
@@ -42,9 +38,11 @@ export default function Stage() {
   // UI states
   const [groomOpened, setGroomOpened] = useState(false)
   const [statPnlOpened, setstatPnlOpened] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   // data model states
   const [live, setLive] = useState<Live | undefined>(undefined)
+  const [customNotes, setCustomNotes] = useState<CustomNote[]>([])
 
   // persistent data
   const [userData, setUserData, cleanUserData] = useLocalStorage({
@@ -67,6 +65,7 @@ export default function Stage() {
   }, [])
 
   const onSetQuest = useCallback((wapQuest: WapQuest | undefined) => {
+    setCustomNotes([])
     setLive(undefined)
     setWapQuest(wapQuest)
   }, [])
@@ -103,13 +102,20 @@ export default function Stage() {
       card: userData.getCard(it.cardId!),
       index: it.ingamePos,
     }))
-    const result = simulate(wapQuest?.id, transDeck)
-    if (typeof result === "string") {
-      console.log("simulation returns string.")
-      return
-    }
-    setLive(result)
-  }, [userData, party, wapQuest])
+
+    setLoading(true)
+
+    setTimeout(() => {
+      const result = simulate(wapQuest?.id, transDeck, undefined, customNotes)
+      if (typeof result === "string") {
+        console.log("simulation returns string.")
+        return
+      }
+      setLive(result)
+      setLoading(false)
+    }, 0)
+
+  }, [userData, party, wapQuest, customNotes])
 
   const onStatusEditClick = useCallback(() => {
     if (!isPartyFull(party)) {
@@ -120,30 +126,43 @@ export default function Stage() {
     setstatPnlOpened(true)
   }, [party])
 
-  // retrieve last scene at first render
-  useEffect(() => {
-    // if (lastQuest) {
-    //   const wapQuest = getQuest(lastQuest)
-    //   onSetQuest(wapQuest)
-    // }
-    // if (lastDeck) {
-    //   const deck = userData.getDeck(lastDeck)
-    //   if (deck) {
-    //     const lastParty = {
-    //       0: { card: userData.getCard(deck.party[0]), ingamePos: 4 },
-    //       1: { card: userData.getCard(deck.party[1]), ingamePos: 2 },
-    //       2: { card: userData.getCard(deck.party[2]), ingamePos: 1 },
-    //       3: { card: userData.getCard(deck.party[3]), ingamePos: 3 },
-    //       4: { card: userData.getCard(deck.party[4]), ingamePos: 5 },
-    //     }
-    //     onSetParty(lastParty)
-    //   }
-    // }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  const onToggleNote = useCallback((ingamePos: number, sequence: number) => {
+    console.log(`toggle! ${ingamePos} - ${sequence}`)
+    setCustomNotes(previous => {
+      const oldIndex = previous.findIndex(it => it.sequence === sequence && it.ingamePos === ingamePos)
+      if (oldIndex !== -1) {
+        const newArray = [...previous]
+        newArray.splice(oldIndex, 1)
+        return newArray
+      } else {
+        return [
+          ...previous,
+          {
+            ingamePos: ingamePos,
+            sequence: sequence,
+            privilege: "opponent",
+          }
+        ]
+      }
+    })
+    setLive(undefined)
   }, [])
+
+  // for clean test
+  // useEffect(() => {
+  //   cleanQuest()
+  //   cleanParty()
+  //   cleanUserData()
+  // }, [])
 
   return (
     <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
+      {loading
+        ? <Overlay<"div"> opacity={0.8} color="#000" zIndex={1001} className="flex flex-col justify-center items-center" >
+          <IconRefreshDot width={150} height={150} className="animate-spin-reverse" />
+          <p className='font-mono text-xl'>simulating...</p>
+        </Overlay>
+        : null}
       <div className='flex flex-col h-screen'>
         <Greenroom
           opened={groomOpened}
@@ -174,6 +193,8 @@ export default function Stage() {
               key={k}
               wapQuest={wapQuest}
               live={live}
+              customNotes={customNotes}
+              onToggleNote={onToggleNote}
               onCharaClick={() => onCharaClick(+k, v.cardId)}
               onCharaDrop={onCharaDrop}
             />

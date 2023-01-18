@@ -9,9 +9,10 @@ const ImageAsset = (
   props: {
     aid: string,
     aspect: string,
+    env?: "local" | "remote",
   } & Partial<ImageProps>
 ) => {
-  const { aid, aspect, width, height, ...others } = props
+  const { aid, aspect, width, height, env, ...others } = props
   return (
     <div
       className="relative"
@@ -22,7 +23,7 @@ const ImageAsset = (
       }}
     >
       <Image
-        src={getAssetUri("image", aid)}
+        src={getAssetUri("image", aid, env)}
         alt={aid}
         fill
         className="object-fill"

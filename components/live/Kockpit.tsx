@@ -3,10 +3,11 @@ import ImageAsset from "../misc/ImageAsset";
 import MyButton from "../misc/MyButton";
 import { useEffect, useState } from "react";
 import { t } from "i18next";
-import { Modal, Space } from "@mantine/core";
+import { Button, Modal, Space } from "@mantine/core";
 import QuestSelect from "./QuestSelect";
 import { getMusicJacket } from "../../src/utils/misc";
 import { useClickOutside } from "@mantine/hooks";
+import { IconQuestionMark } from "@tabler/icons";
 
 export default function Kockpit({
   wapQuest,
@@ -34,13 +35,24 @@ export default function Kockpit({
             onClick={() => setOpened(true)}
           >
             <div className="inline-block align-middle w-14 h-14">
-              {wapQuest ? <ImageAsset aid={getMusicJacket(wapQuest.musicId)} aspect="1" /> : <ImageAsset aid={""} aspect="1" />}
+              {wapQuest
+                ? <ImageAsset aid={getMusicJacket(wapQuest.musicId)} aspect="1" />
+                : <ImageAsset
+                  aid="chara_icon_placeholder"
+                  aspect="1"
+                  env="local"
+                  className="rounded-md w-14 h-14"
+                />}
             </div>
             <div className="inline-block pl-4 text-3xl text-start align-middle">
               {wapQuest?.musicName}
             </div>
           </div>
         </div>
+        <div>
+          <MyButton disabled className="w-24 h-10" onClick={() => { }}>{t("PvP Mode")}</MyButton>
+        </div>
+        <Space w={16} />
         <div>
           <MyButton className="w-24 h-10" onClick={onStatusEditClick}>{t("edit status")}</MyButton>
         </div>

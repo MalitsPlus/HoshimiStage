@@ -7,12 +7,16 @@ export default function NumberComp({
   value,
   setValue,
   step,
+  min,
+  max,
   iconId,
 }: {
   label: string,
   value: number,
   setValue: (val: number) => void,
   step?: number,
+  min?: number,
+  max?: number,
   iconId?: string,
 }) {
   const handlers = useRef<NumberInputHandlers>();
@@ -27,12 +31,13 @@ export default function NumberComp({
         value={value}
         onChange={(val) => setValue(val!)}
         handlersRef={handlers}
-        min={0}
+        min={min ? min : 0}
+        max={max ? max : 999999}
         step={step ? step : 10000}
         error={!!!value}
         icon={iconId
           ? <div className="aspect-square w-4 h-4">
-            <ImageAsset aid={iconId} aspect="1" />
+            <ImageAsset aid={iconId} aspect="1" env='local' />
           </div>
           : null
         }

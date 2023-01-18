@@ -27,7 +27,7 @@ const CustDragLayer = () => {
   return (
     <div className='fixed left-0 top-0 z-[9999] opacity-100 w-full h-full pointer-events-none'>
       <div style={transform}>
-        <CharaIcon id={item.id} assetId={item.assetId} role={item.type} attribute={item.attribute} />
+        <CharaIcon id={item.id} assetId={item.assetId} role={item.type} attribute={item.attribute} pointer />
       </div>
     </div>
   )

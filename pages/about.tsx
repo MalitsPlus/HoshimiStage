@@ -4,7 +4,7 @@ export default function About() {
   return (
     <>
       <Head>
-        <title>SakuraLove - About</title>
+        <title>Hoshimi Stage - About</title>
       </Head>
       <div>
         this is about page.

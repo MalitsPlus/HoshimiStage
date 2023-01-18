@@ -1,12 +1,15 @@
-import { Modal } from "@mantine/core"
+import { Alert, Modal, MultiSelect, Select, Space } from "@mantine/core"
+import { IconAlertCircle } from "@tabler/icons"
 import { getDefaultParam } from "hoshimi-venus/out/satomi/card"
 import { UserCard } from "hoshimi-venus/out/types/card_types"
+import { t } from "i18next"
 import update from 'immutability-helper'
 import { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from "react"
-import { getChara, getData } from "../../src/utils/data_mgr"
+import { getChara, getData, getDefaultUserCard } from "../../src/utils/data_mgr"
 import { getCardAttribute } from "../../src/utils/misc"
 import { UserData } from "../../src/utils/user_data"
 import CharaIcon from "../media/CharaIcon"
+import MyButton from "../misc/MyButton"
 import NumberComp from "../misc/NumberComp"
 import { StageParty } from "./Stage"
 
@@ -65,7 +68,12 @@ const StatusCard = memo(function _StatusCard({
 
   return (
     <>
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center px-2">
+        <div className="my-4">
+          <MyButton className="w-12 h-6 p-1" onClick={() => { setUserCard(getDefaultUserCard(userCard.id), uiPos) }}>
+            <div className="text-xs">{t("Reset")}</div>
+          </MyButton>
+        </div>
         <div>
           <CharaIcon id={userCard.id} assetId={userCard.assetId} role={userCard.type} attribute={attribute} pointer={false} />
         </div>
@@ -86,17 +94,19 @@ const StatusCard = memo(function _StatusCard({
           step={1000}
         />
         <NumberComp label="skill 1" value={userCard.skillLevel1} setValue={createSetSkillLevelFunction("1")}
-          iconId=""
-          step={1}
+          iconId="icon_parameter_s1"
+          min={1} max={6} step={1}
         />
         <NumberComp label="skill 2" value={userCard.skillLevel2} setValue={createSetSkillLevelFunction("2")}
-          iconId=""
-          step={1}
+          iconId="icon_parameter_s2"
+          min={1} max={6} step={1}
         />
         <NumberComp label="skill 3" value={userCard.skillLevel3} setValue={createSetSkillLevelFunction("3")}
-          iconId=""
-          step={1}
+          iconId="icon_parameter_s3"
+          min={1} max={6} step={1}
         />
+        <Space h={8} />
+        <MultiSelect data={[]} placeholder="Add Ex Skills" disabled />
       </div>
     </>
   )
@@ -179,11 +189,11 @@ const StatusPannel = ({
     <Modal
       opened={opened}
       onClose={onClose}
-      title="Edit status"
+      title="Adjust status"
       overflow="outside"
       size="auto"
     >
-      <div className="grid grid-cols-5 divide-x divide-solid divide-slate-500/25">
+      <div className="grid grid-cols-5 items-center divide-x divide-dashed divide-slate-500/25">
         {localCards.map((it, idx) => {
           return (it
             ? <StatusCard
@@ -196,6 +206,10 @@ const StatusPannel = ({
           )
         })}
       </div>
+      <Space h={16} />
+      <Alert icon={<IconAlertCircle size={16} />} title={<div className="text-base">{t("Notice")}</div>} color="indigo">
+        <div className="text-base">{t("Adjust pannel hint")}</div>
+      </Alert>
     </Modal>
   )
 }

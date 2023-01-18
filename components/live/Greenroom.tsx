@@ -77,7 +77,7 @@ export default function Greenroom({
     return (
       <Chip value={name}>
         <div className="relative aspect-square w-4 mr-0.5 inline-block align-[-3px]">
-          <ImageAsset aid={iconAid} aspect="1" />
+          <ImageAsset aid={iconAid} aspect="1" env="local" />
         </div>
         <span>{t(name)}</span>
       </Chip>

@@ -1,5 +1,4 @@
 import { HoverCard, SegmentedControl, UnstyledButton } from '@mantine/core';
-import Image from 'next/image';
 import { useContext } from 'react';
 import { AppContext } from '../../pages/_app';
 
@@ -15,8 +14,7 @@ export function LanguageBtn() {
               text-blue-600  hover:bg-blue-100 active:bg-blue-200
               dark:text-blue-200 dark:hover:bg-zinc-700 dark:active:bg-zinc-600"
           >
-            {lng === "en" ? <Image src="/svg/us.svg" alt="us" width={20} height={20} className="rounded-md" />
-              : <Image src="/svg/cn.svg" alt="cn" width={20} height={20} className="rounded-md" />}
+            {lng === "en" ? "EN" : "ZH"}
           </UnstyledButton>
         </HoverCard.Target>
         <HoverCard.Dropdown>
@@ -26,15 +24,11 @@ export function LanguageBtn() {
             data={[
               {
                 value: "en",
-                label: (
-                  <Image src="/svg/us.svg" alt="us" width={20} height={20} className="rounded-md" />
-                ),
+                label: ("EN"),
               },
               {
                 value: "zh",
-                label: (
-                  <Image src="/svg/cn.svg" alt="zh" width={20} height={20} className="rounded-md" />
-                ),
+                label: ("ZH"),
               },
             ]}
           />

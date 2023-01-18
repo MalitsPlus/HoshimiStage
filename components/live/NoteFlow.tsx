@@ -2,20 +2,23 @@ import { Badge, Center, Divider, HoverCard } from "@mantine/core"
 import { IconStar } from "@tabler/icons"
 import classNames from "classnames"
 import { LiveCard } from "hoshimi-venus/out/types/card_types"
-import { ActSkill, Live } from "hoshimi-venus/out/types/concert_types"
-import { AttributeType, MusicChartType, SkillFailureType } from "hoshimi-venus/out/types/proto/proto_enum"
+import { ActSkill, CardStatus, Live } from "hoshimi-venus/out/types/concert_types"
+import { AttributeType, MusicChartType, SkillEfficacyType, SkillFailureType } from "hoshimi-venus/out/types/proto/proto_enum"
+import { CustomNote } from "hoshimi-venus/out/types/trans_types"
 import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps"
 import { t } from "i18next"
 import { Fragment, memo } from "react"
-import { HighlightEfficacies } from "../../src/static/highlight_efficacies"
+import { HighlightEfficacies, PriviAndHighlightEfficacies, PrivilegedEfficacies } from "../../src/static/highlight_efficacies"
 import SkillIcon from "../media/SkillIcon"
 import EffectRich from "./EffectRich"
 
 type NoteFlowProps = {
   attribute: AttributeType,
   ingameIndex: number,
+  customNotes: CustomNote[],
   live?: Live,
   wapQuest?: WapQuest,
+  onToggleNote: (ingamePos: number, sequence: number) => void,
 }
 
 const ActivatedSkill = ({
@@ -27,23 +30,47 @@ const ActivatedSkill = ({
 }) => {
   return (
     <div className="whitespace-pre-wrap text-sm">
-      {skills.map(aSkill => {
+      {skills.map((aSkill, idx) => {
         const skill = card.getSkill(aSkill.skillIndex)
-        return (<>
+        return (<Fragment key={idx}>
           <SkillIcon wSkillLevel={skill} />
           <div>{t("Order") + ": " + aSkill.order}</div>
           <div>{skill.description}</div>
-        </>)
+        </Fragment>)
       })}
     </div>
   )
 }
+
+const EffRichRow = memo(function _EffRichRow({
+  efficacies,
+  status,
+}: {
+  efficacies: SkillEfficacyType[] | undefined,
+  status: CardStatus,
+}) {
+  return (
+    <>
+      {efficacies?.length ? <Divider my={4} className="col-span-2" /> : null}
+      {efficacies?.map((effType, idx) => {
+        const sumGrades = status.getEffectSumOrMaxGrade(effType, true, true)
+        return (<Fragment key={idx}>
+          <EffectRich type={effType} />
+          <div>{`${sumGrades[0]} (${sumGrades[1].join("+")})`}</div>
+        </Fragment>
+        )
+      })}
+    </>
+  )
+})
 
 const NoteFlow = ({
   attribute,
   ingameIndex,
   live,
   wapQuest,
+  customNotes,
+  onToggleNote,
 }: NoteFlowProps) => {
   console.log("rendered noteflow")
   if (live === undefined && wapQuest === undefined) {
@@ -84,27 +111,43 @@ const NoteFlow = ({
         const activating = [aSkill, ...pSkills ?? [undefined]].filter(it => it !== undefined)
 
         const efficacies = status ? [...new Set(status.effects.map(eff => eff.efficacyType))] : undefined
+        const privilegedEfficacies = efficacies?.filter(it => PrivilegedEfficacies.includes(it))
         const pickupEfficacies = efficacies?.filter(it => HighlightEfficacies.includes(it))
-        const normalEfficacies = efficacies?.filter(it => !HighlightEfficacies.includes(it))
+        const normalEfficacies = efficacies?.filter(it => !PriviAndHighlightEfficacies.includes(it))
+
+        const customOpponent = customNotes.some(
+          it => it.ingamePos === ingameIndex
+            && it.sequence === ptn.sequence
+            && it.privilege === "opponent"
+        )
 
         return (
           <HoverCard width="auto" shadow="md" key={idx} position="left" offset={15} withArrow transitionDuration={0} openDelay={100} closeDelay={0} >
             <HoverCard.Target>
-              <div className="h-1 w-1 grow shrink flex justify-center items-center cursor-pointer">
+              <div
+                className="h-1 w-1 grow shrink flex justify-center items-center cursor-pointer"
+                onClick={() => {
+                  if (ptn.position === ingameIndex) {
+                    onToggleNote(ingameIndex, ptn.sequence)
+                  }
+                }}
+              >
                 {ptn.position === ingameIndex
                   ? (
                     <div className={classNames(
                       "grow shrink aspect-square overflow-visible rounded-full text-center font-medium text-white",
                       ptn.type === MusicChartType.SpecialSkill ? "h-7 w-7 leading-5 border-solid border-4" : "h-5 w-5 leading-5",
                       ptn.type === MusicChartType.SpecialSkill
-                        ? attribute === AttributeType.Dance ? "border-dance-acc"
-                          : attribute === AttributeType.Vocal ? "border-vocal-acc"
-                            : attribute === AttributeType.Visual ? "border-visual-acc"
-                              : "bg-slate-600" : "",
-                      attribute === AttributeType.Dance ? "bg-dance"
-                        : attribute === AttributeType.Vocal ? "bg-vocal"
-                          : attribute === AttributeType.Visual ? "bg-visual"
-                            : "bg-slate-600"
+                        ? customOpponent ? "border-zinc-500"
+                          : attribute === AttributeType.Dance ? "border-dance-acc"
+                            : attribute === AttributeType.Vocal ? "border-vocal-acc"
+                              : attribute === AttributeType.Visual ? "border-visual-acc"
+                                : "bg-slate-600" : "",
+                      customOpponent ? "bg-zinc-600"
+                        : attribute === AttributeType.Dance ? "bg-dance"
+                          : attribute === AttributeType.Vocal ? "bg-vocal"
+                            : attribute === AttributeType.Visual ? "bg-visual"
+                              : "bg-slate-600"
                     )}>
                       <Center>
                         {ptn.sequence}
@@ -169,24 +212,18 @@ const NoteFlow = ({
                           </div>
                         </Fragment>)
                       })}
-                      {pickupEfficacies?.length ? <Divider my={4} className="col-span-2" /> : null}
-                      {pickupEfficacies?.map((effType, idx) => {
-                        const sumGrade = status.getEffectSumOrMaxGrade(effType, true, true)
-                        return (<Fragment key={idx}>
-                          <EffectRich type={effType} />
-                          <div>{sumGrade}</div>
-                        </Fragment>
-                        )
-                      })}
-                      {normalEfficacies?.length ? <Divider my={4} className="col-span-2" /> : null}
-                      {normalEfficacies?.map((effType, idx) => {
-                        const sumGrade = status.getEffectSumOrMaxGrade(effType, true, true)
-                        return (<Fragment key={idx}>
-                          <EffectRich type={effType} />
-                          <div>{sumGrade}</div>
-                        </Fragment>
-                        )
-                      })}
+                      <EffRichRow
+                        efficacies={privilegedEfficacies}
+                        status={status}
+                      />
+                      <EffRichRow
+                        efficacies={pickupEfficacies}
+                        status={status}
+                      />
+                      <EffRichRow
+                        efficacies={normalEfficacies}
+                        status={status}
+                      />
                     </>)
                     : null
                   }

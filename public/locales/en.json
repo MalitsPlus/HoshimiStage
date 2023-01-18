@@ -1,6 +1,6 @@
 {
   "testt": "eng text",
-  "edit status": "Modify",
+  "edit status": "Adjust",
   "simulate": "Simulate",
   "select a quest": "Choose a quest type",
   "Select a Live": "Select a Live",
@@ -34,6 +34,9 @@
   "less": "less",
   "more": "more",
   "SP": "SP",
+  "PvP Mode": "PvP Mode",
+  "Adjust pannel hint": "All parameters adjusted here will be saved in your local browser cache organized by card ID at the time this dialog is closing.",
+  "Notice": "Notice",
   "Live Bonus": "Live Bonus",
   "specialSkillWeightPermil": "SP Score",
   "activeSkillWeightPermil": "A Score",

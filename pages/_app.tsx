@@ -35,7 +35,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>Sakura-Love(kari)</title>
+        <title>Hoshimi Stage</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
       <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
@@ -51,16 +51,16 @@ export default function App({ Component, pageProps }: AppProps) {
             primaryColor: "twsky",
             primaryShade: { light: 5, dark: 6 },
             activeStyles: {
-              transform: "none",
+              // transform: "none",
             },
             components: {
-              Button: {
-                defaultProps: {
-                },
-                classNames: {
-                  root: "bg-sky-500 hover:bg-sky-600 active:bg-sky-700 dark:bg-sky-600 dark:hover:bg-sky-700 dark:active:bg-sky-800 transition duration-150"
-                },
-              },
+              // Button: {
+              //   defaultProps: {
+              //   },
+              //   classNames: {
+              //     root: "bg-sky-500 hover:bg-sky-600 active:bg-sky-700 dark:bg-sky-600 dark:hover:bg-sky-700 dark:active:bg-sky-800 transition duration-150"
+              //   },
+              // },
             }
           }}
         >

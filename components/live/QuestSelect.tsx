@@ -6,7 +6,7 @@ import { AttributeType, MusicChartType } from "hoshimi-venus/out/types/proto/pro
 import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps";
 import { WapLiveAbility } from "hoshimi-venus/out/types/wap/skill_waps";
 import { t } from "i18next";
-import { Dispatch, ForwardedRef, forwardRef, SetStateAction, useEffect, useMemo } from "react";
+import { Dispatch, ForwardedRef, forwardRef, SetStateAction, useEffect, useMemo, useState } from "react";
 import { QuestIdMap } from "../../src/static/quest_id_map";
 import { getMusicJacket } from "../../src/utils/misc";
 import SkillIcon from "../media/SkillIcon";
@@ -32,6 +32,8 @@ function _QuestSelect({
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const genre = Object.keys(QuestIdMap)
+
+  const [jacketLoading, setJacketLoading] = useState(false)
 
   const [questTypeChip, setQuestTypeChip] = useLocalStorage<string | undefined>({
     key: "QuestSelect_questType",
@@ -82,7 +84,11 @@ function _QuestSelect({
         default: return () => []
       }
     })()
-    return getDataFunction().sort().reverse().map(questBase => {
+    return getDataFunction().sort((a, b) => {
+      if (a.id < b.id) return 1
+      if (a.id > b.id) return -1
+      return 0
+    }).map(questBase => {
       return {
         value: questBase.id,
         label: questBase.id,
@@ -105,6 +111,10 @@ function _QuestSelect({
 
   const onSelectValueChange = (v: string) => {
     console.log(`onSelectValueChange ${v}`)
+    const newQuest = getQuest(v)
+    if (newQuest?.musicId !== wapQuest?.musicId) {
+      setJacketLoading(true)
+    }
     setSelected(v)
   }
 
@@ -131,7 +141,7 @@ function _QuestSelect({
         quests["Battle"].push(key)
       } else {
         quests["Misc"].push(key)
-      } 
+      }
     })
     const group = (key: string) => {
       return (
@@ -249,7 +259,13 @@ function _QuestSelect({
         />
         <Divider my="xl" />
         <div className="w-16 h-16 mx-auto">
-          {wapQuest && <ImageAsset aid={getMusicJacket(wapQuest.musicId)} aspect="1" />}
+          {wapQuest
+            && <ImageAsset
+              onLoadingComplete={() => { setJacketLoading(false) }}
+              aid={getMusicJacket(wapQuest.musicId)} aspect="1"
+              className={jacketLoading ? "blur-md" : ""}
+            />
+          }
         </div>
         <div className="text-center">
           <p>{wapQuest && wapQuest.musicName}</p>

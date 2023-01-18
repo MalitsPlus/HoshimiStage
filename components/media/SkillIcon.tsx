@@ -2,7 +2,6 @@ import classNames from "classnames";
 import { AttributeType, CardType, SkillCategoryType } from "hoshimi-venus/out/types/proto/proto_enum";
 import { WapSkillLevel } from "hoshimi-venus/out/types/wap/skill_waps";
 import { memo } from "react";
-import { getAssetUri } from "../../src/utils/res_mgr";
 import { getSkillAssets, getSkillBg } from "../../src/utils/skill_icon";
 import ImageAsset from "../misc/ImageAsset";
 
@@ -35,6 +34,7 @@ const SkillIcon = ({
       <ImageAsset
         aid={bg}
         aspect="1"
+        env="local"
         className=""
       />
 

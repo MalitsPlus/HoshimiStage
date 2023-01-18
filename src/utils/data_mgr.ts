@@ -62,6 +62,15 @@ export const getChara = (id: string): Character | undefined => {
   throw new Error("Unimplemented.")
 }
 
+export const getLeftEfficacyList = (): SkillEfficacyType[] => {
+  return [
+    ...PrivilegedEfficacyList,
+    SkillEfficacyType.ScoreUp,
+  ]
+}
+
 export const getPrivilegedEfficacyList = (): SkillEfficacyType[] => {
-  return PrivilegedEfficacyList
+  return [
+    ...PrivilegedEfficacyList,
+  ]
 }

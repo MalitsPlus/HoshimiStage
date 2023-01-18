@@ -30,6 +30,7 @@ const CharaIcon = ({
           <ImageAsset
             aid="chara_icon_placeholder"
             aspect="1"
+            env="local"
             className="rounded-md w-14 h-14"
           />
         </UnstyledButton>
@@ -67,6 +68,7 @@ const CharaIcon = ({
           <ImageAsset
             aid={getCardType(role)}
             aspect="1"
+            env="local"
             className="z-10"
           />
         </div>
@@ -74,6 +76,7 @@ const CharaIcon = ({
           <ImageAsset
             aid={getCardAttribute(attribute)}
             aspect="1"
+            env="local"
             className="z-10"
           />
         </div>
