@@ -1,5 +1,5 @@
 import { Center, Navbar, Stack, Tooltip, UnstyledButton } from '@mantine/core';
-import { IconCode, IconMusic, TablerIcon } from '@tabler/icons';
+import { IconMusic, IconQuestionCircle, TablerIcon } from '@tabler/icons';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -36,7 +36,7 @@ function NavbarLink({ icon: Icon, label, href, active, onClick }: NavbarLinkProp
 
 const menu = [
   { icon: IconMusic, label: "Notemap", href: "/" },
-  { icon: IconCode, label: "About", href: "/about" },
+  { icon: IconQuestionCircle, label: "Help", href: "/help" },
 ];
 
 export function NavbarMini() {

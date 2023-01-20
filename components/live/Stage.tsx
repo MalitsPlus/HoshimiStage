@@ -1,6 +1,8 @@
 import { Overlay } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import { IconRefreshDot } from '@tabler/icons';
+import { IconAnalyze } from '@tabler/icons';
+import { logEvent } from 'firebase/analytics';
+import { Timestamp } from 'firebase/firestore';
 import simulate from 'hoshimi-venus';
 import { Live } from 'hoshimi-venus/out/types/concert_types';
 import { CustomNote, TransDeck } from 'hoshimi-venus/out/types/trans_types';
@@ -8,6 +10,7 @@ import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps";
 import { SetStateAction, useCallback, useState } from "react";
 import { DndProvider } from 'react-dnd';
 import { TouchBackend } from "react-dnd-touch-backend";
+import { analytics, addSimulation, auth } from '../../src/firebase/firebase';
 import { charaDropAction } from "../../src/utils/live_utils";
 import { isPartyFull } from '../../src/utils/misc';
 import { getDefaultUserData, parseUserData, stringifyUserData } from '../../src/utils/user_data';
@@ -24,7 +27,7 @@ export type StageParty = {
   }
 }
 
-const testPtCards: StageParty = {
+const defaultParty: StageParty = {
   0: { cardId: undefined, ingamePos: 4 },
   1: { cardId: undefined, ingamePos: 2 },
   2: { cardId: undefined, ingamePos: 1 },
@@ -53,7 +56,7 @@ export default function Stage() {
   })
   const [party, setParty, cleanParty] = useLocalStorage({
     key: "UserData_lastParty",
-    defaultValue: testPtCards,
+    defaultValue: defaultParty,
   })
   const [wapQuest, setWapQuest, cleanQuest] = useLocalStorage<WapQuest | undefined>({
     key: "UserData_lastQuest",
@@ -104,15 +107,26 @@ export default function Stage() {
     }))
 
     setLoading(true)
-
     setTimeout(() => {
       const result = simulate(wapQuest?.id, transDeck, undefined, customNotes)
       if (typeof result === "string") {
-        console.log("simulation returns string.")
+        console.log(result)
+        console.log("Simulation failed. Perhaps there are some new ingame features those we havn't keep up to date.")
         return
       }
       setLive(result)
       setLoading(false)
+      logEvent(analytics, "click_simulate")
+      addSimulation({
+        quest: wapQuest.id,
+        ingamePos1: party[2].cardId,
+        ingamePos2: party[1].cardId,
+        ingamePos3: party[3].cardId,
+        ingamePos4: party[0].cardId,
+        ingamePos5: party[4].cardId,
+        uid: auth.currentUser?.uid,
+        time: Timestamp.now(),
+      }, "")
     }, 0)
 
   }, [userData, party, wapQuest, customNotes])
@@ -159,7 +173,7 @@ export default function Stage() {
     <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
       {loading
         ? <Overlay<"div"> opacity={0.8} color="#000" zIndex={1001} className="flex flex-col justify-center items-center" >
-          <IconRefreshDot width={150} height={150} className="animate-spin-reverse" />
+          <IconAnalyze width={150} height={150} className="animate-spin-reverse" />
           <p className='font-mono text-xl'>simulating...</p>
         </Overlay>
         : null}

@@ -1,21 +1,20 @@
 import { logEvent } from "firebase/analytics";
 import Head from "next/head";
 import { useEffect } from "react";
-import Venue from "../components/live/Venue";
 import { analytics } from "../src/firebase/firebase";
 
-export default function Notemap() {
+export default function Help() {
   useEffect(() => {
-    logEvent(analytics, "open_notemap")
+    logEvent(analytics, "open_help")
   }, [])
   return (
-    <div>
+    <>
       <Head>
-        <title>Hoshimi Stage - Notemap</title>
+        <title>Hoshimi Stage - Help</title>
       </Head>
       <div>
-        <Venue />
+        this is about page.
       </div>
-    </div>
+    </>
   )
 }

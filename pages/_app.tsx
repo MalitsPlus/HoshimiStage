@@ -1,9 +1,12 @@
 import { ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
+import { getAnalytics, logEvent } from 'firebase/analytics';
+import { signInAnonymously } from 'firebase/auth';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import tailwindColors from "tailwindcss/colors";
 import Layout from '../components/layout/Layout';
+import { analytics, auth } from '../src/firebase/firebase';
 import { default as i18n } from '../src/i18n';
 import '../styles/globals.css';
 
@@ -32,6 +35,14 @@ export default function App({ Component, pageProps }: AppProps) {
       : document.documentElement.classList.add('dark')
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'))
   }
+
+  useEffect(() => {
+    logEvent(analytics, "open_app")
+    signInAnonymously(auth).then((userCredential) => {
+      console.debug(userCredential.user.uid)
+    })
+  }, [])
+
   return (
     <>
       <Head>
