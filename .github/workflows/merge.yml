@@ -1,0 +1,29 @@
+name: Auto merging
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    types: [opened]
+    paths: "package.json"
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+      - name: npm install
+        run: npm ci
+      - name: Test before merging
+        run: npm run build --if-present
+      - name: Merge to main branch
+        run: |
+          echo ${{ secrets.PAT_TOKEN }} | gh auth login --with-token
+          gh pr merge actions_temp -m -d -t "build: merge pull request"
