@@ -66,4 +66,5 @@ export const EffIcon: {
   [SkillEfficacyType.WeaknessEffectInversion]: "weakness-effect-inversion",
   [SkillEfficacyType.WeaknessEffectPrevention]: "weakness-effect-prevention",
   [SkillEfficacyType.WeaknessEffectRecovery]: "weakness-effect-recovery",
+  [SkillEfficacyType.ActiveSkillChanceAssignment]: "active-skill-chance-assignment",
 }

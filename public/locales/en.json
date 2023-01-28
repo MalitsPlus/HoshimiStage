@@ -129,7 +129,7 @@
   "PassiveScoreMultiplierAdd": "P Base Score Up",
   "StaminaContinuousRecovery": "St. Continuous Regen",
   "StaminaContinuousConsumption": "St. Continuous Consump",
-  "ActiveSkillChanceAssignment": "?Active Skill Chance Assignment",
+  "ActiveSkillChanceAssignment": "A-Skill Assignment",
   "StrengthEffectErasingAll": "Buff Erasure (All)",
   "StrengthEffectAssignmentAll": "Buff Assignment (All)"
 }

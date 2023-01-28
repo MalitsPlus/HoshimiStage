@@ -129,7 +129,7 @@
   "PassiveScoreMultiplierAdd": "P 基础 Score Up",
   "StaminaContinuousRecovery": "体力持续恢复",
   "StaminaContinuousConsumption": "体力持续消耗",
-  "ActiveSkillChanceAssignment": "?Active Skill Chance Assignment",
+  "ActiveSkillChanceAssignment": "A 技能让渡",
   "StrengthEffectErasingAll": "所有 Buff 消除",
   "StrengthEffectAssignmentAll": "所有 Buff 转移"
 }

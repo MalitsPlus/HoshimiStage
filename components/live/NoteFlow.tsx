@@ -121,6 +121,8 @@ const NoteFlow = ({
             && it.privilege === "opponent"
         )
 
+        const isAssigned = chart?.actPosition !== chart?.originalActPosition && chart?.actPosition === ingameIndex
+
         return (
           <HoverCard width="auto" shadow="md" key={idx} position="left" offset={15} withArrow transitionDuration={0} openDelay={100} closeDelay={0} >
             <HoverCard.Target>
@@ -132,7 +134,15 @@ const NoteFlow = ({
                   }
                 }}
               >
-                {ptn.position === ingameIndex
+                {isAssigned ? (
+                  <div className="grow shrink aspect-square overflow-visible
+                  rounded-full text-center font-medium text-white
+                  h-5 w-5 leading-5 bg-emerald-600">
+                    <Center>
+                      {ptn.sequence}
+                    </Center>
+                  </div>
+                ) : ptn.position === ingameIndex
                   ? (
                     <div className={classNames(
                       "grow shrink aspect-square overflow-visible rounded-full text-center font-medium text-white",
