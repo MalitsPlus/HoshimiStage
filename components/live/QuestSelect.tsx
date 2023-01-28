@@ -1,6 +1,6 @@
 import { Chip, Divider, Modal, Select, Space } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
-import { getRawGvgQuests, getRawInsideDbQuests, getRawLeagueQuests, getRawPvpQuests } from "hoshimi-venus/out/db/dao/quest_dao";
+import { getRawGvgQuests, getRawInsideDbQuests, getRawLeagueQuests, getRawMarathonQuests, getRawPvpQuests, getRawRaidQuests } from "hoshimi-venus/out/db/dao/quest_dao";
 import { getQuest } from "hoshimi-venus/out/db/repository/quest_repository";
 import { AttributeType, MusicChartType } from "hoshimi-venus/out/types/proto/proto_enum";
 import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps";
@@ -60,22 +60,53 @@ function _QuestSelect({
   }[] => {
     if (chipType === undefined) return []
     if (!chipType.startsWith("Battle")) {
-      const insideDbQuests = !!chipType
-        ? getRawInsideDbQuests(QuestIdMap[chipType as keyof typeof QuestIdMap])
-          .sort().reverse().map(it => {
-            let _label = it.name ?? "null_name"
-            if (chipType === "DailySP" || chipType === "MainLive") {
-              const flag = it.id.match(/\d+-\d+$/)
-              _label += " " + flag
-            }
+      const insideDbQuests = (() => {
+        switch (chipType) {
+          case undefined: return []
+
+          // Event quest
+          case "Marathon": return getRawMarathonQuests().sort((a, b) => {
+            if (a.id < b.id) return 1
+            if (a.id > b.id) return -1
+            return 0
+          }).map(questBase => {
             return {
-              value: it.id,
-              label: _label,
+              value: questBase.id,
+              label: questBase.id,
             }
           })
-        : []
+
+          // Event multi-quest
+          case "Raid": return getRawRaidQuests().sort((a, b) => {
+            if (a.id < b.id) return 1
+            if (a.id > b.id) return -1
+            return 0
+          }).map(questBase => {
+            return {
+              value: questBase.id,
+              label: questBase.id,
+            }
+          })
+
+          // Else
+          default: return getRawInsideDbQuests(QuestIdMap[chipType as keyof typeof QuestIdMap])
+            .sort().reverse().map(it => {
+              let _label = it.name ?? "null_name"
+              if (chipType === "DailySP" || chipType === "MainLive") {
+                const flag = it.id.match(/\d+-\d+$/)
+                _label += " " + flag
+              }
+              return {
+                value: it.id,
+                label: _label,
+              }
+            })
+        }
+      })()
       return insideDbQuests
     }
+
+    // PvP, GvG, League
     const getDataFunction = (() => {
       switch (chipType) {
         case "BattlePvp": return getRawPvpQuests

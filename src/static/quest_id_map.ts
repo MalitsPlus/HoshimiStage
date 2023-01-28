@@ -10,6 +10,8 @@ export const QuestIdMap = {
   TowerLiz: "area-ex-tower-004",
   MainLive: "area-main-\\d{3}",
   TowerVenus: "area-tower-001",
+  Marathon: "",
+  Raid: "",
   BattlePvp: "",
   BattleGvg: "",
   BattleLeague: "",
