@@ -41,6 +41,8 @@
   "visual": "visual",
   "reset": "重置筛选",
   "PvP Mode": "PvP Mode",
+  "mobile notification": "请注意移动端布局不受，\n并且不将会受支持。",
+  "Dismiss": "我不管",
   "Adjust pannel hint": "所有参数将会以 CardID 为识别子在本窗口关闭时被保存在本地浏览器缓存中.",
   "Notice": "提示",
   "Live Bonus": "Live Bonus",

@@ -1,34 +1,36 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+![vercel](https://badgen.net/github/status/MalitsPlus/HoshimiStage)
+# HoshimiStage ~~(a.k.a. sakura-love)~~
 
-## Getting Started
+A web-based implementation of [hoshimi-venus](https://github.com/MalitsPlus/VenusSysLib). Enables you to simulate ingame live of IDOLY PRIDE.
 
-First, run the development server:
+Project workmap and incoming features: [Venus System WBS](https://github.com/users/MalitsPlus/projects/1)
 
+## Build
+Simply run the following commands in your terminal.
 ```bash
-npm run dev
-# or
-yarn dev
+$ npm i
+$ npm run build
 ```
+Alternatively, if you would like to run HoshimiStage at your local envirment, either of the following commands can be your choice.
+```bash
+$ npm run dev
+```
+or
+```bash
+$ npm run start
+```
+After that, fire up your favorite modern browser and open [http://localhost:3000](http://localhost:3000) to see the result.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Features
+Simulating ingame live, nothing else.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Contributions
+Any contributions, including suggestions, bug reports, localizations, pull requests, are warmly welcomed. Don't hesitate to [open a ticket](https://github.com/MalitsPlus/HoshimiStage/issues) or contact me directly. 
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## References
+Live Simulation Core Library: [hoshimi-venus](https://github.com/MalitsPlus/VenusSysLib)
+Image resources reference from: [info-pride](https://github.com/outloudvi/info-pride)
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## License
+HoshimiStage is licensed under the Apache License 2.0.
