@@ -1,7 +1,8 @@
 ![vercel](https://badgen.net/github/status/MalitsPlus/HoshimiStage)
 # HoshimiStage ~~(a.k.a. sakura-love)~~
 
-A web-based implementation of [hoshimi-venus](https://github.com/MalitsPlus/VenusSysLib). Enables you to simulate ingame live of IDOLY PRIDE.
+A web-based implementation of [hoshimi-venus](https://github.com/MalitsPlus/VenusSysLib). Enables you to simulate ingame live and observe what happened at each note. 
+**Neither this project nor the developer has connection with the official affiliation.**
 
 Project workmap and incoming features: [Venus System WBS](https://github.com/users/MalitsPlus/projects/1)
 
@@ -21,11 +22,10 @@ $ npm run start
 ```
 After that, fire up your favorite modern browser and open [http://localhost:3000](http://localhost:3000) to see the result.
 
-
 ## Features
 Simulating ingame live, nothing else.
 
-## Contributions
+## Contributing
 Any contributions, including suggestions, bug reports, localizations, pull requests, are warmly welcomed. Don't hesitate to [open a ticket](https://github.com/MalitsPlus/HoshimiStage/issues) or contact me directly. 
 
 ## References
