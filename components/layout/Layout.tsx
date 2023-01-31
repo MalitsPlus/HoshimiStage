@@ -6,7 +6,7 @@ export default function Layout({ children }: {
 }) {
   return (
     <>
-      <div className='flex flex-row justify-start'>
+      <div className='flex flex-row justify-start h-screen w-screen'>
         <div className='flex-none'>
           <NavbarMini />
         </div>

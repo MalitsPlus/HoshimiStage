@@ -1,11 +1,13 @@
-import { ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
+import { Center, ColorScheme, ColorSchemeProvider, MantineProvider, Overlay, Stack } from '@mantine/core';
 import { getAnalytics, logEvent } from 'firebase/analytics';
 import { signInAnonymously } from 'firebase/auth';
+import { t } from 'i18next';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { createContext, useEffect, useState } from 'react';
-import tailwindColors from "tailwindcss/colors";
+import tailwindColors, { black } from "tailwindcss/colors";
 import Layout from '../components/layout/Layout';
+import MyButton from '../components/misc/MyButton';
 import { analytics, auth } from '../src/firebase/firebase';
 import { default as i18n } from '../src/i18n';
 import '../styles/globals.css';
@@ -29,6 +31,7 @@ export default function App({ Component, pageProps }: AppProps) {
   }
 
   const [colorScheme, setColorScheme] = useState<ColorScheme>('dark');
+  const [mobileHintVisible, setMobileHintVisible] = useState(true);
   const toggleColorScheme = (value?: ColorScheme) => {
     colorScheme === 'dark'
       ? document.documentElement.classList.remove('dark')
@@ -76,6 +79,12 @@ export default function App({ Component, pageProps }: AppProps) {
           }}
         >
           <AppContext.Provider value={appContext}>
+            <Overlay<"div"> opacity={0.9} className={`bg-zinc-800 ${mobileHintVisible ? "md:hidden" : "hidden"}`}>
+              <div className='h-screen w-screen flex flex-col gap-4 justify-center items-center text-center'>
+                <p className='whitespace-pre-line'>{t("mobile notification")}</p>
+                <MyButton onClick={() => { setMobileHintVisible(false) }}>{t("Dismiss")}</MyButton>
+              </div>
+            </Overlay>
             <Layout>
               <Component {...pageProps} />
             </Layout>

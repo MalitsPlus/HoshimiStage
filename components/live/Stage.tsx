@@ -117,16 +117,7 @@ export default function Stage() {
       setLive(result)
       setLoading(false)
       logEvent(analytics, "click_simulate")
-      addSimulation({
-        quest: wapQuest.id,
-        ingamePos1: party[2].cardId,
-        ingamePos2: party[1].cardId,
-        ingamePos3: party[3].cardId,
-        ingamePos4: party[0].cardId,
-        ingamePos5: party[4].cardId,
-        uid: auth.currentUser?.uid,
-        time: Timestamp.now(),
-      }, "")
+      addSimulation(result, "")
     }, 0)
 
   }, [userData, party, wapQuest, customNotes])
