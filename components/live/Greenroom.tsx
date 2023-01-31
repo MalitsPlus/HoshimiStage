@@ -46,7 +46,7 @@ export default function Greenroom({
   const [attrChips, setAttrChips] = useSessionStorage<string[]>({ key: "Greenroom_attrChips", defaultValue: [] })
   // const [focusPosition, setFocusPosition] = useState(clickedCard)
 
-  console.log("render greenroom")
+  console.debug("render greenroom")
   const [localParty, setLocalParty] = useState<StageParty>(initParty)
 
   useEffect(() => {
@@ -100,7 +100,7 @@ export default function Greenroom({
   //     return
   //   }
   //   if (isIdInParty(id, party)) {
-  //     console.log(id)
+  //     console.debug(id)
   //     return
   //   }
   //   onCharaDrop(id, focusPosition)

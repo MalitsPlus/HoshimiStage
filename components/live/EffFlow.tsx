@@ -71,8 +71,8 @@ const EffRow = ({ prevEffs, curEffs, sequence, category, effIdxDict, ingameIndex
         const isStart = !prevEffs.some(preEff => preEff.id === eff.id)
         const isEnd = eff.remain === 0 || isLastNote
         if (isStart) {
-          console.log(`ingame index: ${ingameIndex}`)
-          console.log(`sequence: ${sequence}`)
+          console.debug(`ingame index: ${ingameIndex}`)
+          console.debug(`sequence: ${sequence}`)
           if (effIdxDict[eff.id] === undefined) {
             effIdxDict[eff.id] = findMinAvaliableIdx(effIdxDict, specifiedEffs)
           }

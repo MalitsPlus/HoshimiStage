@@ -160,10 +160,10 @@ const StatusPannel = ({
 
   useEffect(() => {
     setLocalCards(createInitState(initParty, userData))
-    console.log("running statuspannel effect")
+    console.debug("running statuspannel effect")
   }, [initParty, userData])
 
-  console.log("rendering StatusPannel")
+  console.debug("rendering StatusPannel")
 
   const onClose = () => {
     if (localCards.every(it => it !== undefined)) {

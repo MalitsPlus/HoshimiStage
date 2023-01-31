@@ -72,7 +72,7 @@ const NoteFlow = ({
   customNotes,
   onToggleNote,
 }: NoteFlowProps) => {
-  console.log("rendered noteflow")
+  console.debug("rendered noteflow")
   if (live === undefined && wapQuest === undefined) {
     return null
   }

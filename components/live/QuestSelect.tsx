@@ -132,7 +132,7 @@ function _QuestSelect({
   }, [questTypeChip])
 
   const onQuestTypeChange = (chipType: string) => {
-    console.log(`onQuestTypeChange ${chipType}`)
+    console.debug(`onQuestTypeChange ${chipType}`)
     setQuestTypeChip(chipType)
     selectorData = getSelectorData(chipType)
     if (selectorData.length) {
@@ -141,7 +141,7 @@ function _QuestSelect({
   }
 
   const onSelectValueChange = (v: string) => {
-    console.log(`onSelectValueChange ${v}`)
+    console.debug(`onSelectValueChange ${v}`)
     const newQuest = getQuest(v)
     if (newQuest?.musicId !== wapQuest?.musicId) {
       setJacketLoading(true)

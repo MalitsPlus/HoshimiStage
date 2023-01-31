@@ -9,7 +9,7 @@ const findCardIndex = (
   party: StageParty
 ) => {
   const srcIdx = +(Object.entries(party).find(([, v]) => v.cardId === srcId)?.at(0) ?? -1)
-  console.log(`called find card ${srcId}`)
+  console.debug(`called find card ${srcId}`)
   return srcIdx
 }
 
@@ -21,10 +21,10 @@ export const charaDropAction = (
   const src = findCardIndex(srcId, party)
   if (src !== -1) {
     if (src === dest) {
-      console.log(`same. src: ${src}, dest: ${dest}.`)
+      console.debug(`same. src: ${src}, dest: ${dest}.`)
       return undefined
     }
-    console.log(`different. src: ${src}, dest: ${dest}.`)
+    console.debug(`different. src: ${src}, dest: ${dest}.`)
     // Update based on previous states.
     // See https://reactjs.org/docs/hooks-reference.html#functional-updates
     return update(party, {

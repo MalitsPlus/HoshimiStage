@@ -36,7 +36,7 @@ const defaultParty: StageParty = {
 }
 
 export default function Stage() {
-  console.log("render stage state")
+  console.debug("render stage state")
 
   // UI states
   const [groomOpened, setGroomOpened] = useState(false)
@@ -94,7 +94,7 @@ export default function Stage() {
   const onSimulateClick = useCallback(() => {
     if (!wapQuest || !isPartyFull(party)) {
       // FIXME: pop hint
-      console.log("unselected quest or insufficient performers")
+      console.debug("unselected quest or insufficient performers")
       return
     }
     const transDeck: TransDeck = {
@@ -110,8 +110,8 @@ export default function Stage() {
     setTimeout(() => {
       const result = simulate(wapQuest?.id, transDeck, undefined, customNotes)
       if (typeof result === "string") {
-        console.log(result)
-        console.log("Simulation failed. Perhaps there are some new ingame features those we havn't keep up to date.")
+        console.debug(result)
+        console.debug("Simulation failed. Perhaps there are some new ingame features those we havn't keep up to date.")
         return
       }
       setLive(result)
@@ -125,14 +125,14 @@ export default function Stage() {
   const onStatusEditClick = useCallback(() => {
     if (!isPartyFull(party)) {
       // FIXME: pop hint
-      console.log("insufficient performers")
+      console.debug("insufficient performers")
       return
     }
     setstatPnlOpened(true)
   }, [party])
 
   const onToggleNote = useCallback((ingamePos: number, sequence: number) => {
-    console.log(`toggle! ${ingamePos} - ${sequence}`)
+    console.debug(`toggle! ${ingamePos} - ${sequence}`)
     setCustomNotes(previous => {
       const oldIndex = previous.findIndex(it => it.sequence === sequence && it.ingamePos === ingamePos)
       if (oldIndex !== -1) {

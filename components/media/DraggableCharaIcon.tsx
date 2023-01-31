@@ -21,7 +21,7 @@ export type DraggableCharaIconProps = {
 const DraggableCharaIcon = ({
   card, pointer, index, canDrag, onCharaClick, className
 }: DraggableCharaIconProps) => {
-  console.log(`render draggable chara ${card?.id}`)
+  console.debug(`render draggable chara ${card?.id}`)
 
   const { id, assetId, type } = card ?? {
     id: undefined,

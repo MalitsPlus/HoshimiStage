@@ -18,7 +18,7 @@ const Note = forwardRef<HTMLDivElement, NoteProps>(function _Note({
   notePosition,
   ingameIndex,
 }: NoteProps, ref) {
-  console.log("rendered note")
+  console.debug("rendered note")
   return (
     <div className="h-1 grow flex justify-center items-center cursor-pointer" ref={ref}>
       {notePosition === ingameIndex

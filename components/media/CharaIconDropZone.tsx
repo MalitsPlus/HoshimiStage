@@ -18,7 +18,7 @@ export default function CharaIconDropZone(
       accept: ItemTypes.CharaIcon,
       drop(item: {id: string, index: number}) {
         // const { id, index } = monitor.getItem<{ id: string, index: number }>()
-        console.log(`dropping ${item.id}, id ${item.id}, to ${item.index}`)
+        console.debug(`dropping ${item.id}, id ${item.id}, to ${item.index}`)
         onCharaDrop(item.id, index)
       },
       collect: monitor => ({
