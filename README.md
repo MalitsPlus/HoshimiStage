@@ -1,7 +1,7 @@
 ![vercel](https://badgen.net/github/status/MalitsPlus/HoshimiStage)
 # HoshimiStage ~~(a.k.a. sakura-love)~~
 
-A web-based implementation of [hoshimi-venus](https://github.com/MalitsPlus/VenusSysLib). Enables you to simulate ingame live and observe what happened at each note. 
+A web-based implementation of [hoshimi-venus](https://github.com/MalitsPlus/VenusSysLib). Enables you to simulate in-game Live and observe what happened at each note.  
 **Neither this project nor the developer has connection with the official affiliation.**
 
 Project workmap and incoming features: [Venus System WBS](https://github.com/users/MalitsPlus/projects/1)
@@ -29,8 +29,9 @@ Simulating ingame live, nothing else.
 Any contributions, including suggestions, bug reports, localizations, pull requests, are warmly welcomed. Don't hesitate to [open a ticket](https://github.com/MalitsPlus/HoshimiStage/issues) or contact me directly. 
 
 ## References
-Live Simulation Core Library: [hoshimi-venus](https://github.com/MalitsPlus/VenusSysLib)
-Image resources reference from: [info-pride](https://github.com/outloudvi/info-pride)
+- Live Simulation Core Library: [hoshimi-venus](https://github.com/MalitsPlus/VenusSysLib)
+- Image resources reference from: [info-pride](https://github.com/outloudvi/info-pride)
+- Logo from: [IDOLY-PRIDE-Logo](https://github.com/765Pro-Hoshimi/IDOLY-PRIDE-Logo)
 
 ## License
 HoshimiStage is licensed under the Apache License 2.0.

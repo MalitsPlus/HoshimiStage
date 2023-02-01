@@ -1,6 +1,7 @@
-import { Center, Navbar, Stack, Tooltip, UnstyledButton } from '@mantine/core';
+import { Center, Navbar, Space, Stack, Tooltip, UnstyledButton } from '@mantine/core';
 import { IconMusic, IconQuestionCircle, TablerIcon } from '@tabler/icons';
 import classNames from 'classnames';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { DarkToggler } from '../misc/DarkToggler';
@@ -17,7 +18,7 @@ interface NavbarLinkProps {
 function NavbarLink({ icon: Icon, label, href, active, onClick }: NavbarLinkProps) {
   return (
     <Tooltip label={label} position="right" className='rounded-full'>
-      <Link href={href}>
+      <Link href={href} passHref legacyBehavior>
         <UnstyledButton
           onClick={onClick}
           className={classNames(
@@ -55,7 +56,11 @@ export function NavbarMini() {
   return (
     <Navbar width={{ base: 64 }} className='h-screen shadow-md py-4'>
       <Center>
-        RootEx
+        <Image src="/svg/hoshimi-production-logo.svg" alt="logo" width={44} height={44} />
+      </Center>
+      <Space h={4} />
+      <Center>
+        <Image src="/svg/hoshimi-production-name.svg" alt="logo" width={44} height={44} />
       </Center>
       <Navbar.Section grow mt={50}>
         <Stack justify="center" spacing={8} className="overflow-visible">
