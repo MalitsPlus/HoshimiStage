@@ -31,4 +31,8 @@ jobs:
           echo ${{ secrets.PAT_TOKEN }} | gh auth login --with-token
           gh pr list --author "@me" --state open -l "venus" --json number,title
           pr_number=`gh pr list --author "@me" --state open -l "venus" --json number | jq -r ".[0] | .number"`
-          gh pr merge ${pr_number} -m -d -t "build: merge pr #${pr_number}"
+          if [[ ${pr_number} == "null" ]]; then
+            echo "pr_number is null, no available pr can be merged, exiting."
+          else
+            gh pr merge ${pr_number} -m -d -t "build: merge pr #${pr_number}"
+          fi
