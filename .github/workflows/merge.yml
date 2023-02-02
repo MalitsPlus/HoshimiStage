@@ -19,11 +19,16 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
+      - name: test
+        run: |
+          git branch
       - name: npm install
-        run: npm ci
+        run: npm install
       - name: Test before merging
-        run: npm run build --if-present
+        run: npm run build
       - name: Merge to main branch
         run: |
           echo ${{ secrets.PAT_TOKEN }} | gh auth login --with-token
-          gh pr merge actions_temp -m -d -t "build: merge pull request"
+          gh pr list --author "@me" --state open -l "venus" --json number,title
+          pr_number=`gh pr list --author "@me" --state open -l "venus" --json number | jq -r ".[0] | .number"`
+          gh pr merge ${pr_number} -m -d -t "build: merge pr #${pr_number}"
