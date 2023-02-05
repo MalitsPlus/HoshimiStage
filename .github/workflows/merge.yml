@@ -23,7 +23,9 @@ jobs:
         run: |
           git branch
       - name: Retrieve .env.local
-        run: echo $NEXT_PUBLIC_FIREBASE > ".env.local"
+        run: |
+          echo $NEXT_PUBLIC_FIREBASE > ".env.local"
+          cat ".env.local"
       - name: npm install
         run: npm install
       - name: Test before merging
