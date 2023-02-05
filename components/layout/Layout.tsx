@@ -6,13 +6,13 @@ export default function Layout({ children }: {
 }) {
   return (
     <>
-      <div className='flex flex-row justify-start h-screen w-screen'>
-        <div className='flex-none'>
+      <div className='pl-16'>
+        <nav className='fixed top-0 bottom-0 left-0 z-20'>
           <NavbarMini />
-        </div>
-        <div className='grow'>
+        </nav>
+        <main className='h-screen'>
           {children}
-        </div>
+        </main>
       </div>
     </>
   )

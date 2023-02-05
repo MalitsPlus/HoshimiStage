@@ -1,7 +1,7 @@
 ![vercel](https://badgen.net/github/status/MalitsPlus/HoshimiStage)
 # HoshimiStage ~~(a.k.a. sakura-love)~~
 
-A web-based implementation of [hoshimi-venus](https://github.com/MalitsPlus/VenusSysLib). Enables you to simulate in-game Live and observe what happened at each note.  
+A web-based GUI implementation of [hoshimi-venus](https://github.com/MalitsPlus/VenusSysLib). Enables you to simulate in-game Live and observe what happened at every note.  
 **Neither this project nor the developer has connection with the official affiliation.**
 
 Project workmap and incoming features: [Venus System WBS](https://github.com/users/MalitsPlus/projects/1)

@@ -79,12 +79,10 @@ export default function App({ Component, pageProps }: AppProps) {
           }}
         >
           <AppContext.Provider value={appContext}>
-            <Overlay<"div"> opacity={0.9} className={`bg-zinc-800 ${mobileHintVisible ? "md:hidden" : "hidden"}`}>
-              <div className='h-screen w-screen flex flex-col gap-4 justify-center items-center text-center'>
-                <p className='whitespace-pre-line'>{t("mobile notification")}</p>
-                <MyButton onClick={() => { setMobileHintVisible(false) }}>{t("Dismiss")}</MyButton>
-              </div>
-            </Overlay>
+            <div className={`${mobileHintVisible ? "md:hidden" : "hidden"} fixed w-full h-full z-[10002] bg-zinc-800 opacity-95 flex flex-col gap-4 justify-center items-center text-center`}>
+              <p className='whitespace-pre-line'>{t("mobile notification")}</p>
+              <MyButton onClick={() => { setMobileHintVisible(false) }}>{t("Dismiss")}</MyButton>
+            </div>
             <Layout>
               <Component {...pageProps} />
             </Layout>
