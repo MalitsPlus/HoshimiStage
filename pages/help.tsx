@@ -106,7 +106,7 @@ export default function Help() {
             </div>
             <p>
               This efficacy exists <span className="underline decoration-pink-500 decoration-4">beforehand
-              </span> performing beat action, which means this beat will
+              </span> performing a beat action, which means this beat will
               be affected by the efficacy.
             </p>
             <div>
@@ -114,7 +114,7 @@ export default function Help() {
             </div>
             <p>
               This efficacy exists <span className="underline decoration-pink-500 decoration-4">after
-              </span> performing beat action, which means this beat will
+              </span> performing a beat action, which means this beat will
               not be affected by the efficacy.
             </p>
             <div>

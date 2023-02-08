@@ -6,7 +6,7 @@ import { AttributeType, MusicChartType } from "hoshimi-venus/out/types/proto/pro
 import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps";
 import { WapLiveAbility } from "hoshimi-venus/out/types/wap/skill_waps";
 import { t } from "i18next";
-import { Dispatch, ForwardedRef, forwardRef, SetStateAction, useEffect, useMemo, useState } from "react";
+import { Dispatch, ForwardedRef, forwardRef, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { QuestIdMap } from "../../src/static/quest_id_map";
 import { getMusicJacket } from "../../src/utils/misc";
 import SkillIcon from "../media/SkillIcon";
@@ -35,12 +35,12 @@ function _QuestSelect({
 
   const [jacketLoading, setJacketLoading] = useState(false)
 
-  const [questTypeChip, setQuestTypeChip] = useLocalStorage<string | undefined>({
+  const [questTypeChip, setQuestTypeChip, cleanQuestTypeChip] = useLocalStorage<string | undefined>({
     key: "QuestSelect_questType",
     defaultValue: undefined,
   })
   // questId
-  const [selected, setSelected] = useLocalStorage<string | undefined>({
+  const [selected, setSelected, cleanSelected] = useLocalStorage<string | undefined>({
     key: "QuestSelect_selected",
     defaultValue: initQuestId,
   })
@@ -58,7 +58,7 @@ function _QuestSelect({
     value: string,
     label: string,
   }[] => {
-    if (chipType === undefined) return []
+    if (chipType === undefined || chipType === "") return []
     if (!chipType.startsWith("Battle")) {
       const insideDbQuests = (() => {
         switch (chipType) {
@@ -149,12 +149,18 @@ function _QuestSelect({
     setSelected(v)
   }
 
-  useEffect(() => {
-    if (!wapQuest) {
-      onQuestTypeChange("")
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  // useEffect(() => {
+  //   if (!wapQuest) {
+  //     onQuestTypeChange("")
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [])
+
+  // for test
+  // useEffect(() => {
+  //   cleanQuestTypeChip()
+  //   cleanSelected()
+  // }, [])
 
   const QuestTypeDivider = ({ keys }: { keys: string[] }) => {
     const quests: { [k: string]: string[] } = {

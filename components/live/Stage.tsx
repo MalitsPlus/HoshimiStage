@@ -7,7 +7,7 @@ import simulate from 'hoshimi-venus';
 import { Live } from 'hoshimi-venus/out/types/concert_types';
 import { CustomNote, TransDeck } from 'hoshimi-venus/out/types/trans_types';
 import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps";
-import { SetStateAction, useCallback, useState } from "react";
+import { SetStateAction, useCallback, useEffect, useState } from "react";
 import { DndProvider } from 'react-dnd';
 import { TouchBackend } from "react-dnd-touch-backend";
 import { analytics, addSimulation, auth } from '../../src/firebase/firebase';

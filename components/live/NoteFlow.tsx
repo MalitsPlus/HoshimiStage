@@ -36,6 +36,9 @@ const ActivatedSkill = ({
           <SkillIcon wSkillLevel={skill} />
           <div>{t("Order") + ": " + aSkill.order}</div>
           <div>{skill.description}</div>
+          {aSkill.power ? <div>Power: {aSkill.power.toLocaleString("en-US")}</div> : null}
+          {aSkill.weightedPower ? <div>Weighted Power: {aSkill.weightedPower.toLocaleString("en-US")}</div> : null}
+          {aSkill.privilege ? <div>Privilege: {aSkill.privilege.toLocaleString("en-US")}</div> : null}
         </Fragment>)
       })}
     </div>
