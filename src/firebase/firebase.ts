@@ -25,7 +25,7 @@ if (typeof window !== "undefined") {
 
 // Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(app)
-const simulationCollection = collection(db, "simulation_v2")
+const simulationCollection = collection(db, "simulation_v3")
 
 async function addSimulation(obj: any | Live, docName: string) {
   if (!auth.currentUser) {
@@ -53,6 +53,7 @@ async function addSimulation(obj: any | Live, docName: string) {
       time: Timestamp.now(),
       quest: live.quest.id,
       musicPattern: live.quest.musicChartPatternId,
+      powers: live.powers,
       p1: getCard(1),
       p2: getCard(2),
       p3: getCard(3),
