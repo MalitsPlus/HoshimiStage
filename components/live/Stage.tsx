@@ -1,12 +1,13 @@
-import { Overlay } from '@mantine/core';
+import { ActionIcon, Alert, CopyButton, Dialog, Modal, Overlay, Space, TextInput } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import { IconAnalyze } from '@tabler/icons';
+import { IconAlertCircle, IconAnalyze, IconCheck, IconCopy } from '@tabler/icons';
 import { logEvent } from 'firebase/analytics';
 import { Timestamp } from 'firebase/firestore';
 import simulate from 'hoshimi-venus';
 import { Live } from 'hoshimi-venus/out/types/concert_types';
 import { CustomNote, TransDeck } from 'hoshimi-venus/out/types/trans_types';
 import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps";
+import { t } from 'i18next';
 import { SetStateAction, useCallback, useEffect, useState } from "react";
 import { DndProvider } from 'react-dnd';
 import { TouchBackend } from "react-dnd-touch-backend";
@@ -23,8 +24,9 @@ import StatusPannel from './StatusPannel';
 export type StageParty = {
   [k: number]: {
     cardId?: string,
+    isGuest?: boolean,
     readonly ingamePos: number,
-  }
+  },
 }
 
 const defaultParty: StageParty = {
@@ -41,7 +43,10 @@ export default function Stage() {
   // UI states
   const [groomOpened, setGroomOpened] = useState(false)
   const [statPnlOpened, setstatPnlOpened] = useState(false)
+  const [shareModalOpened, setShareModalOpened] = useState(false)
   const [loading, setLoading] = useState(false);
+  const [liveId, setLiveId] = useState<string | undefined>(undefined)
+  const shareUrl = liveId ? window.location.href.replace(/\/$/, "") + `?t=${liveId}` : undefined
 
   // data model states
   const [live, setLive] = useState<Live | undefined>(undefined)
@@ -117,7 +122,9 @@ export default function Stage() {
       setLive(result)
       setLoading(false)
       logEvent(analytics, "click_simulate")
-      addSimulation(result, "")
+      addSimulation(result, "").then((id) => {
+        setLiveId(id)
+      })
     }, 0)
 
   }, [userData, party, wapQuest, customNotes])
@@ -130,6 +137,10 @@ export default function Stage() {
     }
     setstatPnlOpened(true)
   }, [party])
+
+  const onShareClick = useCallback(() => {
+    setShareModalOpened(prev => !prev)
+  }, [])
 
   const onToggleNote = useCallback((ingamePos: number, sequence: number) => {
     console.debug(`toggle! ${ingamePos} - ${sequence}`)
@@ -168,6 +179,40 @@ export default function Stage() {
           <p className='font-mono text-xl'>simulating...</p>
         </Overlay>
         : null}
+      <Modal
+        opened={shareModalOpened}
+        onClose={() => setShareModalOpened(false)}
+        withCloseButton={false}
+        radius="md"
+        overlayOpacity={0.4}
+        centered
+      >
+        {liveId ?
+          <>
+            <Alert icon={<IconAlertCircle size={16} />} color="indigo">
+              <div className='text-base'>{t("Share desc")}</div>
+              <Space h={8} />
+              <div className='flex flex-row items-center gap-2'>
+                <div className='grow'>
+                  <TextInput value={shareUrl} readOnly size="sm" />
+                </div>
+                <div>
+                  <CopyButton value={shareUrl ?? ""} timeout={2000}>
+                    {({ copied, copy }) => (
+                      <ActionIcon color={copied ? 'teal' : 'gray'} onClick={copy}>
+                        {copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
+                      </ActionIcon>
+                    )}
+                  </CopyButton>
+                </div>
+              </div>
+            </Alert>
+          </>
+          : <Alert icon={<IconAlertCircle size={16} />} title="No result here" color="red">
+            <div className='text-base'>{t("Share hint")}</div>
+          </Alert>
+        }
+      </Modal>
       <div className='flex flex-col h-screen'>
         <Greenroom
           opened={groomOpened}
@@ -188,6 +233,7 @@ export default function Stage() {
             setWapQuest={onSetQuest}
             onSimulateClick={onSimulateClick}
             onStatusEditClick={onStatusEditClick}
+            onShareClick={onShareClick}
           />
         </div>
         <div className="grid grid-cols-5 justify-items-stretch h-full min-w-max grow divide-x divide-solid divide-slate-500/25">

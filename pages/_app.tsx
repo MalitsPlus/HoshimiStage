@@ -41,9 +41,9 @@ export default function App({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     logEvent(analytics, "open_app")
-    signInAnonymously(auth).then((userCredential) => {
-      console.debug(userCredential.user.uid)
-    })
+    // signInAnonymously(auth).then((userCredential) => {
+    //   console.debug(userCredential.user.uid)
+    // })
   }, [])
 
   return (

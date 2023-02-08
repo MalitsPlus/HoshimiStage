@@ -130,7 +130,7 @@ export default function Help() {
               This efficacy was once possessed by someone else but is now transferred to the current target.
             </p>
             <div>
-              <Badge mr={4} variant="filled" color="orange" className="normal-case">{t("Ajusted")}</Badge>
+              <Badge mr={4} variant="filled" color="orange" className="normal-case">{t("Adjusted")}</Badge>
             </div>
             <p>
               This efficacy was adjusted by some other effects (such as grade strengthening and duration increasing).

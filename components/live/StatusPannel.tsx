@@ -128,9 +128,9 @@ const regulateParams = (cards: { [id: string]: UserCard }) => {
     if (!it.visual) it.visual = getDefaultParam(it, "visual")
     if (!it.mental) it.mental = 5000
     if (!it.technique) it.technique = 8000
-    if (!it.skillLevel1) it.skillLevel1 = 4
-    if (!it.skillLevel2) it.skillLevel2 = 4
-    if (!it.skillLevel3) it.skillLevel3 = 2
+    if (!it.skillLevel1) it.skillLevel1 = 6
+    if (!it.skillLevel2) it.skillLevel2 = 5
+    if (!it.skillLevel3) it.skillLevel3 = 4
   })
 }
 
@@ -210,6 +210,12 @@ const StatusPannel = ({
       <Alert icon={<IconAlertCircle size={16} />} title={<div className="text-base">{t("Notice")}</div>} color="indigo">
         <div className="text-base">{t("Adjust pannel hint")}</div>
       </Alert>
+      <Space h={16} />
+      <div className="[direction:rtl]">
+        <MyButton onClick={() => { setOpened(false) }}>
+          {t("Cancel Changes")}
+        </MyButton>
+      </div>
     </Modal>
   )
 }

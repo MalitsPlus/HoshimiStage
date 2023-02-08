@@ -50,7 +50,7 @@ async function addSimulation(obj: any | Live, docName: string) {
     }
     const data = {
       uid: auth.currentUser?.uid,
-      time: Timestamp.now(),
+      timestamp: Timestamp.now(),
       quest: live.quest.id,
       musicPattern: live.quest.musicChartPatternId,
       powers: live.powers,
@@ -60,9 +60,11 @@ async function addSimulation(obj: any | Live, docName: string) {
       p4: getCard(4),
       p5: getCard(5),
     }
-    await addDoc(simulationCollection, data)
+    const docRef = await addDoc(simulationCollection, data)
+    return docRef.id
   } else {
-    await addDoc(simulationCollection, obj)
+    const docRef = await addDoc(simulationCollection, obj)
+    return docRef.id
   }
 }
 
