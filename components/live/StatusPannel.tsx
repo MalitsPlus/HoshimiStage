@@ -7,7 +7,7 @@ import update from 'immutability-helper'
 import { Dispatch, memo, SetStateAction, useCallback, useEffect, useState } from "react"
 import { getChara, getData, getDefaultUserCard } from "../../src/utils/data_mgr"
 import { getCardAttribute } from "../../src/utils/misc"
-import { UserData } from "../../src/utils/user_data"
+import { createInitState, UserData } from "../../src/utils/user_data"
 import CharaIcon from "../media/CharaIcon"
 import MyButton from "../misc/MyButton"
 import NumberComp from "../misc/NumberComp"
@@ -111,15 +111,6 @@ const StatusCard = memo(function _StatusCard({
     </>
   )
 })
-
-const createInitState = (
-  party: StageParty,
-  userData: UserData,
-): (UserCard | undefined)[] => {
-  return Object.entries(party).map(([uiPos, partycard]) => {
-    return partycard.cardId ? userData.getCard(partycard.cardId) : undefined
-  })
-}
 
 const regulateParams = (cards: { [id: string]: UserCard }) => {
   Object.values(cards).forEach(it => {

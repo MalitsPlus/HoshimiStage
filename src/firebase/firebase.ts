@@ -1,8 +1,10 @@
 import { initializeApp } from "firebase/app";
 import { Analytics, getAnalytics } from "firebase/analytics";
-import { addDoc, collection, getFirestore, Timestamp } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getFirestore, Timestamp } from "firebase/firestore";
 import { browserLocalPersistence, initializeAuth, signInAnonymously } from "firebase/auth";
 import { Live } from "hoshimi-venus/out/types/concert_types";
+import { MusicChartType } from "hoshimi-venus/out/types/proto/proto_enum";
+import { CustomNote } from "hoshimi-venus/out/types/trans_types";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -25,15 +27,57 @@ if (typeof window !== "undefined") {
 
 // Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(app)
-const simulationCollection = collection(db, "simulation_v3")
+const simulationCollection = collection(db, "simulation_v4")
 
-async function addSimulation(obj: any | Live, docName: string) {
+export type FirestoreCard = {
+  cardId: string,
+  vocal: number,
+  dance: number,
+  visual: number,
+  stamina: number,
+  mental: number,
+  technique: number,
+  s1: number,
+  s2: number,
+  s3: number,
+}
+export type FirestoreLive = {
+  uid?: string,
+  timestamp: Timestamp,
+  quest: string,
+  musicPattern: string,
+  powers: {
+    type: MusicChartType;
+    sequence: number;
+    position: number;
+    power: number;
+    privilege: number;
+    weightedPower?: number;
+  }[],
+  customNotes?: CustomNote[],
+  p1: FirestoreCard,
+  p2: FirestoreCard,
+  p3: FirestoreCard,
+  p4: FirestoreCard,
+  p5: FirestoreCard,
+}
+
+async function getSimulation(id: string): Promise<FirestoreLive | undefined> {
+  const docRef = doc(simulationCollection, id)
+  const snapshot = await getDoc(docRef)
+  if (snapshot.exists()) {
+    return snapshot.data() as FirestoreLive
+  }
+  return undefined
+}
+
+async function addSimulation(obj: any | Live, docName: string): Promise<string> {
   if (!auth.currentUser) {
     await signInAnonymously(auth)
   }
   if ("charts" in obj) {
     const live = obj as Live
-    const getCard = (pos: number) => {
+    const getCard = (pos: number): FirestoreCard => {
       const deckCard = live.liveDeck.getCard(pos)
       return {
         cardId: deckCard.id,
@@ -48,12 +92,13 @@ async function addSimulation(obj: any | Live, docName: string) {
         s3: deckCard.skillLevel3,
       }
     }
-    const data = {
+    const data: FirestoreLive = {
       uid: auth.currentUser?.uid,
       timestamp: Timestamp.now(),
       quest: live.quest.id,
       musicPattern: live.quest.musicChartPatternId,
       powers: live.powers,
+      customNotes: live.customNotes,
       p1: getCard(1),
       p2: getCard(2),
       p3: getCard(3),
@@ -79,4 +124,5 @@ export {
   db,
   auth,
   addSimulation,
+  getSimulation,
 }

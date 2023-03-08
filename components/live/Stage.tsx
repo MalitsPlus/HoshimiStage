@@ -11,20 +11,25 @@ import { t } from 'i18next';
 import { SetStateAction, useCallback, useEffect, useState } from "react";
 import { DndProvider } from 'react-dnd';
 import { TouchBackend } from "react-dnd-touch-backend";
-import { analytics, addSimulation, auth } from '../../src/firebase/firebase';
+import { analytics, addSimulation, auth, getSimulation, FirestoreCard, FirestoreLive } from '../../src/firebase/firebase';
 import { charaDropAction } from "../../src/utils/live_utils";
 import { isPartyFull } from '../../src/utils/misc';
-import { getDefaultUserData, parseUserData, stringifyUserData } from '../../src/utils/user_data';
+import { createInitState, getDefaultUserData, parseUserData, stringifyUserData } from '../../src/utils/user_data';
 import CustDragLayer from "../media/CustDragLayer";
 import Greenroom from "./Greenroom";
 import Kockpit from "./Kockpit";
 import Lane from "./Lane";
 import StatusPannel from './StatusPannel';
+import { useRouter } from 'next/router';
+import { getQuest } from 'hoshimi-venus/out/db/repository/quest_repository';
+import { UserCard } from 'hoshimi-venus/out/types/card_types';
+import { getUserCard } from '../../src/utils/data_mgr';
+
+let didInit = false
 
 export type StageParty = {
   [k: number]: {
     cardId?: string,
-    isGuest?: boolean,
     readonly ingamePos: number,
   },
 }
@@ -47,6 +52,7 @@ export default function Stage() {
   const [loading, setLoading] = useState(false);
   const [liveId, setLiveId] = useState<string | undefined>(undefined)
   const shareUrl = liveId ? window.location.href.replace(/\/$/, "") + `?t=${liveId}` : undefined
+  const router = useRouter()
 
   // data model states
   const [live, setLive] = useState<Live | undefined>(undefined)
@@ -126,7 +132,6 @@ export default function Stage() {
         setLiveId(id)
       })
     }, 0)
-
   }, [userData, party, wapQuest, customNotes])
 
   const onStatusEditClick = useCallback(() => {
@@ -163,6 +168,88 @@ export default function Stage() {
     })
     setLive(undefined)
   }, [])
+
+  useEffect(() => {
+    // to avoid react renders this effect twice
+    if (!didInit && router.isReady) {
+      didInit = true
+      let ignore = false
+
+      let { t } = router.query
+      if (t) {
+        if (typeof t !== "string") {
+          t = t[0]
+        }
+        setLiveId(t)
+        setLoading(true)
+        getSimulation(t).then(fsLive => {
+          if (fsLive && !ignore) {
+            const localParty = {
+              0: { cardId: fsLive.p4.cardId, ingamePos: 4 },
+              1: { cardId: fsLive.p2.cardId, ingamePos: 2 },
+              2: { cardId: fsLive.p1.cardId, ingamePos: 1 },
+              3: { cardId: fsLive.p3.cardId, ingamePos: 3 },
+              4: { cardId: fsLive.p5.cardId, ingamePos: 5 },
+            }
+            const localQuest = getQuest(fsLive.quest)
+            setWapQuest(localQuest)
+            setParty(localParty)
+            if (fsLive.customNotes) {
+              setCustomNotes(fsLive.customNotes)
+            }
+            const localUserCards = createInitState(localParty, userData)
+            const cardDict = localUserCards.reduce((acc: { [id: string]: UserCard }, cur) => {
+              acc[cur!.id] = cur!
+              return acc
+            }, {})
+            for (let i = 1; i <= 5; i++) {
+              const fireCard = fsLive[`p${i}` as keyof FirestoreLive] as FirestoreCard
+              cardDict[fireCard.cardId] = getUserCard({
+                cardId: fireCard.cardId,
+                level: 200,
+                rarity: 10,
+                vocal: fireCard.vocal,
+                dance: fireCard.dance,
+                visual: fireCard.visual,
+                stamina: fireCard.stamina,
+                mental: fireCard.mental,
+                technique: fireCard.technique,
+                skillLevel1: fireCard.s1,
+                skillLevel2: fireCard.s2,
+                skillLevel3: fireCard.s3,
+              })
+            }
+            setUserData(prev => {
+              return {
+                ...prev,
+                cards: {
+                  ...prev.cards,
+                  ...cardDict,
+                }
+              }
+            })
+            const transDeck: TransDeck = {
+              name: "UserDeck",
+              userCards: []
+            }
+            transDeck.userCards = Object.values(cardDict).map(uCard => ({
+              card: uCard,
+              index: Object.values(localParty).find(it => it.cardId === uCard.id)!.ingamePos,
+            }))
+            const result = simulate(fsLive.quest, transDeck, undefined, fsLive.customNotes)
+            if (typeof result !== "string") {
+              setLive(result)
+            }
+          }
+        }).finally(() => {
+          setLoading(false)
+        })
+      }
+      return () => {
+        ignore = true
+      }
+    }
+  }, [router.isReady])
 
   // for clean test
   // useEffect(() => {

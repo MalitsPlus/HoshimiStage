@@ -23,7 +23,7 @@ export default function Help() {
 
           <h2>Overview</h2>
           <p>
-            For those who have a willingness to form powerful units when the official have launched
+            For those who have a willingness to form powerful parties whenever the official have launched
             out new Lives, they must dig deeper into how a Live is going to work under the hood
             and what's happenning at some specific nodes. To that end, a number of trials and errors
             are good enough for those Lives which are rechallengeable. However, when things come to
@@ -31,7 +31,7 @@ export default function Help() {
             would never like to do things thoughtlessly. Besides, as is well known to all of us
             managers, the in-game Live log is <span
               className="text-pink-500">an extremely nonsense</span> which not only
-            reveals us unclear skill activating timing but also makes for terrible viewing experiences,
+            reveals us unclear skill activating timing but also makes for terribly viewing experiences,
             as a result, one's imagination perhaps can be considered as the merely option to be
             relied upon.
           </p>

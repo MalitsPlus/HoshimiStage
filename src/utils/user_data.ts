@@ -1,4 +1,5 @@
 import { UserCard } from "hoshimi-venus/out/types/card_types"
+import { StageParty } from "../../components/live/Stage"
 import { getDefaultUserCard } from "./data_mgr"
 
 type UserDeck = {
@@ -46,4 +47,13 @@ export const parseUserData = (userDataStr: string): UserData => {
       return this.decks.find(deck => deck.id === id) ?? undefined
     },
   }
+}
+
+export const createInitState = (
+  party: StageParty,
+  userData: UserData,
+): (UserCard | undefined)[] => {
+  return Object.entries(party).map(([uiPos, partycard]) => {
+    return partycard.cardId ? userData.getCard(partycard.cardId) : undefined
+  })
 }

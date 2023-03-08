@@ -77,7 +77,6 @@ export default function Kockpit({
             floatingPosition="bottom"
             className="h-10 w-10"
             onClick={onShareClick}
-            disabled
           />
         </div>
         <Space w={16} />

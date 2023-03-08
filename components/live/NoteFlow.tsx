@@ -32,14 +32,16 @@ const ActivatedSkill = ({
     <div className="whitespace-pre-wrap text-sm">
       {skills.map((aSkill, idx) => {
         const skill = card.getSkill(aSkill.skillIndex)
-        return (<Fragment key={idx}>
-          <SkillIcon wSkillLevel={skill} />
-          <div>{t("Order") + ": " + aSkill.order}</div>
-          <div>{skill.description}</div>
-          {aSkill.power ? <div>Power: {aSkill.power.toLocaleString("en-US")}</div> : null}
-          {aSkill.weightedPower ? <div>Weighted Power: {aSkill.weightedPower.toLocaleString("en-US")}</div> : null}
-          {aSkill.privilege ? <div>Privilege: {aSkill.privilege.toLocaleString("en-US")}</div> : null}
-        </Fragment>)
+        return (
+          <Fragment key={idx}>
+            <SkillIcon wSkillLevel={skill} />
+            <div>{t("Order") + ": " + aSkill.order}</div>
+            <div>{skill.description}</div>
+            {aSkill.power ? <div>Power: {aSkill.power.toLocaleString("en-US")}</div> : null}
+            {aSkill.weightedPower ? <div>Weighted Power: {aSkill.weightedPower.toLocaleString("en-US")}</div> : null}
+            {aSkill.privilege ? <div>Privilege: {aSkill.privilege.toLocaleString("en-US")}</div> : null}
+          </Fragment>
+        )
       })}
     </div>
   )
