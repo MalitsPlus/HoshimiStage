@@ -2,7 +2,7 @@ import { createGetInitialProps } from '@mantine/next';
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 
 const META_TITLE = "Hoshimi Stage"
-const META_DESCRIPTION = "Live simulation application for IDOLY PRIDE"
+const META_DESCRIPTION = "a.k.a. sakura-love"
 const BASEURL = "https://hoshimi-stage.vercel.app"
 const OG_IMAGE = ""
 let colorScheme: "light" | "dark" = "dark"
