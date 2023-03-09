@@ -51,7 +51,7 @@ export default function Stage() {
   const [shareModalOpened, setShareModalOpened] = useState(false)
   const [loading, setLoading] = useState(false);
   const [liveId, setLiveId] = useState<string | undefined>(undefined)
-  const shareUrl = liveId ? window.location.href.replace(/\/$/, "") + `?t=${liveId}` : undefined
+  const shareUrl = liveId ? `${location.protocol}//${location.host}${location.pathname}?t=${liveId}` : undefined
   const router = useRouter()
 
   // data model states
