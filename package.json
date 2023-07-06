@@ -1,6 +1,6 @@
 {
   "name": "hoshimi-stage",
-  "version": "0.2.119",
+  "version": "0.2.120",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -17,7 +17,7 @@
     "@tabler/icons": "^1.119.0",
     "classnames": "^2.3.2",
     "firebase": "^9.15.0",
-    "hoshimi-venus": "^0.11.106",
+    "hoshimi-venus": "^0.11.107",
     "i18next": "^22.0.6",
     "immutability-helper": "^3.1.1",
     "next": "13.0.0",
