@@ -47,4 +47,6 @@ export const EffColor: {
 
   [SkillEfficacyType.CriticalRateUp]: "bg-cyan-200",
   [SkillEfficacyType.CriticalBonusPermilUp]: "bg-cyan-400",
+
+  [SkillEfficacyType.CoverWeaknessEffect]: "bg-red-300",
 }

@@ -24,6 +24,7 @@ import { useRouter } from 'next/router';
 import { getQuest } from 'hoshimi-venus/out/db/repository/quest_repository';
 import { UserCard } from 'hoshimi-venus/out/types/card_types';
 import { getUserCard } from '../../src/utils/data_mgr';
+import AutoFormationPannel from './AutoFormationPannel';
 
 let didInit = false
 
@@ -48,6 +49,7 @@ export default function Stage() {
   // UI states
   const [groomOpened, setGroomOpened] = useState(false)
   const [statPnlOpened, setstatPnlOpened] = useState(false)
+  const [autoPnlOpened, setautoPnlOpened] = useState(false)
   const [shareModalOpened, setShareModalOpened] = useState(false)
   const [loading, setLoading] = useState(false);
   const [liveId, setLiveId] = useState<string | undefined>(undefined)
@@ -142,6 +144,14 @@ export default function Stage() {
     }
     setstatPnlOpened(true)
   }, [party])
+
+  const onAutoFormationClick = useCallback(() => {
+    if (!wapQuest) {
+      console.debug("must select quest before implementing auto-formation")
+      return
+    }
+    setautoPnlOpened(true)
+  }, [wapQuest])
 
   const onShareClick = useCallback(() => {
     setShareModalOpened(prev => !prev)
@@ -314,6 +324,11 @@ export default function Stage() {
           userData={userData}
           setUserData={setUserData}
         />
+        <AutoFormationPannel
+          opened={autoPnlOpened}
+          setOpened={setautoPnlOpened}
+          wapQuest={wapQuest}
+        />
         <div>
           <Kockpit
             wapQuest={wapQuest}
@@ -321,6 +336,7 @@ export default function Stage() {
             onSimulateClick={onSimulateClick}
             onStatusEditClick={onStatusEditClick}
             onShareClick={onShareClick}
+            onAutoFormationClick={onAutoFormationClick}
           />
         </div>
         <div className="grid grid-cols-5 justify-items-stretch h-full min-w-max grow divide-x divide-solid divide-slate-500/25">

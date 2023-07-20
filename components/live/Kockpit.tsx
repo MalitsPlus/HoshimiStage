@@ -15,12 +15,14 @@ export default function Kockpit({
   onSimulateClick,
   onStatusEditClick,
   onShareClick,
+  onAutoFormationClick,
 }: {
   wapQuest: WapQuest | undefined,
   setWapQuest: (wapQuest: WapQuest | undefined) => void,
   onSimulateClick: () => void,
   onStatusEditClick: () => void,
   onShareClick: () => void,
+  onAutoFormationClick: () => void,
 }) {
   const [opened, setOpened] = useState(false)
   return (
@@ -66,6 +68,7 @@ export default function Kockpit({
             label={t("Auto").toString()}
             floatingPosition="bottom"
             className="h-10 w-10"
+            onClick={onAutoFormationClick}
             disabled
           />
         </div>
