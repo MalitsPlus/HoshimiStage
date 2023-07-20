@@ -16,7 +16,7 @@ specifiers:
   eslint: 8.26.0
   eslint-config-next: 13.0.0
   firebase: ^9.15.0
-  hoshimi-venus: ^0.11.115
+  hoshimi-venus: ^0.12.0
   i18next: ^22.0.6
   immutability-helper: ^3.1.1
   next: 13.0.0
@@ -39,7 +39,7 @@ dependencies:
   '@tabler/icons': 1.119.0_biqbaboplfbrettd7655fr4n2y
   classnames: 2.3.2
   firebase: 9.23.0
-  hoshimi-venus: 0.11.115
+  hoshimi-venus: 0.12.0
   i18next: 22.5.1
   immutability-helper: 3.1.1
   next: 13.0.0_biqbaboplfbrettd7655fr4n2y
@@ -2518,8 +2518,8 @@ packages:
       react-is: 16.13.1
     dev: false
 
-  /hoshimi-venus/0.11.115:
-    resolution: {integrity: sha512-N7zPCF1niTdqBh8SmFGUKn3c9x1NwaMS0Q21jTosHlTJJunbhTZZbSlrkNS79bsPUvNqOSH8DfbzNDUM95F9IA==}
+  /hoshimi-venus/0.12.0:
+    resolution: {integrity: sha512-W3xd+JWuZceitA/N0DocRVjlK+uov8qsMaPwLv0FtZedD6pFDvHCxYKrKFXWIbJGA9Jm5zbT+HjR9YRb0AauMA==}
     dependencies:
       lodash: 4.17.21
       uuid: 8.3.2
