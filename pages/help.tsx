@@ -30,8 +30,8 @@ export default function Help() {
             Lives within such as PvP and League, every single Live is crucial and irreversible that you
             would never like to do things thoughtlessly. Besides, as is well known to all of us
             managers, the in-game Live log is <span
-              className="text-pink-500">an extremely nonsense</span> which not only
-            reveals us unclear skill activating timing but also makes for terribly viewing experiences,
+              className="line-through">an extremely nonsense</span> (actually they have made it incrediblely good in recent updates)
+            which not only reveals us unclear skill activating timing but also makes for terribly viewing experiences,
             as a result, one's imagination perhaps can be considered as the merely option to be
             relied upon.
           </p>
@@ -151,15 +151,15 @@ export default function Help() {
             Since each node in a lane is extremely tiny (about 4px), I
             personally doubt that whether one can observe it precisely
             without the help of using a cursor.
-            <span className="line-through"> Okay I admit that's just
-              an excuse, the truth is, I am lazy.
+            <span className="line-through"> Okay I confess that's just
+              an excuse, the truth is, I am too lazy to make a mobile oriented layout.
             </span>
           </p>
 
           <h2>Contributors</h2>
           <p><Link href="https://github.com/MalitsPlus">Vibbit</Link>: Development. </p>
           <p><Link href="https://github.com/hwahyang1">HwaHyang</Link>: Korean localizations. </p>
-          
+
           <h2>Miscellaneous</h2>
           <p>
             License: <Link
