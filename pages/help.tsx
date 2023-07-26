@@ -156,6 +156,10 @@ export default function Help() {
             </span>
           </p>
 
+          <h2>Contributors</h2>
+          <p><Link href="https://github.com/MalitsPlus">Vibbit</Link>: Development. </p>
+          <p><Link href="https://github.com/hwahyang1">HwaHyang</Link>: Korean localizations. </p>
+          
           <h2>Miscellaneous</h2>
           <p>
             License: <Link
