@@ -4,6 +4,11 @@ import { AppContext } from '../../pages/_app';
 
 export function LanguageBtn() {
   const { lng, onLanguageChange } = useContext(AppContext)
+  const lngDict: { [k: string]: string } = {
+    "en": "EN",
+    "zh": "ZH",
+    "ko": "KO",
+  }
   return (
     <div className='flex justify-center'>
       <HoverCard position="right" withArrow shadow="md" closeDelay={400}>
@@ -14,7 +19,7 @@ export function LanguageBtn() {
               text-blue-600  hover:bg-blue-100 active:bg-blue-200
               dark:text-blue-200 dark:hover:bg-zinc-700 dark:active:bg-zinc-600"
           >
-            {lng === "en" ? "EN" : "ZH"}
+            {lngDict[lng]}
           </UnstyledButton>
         </HoverCard.Target>
         <HoverCard.Dropdown>
@@ -29,6 +34,10 @@ export function LanguageBtn() {
               {
                 value: "zh",
                 label: ("ZH"),
+              },
+              {
+                value: "ko",
+                label: ("KO"),
               },
             ]}
           />
