@@ -2,6 +2,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import en from "../public/locales/en.json";
 import zh from "../public/locales/zh-CN.json"
+import ko from "../public/locales/ko-KR.json"
 
 // import LanguageDetector from 'i18next-browser-languagedetector';
 
@@ -19,6 +20,7 @@ i18n
     resources: {
       en: { translation: en },
       zh: { translation: zh },
+      ko: { translation: ko },
     },
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
