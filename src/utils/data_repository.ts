@@ -1,3 +1,4 @@
-import { getAllCards, getData } from "./data_mgr";
+import { getAllRawCards, getAllWapCards, getData } from "./data_mgr";
 
-export const AllCards = getData(getAllCards)
+export const AllCards = getData(getAllRawCards)
+export const AllWapCards = getAllWapCards()

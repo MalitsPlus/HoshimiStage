@@ -1,6 +1,6 @@
 import { Card, Character } from "hoshimi-venus/out/types/proto/proto_master";
 import { getAllRawCard, getRawCard as _getRawCard } from "hoshimi-venus/out/db/dao/card_dao";
-import { getCard as _getWapCard } from "hoshimi-venus/out/db/repository/card_repository";
+import { getCard as _getWapCard, getAllWapCards as _getAllWapCards } from "hoshimi-venus/out/db/repository/card_repository";
 import { getCharacter } from "hoshimi-venus/out/db/dao/character_dao";
 import { DATA_ENV } from "../dev_conf";
 import { SkillEfficacyType } from "hoshimi-venus/out/types/proto/proto_enum";
@@ -20,9 +20,16 @@ export const getData = <T extends (...args: any[]) => any>(func: T, ...args: any
   return func(...args)
 }
 
-export const getAllCards = (): Card[] => {
+export const getAllRawCards = (): Card[] => {
   if (DATA_ENV === "pkg") {
     return getAllRawCard()
+  }
+  throw new Error("Unimplemented.")
+}
+
+export const getAllWapCards = (): WapCard[] => {
+  if (DATA_ENV === "pkg") {
+    return _getAllWapCards()
   }
   throw new Error("Unimplemented.")
 }

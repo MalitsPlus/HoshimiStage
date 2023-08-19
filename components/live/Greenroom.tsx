@@ -1,4 +1,4 @@
-import { Chip, Divider, Modal } from "@mantine/core"
+import { Chip, Divider, Group, Modal } from "@mantine/core"
 import { useSessionStorage } from "@mantine/hooks"
 import { AttributeType, CardType } from "hoshimi-venus/out/types/proto/proto_enum"
 import { Card } from "hoshimi-venus/out/types/proto/proto_master"
@@ -40,7 +40,7 @@ export default function Greenroom({
   opened: boolean,
   setOpened: Dispatch<SetStateAction<boolean>>,
 }) {
-  
+
   const [starChips, setStarChips] = useSessionStorage<string[]>({ key: "Greenroom_starChips", defaultValue: ["fivestar"] })
   const [typeChips, setTypeChips] = useSessionStorage<string[]>({ key: "Greenroom_typeChips", defaultValue: [] })
   const [attrChips, setAttrChips] = useSessionStorage<string[]>({ key: "Greenroom_attrChips", defaultValue: [] })
@@ -111,7 +111,6 @@ export default function Greenroom({
       opened={opened}
       onClose={onClose}
       title="Edit party"
-      overflow="outside"
       size="auto"
     >
       <div className="flex flex-row gap-4">
@@ -124,26 +123,32 @@ export default function Greenroom({
           <div>
             <Divider my="md" label={t("Initial Rarity")} />
             <Chip.Group value={starChips} onChange={v => { setStarChips(v) }} multiple>
-              <IconChip name="fivestar" iconAid="icon_rarity" />
-              <IconChip name="else" iconAid="icon_rarity" />
-              {/* <Chip value={"five star"}>{t("five star")}</Chip> */}
-              {/* <Chip value={"else"}>{t("else")}</Chip> */}
+              <Group spacing="4px">
+                <IconChip name="fivestar" iconAid="icon_rarity" />
+                <IconChip name="else" iconAid="icon_rarity" />
+                {/* <Chip value={"five star"}>{t("five star")}</Chip> */}
+                {/* <Chip value={"else"}>{t("else")}</Chip> */}
+              </Group>
             </Chip.Group>
           </div>
           <div>
             <Divider my="md" label={t("Type")} />
             <Chip.Group value={typeChips} onChange={v => { setTypeChips(v) }} multiple>
-              <IconChip name="scorer" iconAid="icon_scorer_thumbnail" />
-              <IconChip name="buffer" iconAid="icon_buffer_thumbnail" />
-              <IconChip name="supporter" iconAid="icon_supporter_thumbnail" />
+              <Group spacing="4px">
+                <IconChip name="scorer" iconAid="icon_scorer_thumbnail" />
+                <IconChip name="buffer" iconAid="icon_buffer_thumbnail" />
+                <IconChip name="supporter" iconAid="icon_supporter_thumbnail" />
+              </Group>
             </Chip.Group>
           </div>
           <div>
             <Divider my="md" label={t("Attribute")} />
             <Chip.Group value={attrChips} onChange={v => { setAttrChips(v) }} multiple>
-              <IconChip name="dance" iconAid="icon_parameter_dance" className="" />
-              <IconChip name="vocal" iconAid="icon_parameter_vocal" />
-              <IconChip name="visual" iconAid="icon_parameter_visual" />
+              <Group spacing="4px">
+                <IconChip name="dance" iconAid="icon_parameter_dance" className="" />
+                <IconChip name="vocal" iconAid="icon_parameter_vocal" />
+                <IconChip name="visual" iconAid="icon_parameter_visual" />
+              </Group>
             </Chip.Group>
           </div>
         </div>
@@ -194,6 +199,6 @@ export default function Greenroom({
           </div>
         </div>
       </div>
-    </Modal>
+    </Modal >
   )
 }

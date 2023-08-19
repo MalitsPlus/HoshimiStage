@@ -24,7 +24,6 @@ import { useRouter } from 'next/router';
 import { getQuest } from 'hoshimi-venus/out/db/repository/quest_repository';
 import { UserCard } from 'hoshimi-venus/out/types/card_types';
 import { getUserCard } from '../../src/utils/data_mgr';
-import AutoFormationPannel from './AutoFormationPannel';
 
 let didInit = false
 
@@ -323,11 +322,6 @@ export default function Stage() {
           initParty={party}
           userData={userData}
           setUserData={setUserData}
-        />
-        <AutoFormationPannel
-          opened={autoPnlOpened}
-          setOpened={setautoPnlOpened}
-          wapQuest={wapQuest}
         />
         <div>
           <Kockpit
