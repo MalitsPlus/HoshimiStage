@@ -181,7 +181,6 @@ const StatusPannel = ({
       opened={opened}
       onClose={onClose}
       title="Adjust status"
-      overflow="outside"
       size="auto"
     >
       <div className="grid grid-cols-5 items-center divide-x divide-dashed divide-slate-500/25">

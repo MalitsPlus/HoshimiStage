@@ -280,7 +280,7 @@ export default function Stage() {
         onClose={() => setShareModalOpened(false)}
         withCloseButton={false}
         radius="md"
-        overlayOpacity={0.4}
+        overlayProps={{ className: "bg-black bg-opacity-40" }}
         centered
       >
         {liveId ?

@@ -1,4 +1,4 @@
-import { Chip, Divider, Modal, Select, Space } from "@mantine/core";
+import { Chip, Divider, Group, Modal, Select, Space } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 import { getRawGvgQuests, getRawInsideDbQuests, getRawLeagueQuests, getRawMarathonQuests, getRawPvpQuests, getRawRaidQuests } from "hoshimi-venus/out/db/dao/quest_dao";
 import { getQuest } from "hoshimi-venus/out/db/repository/quest_repository";
@@ -277,16 +277,17 @@ function _QuestSelect({
       opened={opened}
       onClose={onClose}
       title={t("select a quest")}
-      overlayOpacity={0.5}
-      transitionDuration={300}
-      overlayBlur={2}
+      overlayProps={{ className: "bg-black bg-opacity-50 blur" }}
+      transitionProps={{ duration: 300 }}
       size="lg"
     >
       <div>
-        <Chip.Group position="center" className="gap-6 items-start"
+        <Chip.Group
           value={questTypeChip} onChange={onQuestTypeChange}
         >
-          <QuestTypeDivider keys={genre} />
+          <Group position="center" className="gap-6 items-start">
+            <QuestTypeDivider keys={genre} />
+          </Group>
         </Chip.Group>
         <Space h="xl" />
         <Select label={t("Select a Live")} placeholder="type to search..."

@@ -129,7 +129,7 @@ const NoteFlow = ({
         const isAssigned = chart?.actPosition !== chart?.originalActPosition && chart?.actPosition === ingameIndex
 
         return (
-          <HoverCard width="auto" shadow="md" key={idx} position="left" offset={15} withArrow transitionDuration={0} openDelay={100} closeDelay={0} >
+          <HoverCard width="auto" shadow="md" key={idx} position="left" offset={15} withArrow transitionProps={{ duration: 0 }} openDelay={100} closeDelay={0} >
             <HoverCard.Target>
               <div
                 className="h-1 w-1 grow shrink flex justify-center items-center cursor-pointer"

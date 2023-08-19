@@ -80,7 +80,7 @@ const EffRow = ({ prevEffs, curEffs, sequence, category, effIdxDict, ingameIndex
         return (
           <HoverCard width="auto" shadow="md" key={idx}
             position={category == "privileged" ? "left" : "right"}
-            offset={15} withArrow transitionDuration={0} openDelay={100} closeDelay={0}
+            offset={15} withArrow transitionProps={{ duration: 0 }} openDelay={100} closeDelay={0}
           >
             <HoverCard.Target>
               <div className={classNames("h-full w-1 grow shrink cursor-pointer",

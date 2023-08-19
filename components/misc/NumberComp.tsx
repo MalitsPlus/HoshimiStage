@@ -29,7 +29,11 @@ export default function NumberComp({
         hideControls
         placeholder={label}
         value={value}
-        onChange={(val) => setValue(val!)}
+        onChange={(val) => {
+          if (val) {
+            setValue(val)
+          }
+        }}
         handlersRef={handlers}
         min={min ? min : 0}
         max={max ? max : 999999}
