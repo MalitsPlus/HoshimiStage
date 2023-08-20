@@ -221,7 +221,7 @@ export default function SearchOptions({
         onChange={v => setOpts(prev => ({
           ...prev, triggerTypes: v as any
         }))}
-        maxDropdownHeight={320}
+        maxDropdownHeight={310}
         clearable
       />
 

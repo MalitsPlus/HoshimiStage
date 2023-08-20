@@ -2,10 +2,12 @@ import {
   AttributeType, CardType, SkillCategoryType, SkillEfficacyType,
   SkillTargetType, SkillTriggerType
 } from "hoshimi-venus/out/types/proto/proto_enum"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import SearchOptions from "./SearchOptions"
 import SearchResults from "./SearchResults"
 import { targetTypesPresets, triggerTypesPresets } from "./searchOptionsPresets"
+import { logEvent } from "firebase/analytics"
+import { analytics } from "../../src/firebase/firebase"
 
 export type SkillSearchOpts = {
   cardStars: ("fivestar" | "else")[],
@@ -30,6 +32,10 @@ export default function CardSearch() {
     targetTypes: [],
     triggerTypes: [],
   })
+
+  useEffect(() => {
+    logEvent(analytics, "open_search")
+  }, [])
 
   return (
     <div className="grid relative" style={{ gridTemplateColumns: "minmax(0.2rem, 2rem) minmax(30rem, 4fr) minmax(0.2rem, 2rem) minmax(10rem, 1fr) minmax(0.2rem, 2rem)" }}>
