@@ -2,8 +2,9 @@ import { Center, Navbar, Space, Stack, Tooltip, UnstyledButton } from '@mantine/
 import { IconMusic, IconQuestionCircle, IconSearch, TablerIcon } from '@tabler/icons';
 import classNames from 'classnames';
 import Image from 'next/image';
-import Link, { LinkProps } from 'next/link';
-import { forwardRef, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 import { DarkToggler } from '../misc/DarkToggler';
 import { LanguageBtn } from '../misc/LanguageBtn';
 
@@ -53,11 +54,12 @@ function NavbarLink({ icon: Icon, label, href, active, onClick }: NavbarLinkProp
 const menu = [
   { icon: IconMusic, label: "Notemap", href: "/" },
   { icon: IconQuestionCircle, label: "Help", href: "/help" },
-  { icon: IconSearch, label: "Card Search", href: "/search"},
+  { icon: IconSearch, label: "Card Search", href: "/search" },
 ];
 
 export function NavbarMini() {
-  const [active, setActive] = useState(0);
+  const router = useRouter()
+  const [active, setActive] = useState(menu.findIndex(x => x.href === router.pathname))
 
   const links = menu.map((link, index) => (
     <div key={link.label} className='flex justify-center'>

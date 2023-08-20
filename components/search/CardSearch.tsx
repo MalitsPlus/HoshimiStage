@@ -32,7 +32,7 @@ export default function CardSearch() {
   })
 
   return (
-    <div className="grid relative" style={{ gridTemplateColumns: "minmax(0.2rem, 2rem) minmax(1rem, 4fr) minmax(0.2rem, 2rem) minmax(1rem, 1fr) minmax(0.2rem, 2rem)" }}>
+    <div className="grid relative" style={{ gridTemplateColumns: "minmax(0.2rem, 2rem) minmax(30rem, 4fr) minmax(0.2rem, 2rem) minmax(10rem, 1fr) minmax(0.2rem, 2rem)" }}>
       <div className="col-start-2">
         <SearchResults
           opts={opts}
