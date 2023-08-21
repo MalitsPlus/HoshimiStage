@@ -2,7 +2,7 @@ import { WapCard } from "hoshimi-venus/out/types/wap/card_waps"
 import { SkillSearchOpts } from "./CardSearch"
 import { AllWapCards } from "../../src/utils/data_repository"
 import { SkillTargetType, SkillTriggerType } from "hoshimi-venus/out/types/proto/proto_enum"
-import { targetTypesPresets, triggerTypesPresets } from "./searchOptionsPresets"
+import { groupPresets, targetTypesPresets, triggerTypesPresets } from "./searchOptionsPresets"
 import CharaUpper from "../media/CharaUpper"
 import { Card, Divider, Pagination, Space } from "@mantine/core"
 import { WapSkill } from "hoshimi-venus/out/types/wap/skill_waps"
@@ -18,6 +18,26 @@ const searchFilter = (opts: SkillSearchOpts): {
     skillIndexes: number[], card: WapCard, id: string,
   }[] = []
   for (const x of AllWapCards) {
+
+    // character conditions
+    if (opts.characters.length !== 0) {
+      const selectedCharas = (() => {
+        if (opts.characters.some(x =>
+          groupPresets.some(g => g.id === x)
+        )) {
+          return opts.characters
+            .reduce<string[]>((acc, cur) => {
+              acc.push(...groupPresets.find(g => g.id === cur)?.charas ?? [])
+              return acc
+            }, [])
+        }
+        return opts.characters
+      })()
+      if (!selectedCharas.includes(x.characterId)) {
+        continue
+      }
+    }
+
     // card conditions
     const rarityCondition = opts.cardStars.length === 0
       || x.initialRarity === 5 && opts.cardStars.includes("fivestar")

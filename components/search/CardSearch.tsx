@@ -17,6 +17,7 @@ export type SkillSearchOpts = {
   efficacyTypes: SkillEfficacyType[],
   targetTypes: (SkillTargetType | keyof typeof targetTypesPresets)[],
   triggerTypes: (SkillTriggerType | keyof typeof triggerTypesPresets)[],
+  characters: string[],
 }
 
 export default function CardSearch() {
@@ -31,6 +32,7 @@ export default function CardSearch() {
     efficacyTypes: [],
     targetTypes: [],
     triggerTypes: [],
+    characters: [],
   })
 
   useEffect(() => {

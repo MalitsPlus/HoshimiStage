@@ -1,12 +1,13 @@
 import { Chip, ChipGroupProps, Divider, Group, MultiSelect, Space, Switch } from "@mantine/core"
 import { AttributeType, CardType, SkillCategoryType, SkillEfficacyType } from "hoshimi-venus/out/types/proto/proto_enum"
+import { getAllCharas, getAllGroups } from "hoshimi-venus/out/db/repository/chara_repository"
 import { ImageProps } from "next/image"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import ImageAsset from "../misc/ImageAsset"
 import { t } from "i18next"
 import { SkillSearchOpts } from "./CardSearch"
 import { SkillTargetType } from "hoshimi-venus/out/types/proto/proto_enum"
-import { ScoringEfficacies, targetTypesPresets } from "./searchOptionsPresets"
+import { ScoringEfficacies, groupPresets, targetTypesPresets } from "./searchOptionsPresets"
 import { triggerTypesPresets } from "./searchOptionsPresets"
 import { SkillTriggerType } from "hoshimi-venus/out/types/proto/proto_enum"
 
@@ -67,17 +68,13 @@ const IconChip = <T extends { [_: number]: string }>({
   )
 }
 
-// const efficacyObj = Object.entries(SkillEfficacyType)
-//   .reduce((acc: { value: string, label: string }[], [k, v]) => {
-//     if (Number.isNaN(+k)) {
-//       return acc
-//     }
-//     acc.push({
-//       value: k,
-//       label: t(v.toString()),
-//     })
-//     return acc
-//   }, [])
+const chararObj = getAllCharas().map(chara => ({
+  value: chara.id, label: t(chara.name)
+}))
+
+const groupObj = groupPresets.map(group => ({
+  value: group.id, label: t(group.name)
+}))
 
 const efficacyObj = (() => {
   const r = []
@@ -123,6 +120,7 @@ export default function SearchOptions({
   const [exScore, setExScore] = useState(true)
   const [pcsTarget, setPcsTarget] = useState(false)
   const [pcsTrigger, setPcsTrigger] = useState(false)
+  const [showGroups, setShowGroups] = useState(false)
   const [effCandi, setEffCandi] = useState(efficacyObj.filter(x => !ScoringEfficacies.includes(+x.value)))
   const [targetCandi, setTargetCandi] = useState(Object.keys(targetTypesPresets).map(x => ({ value: x, label: t(x) })))
   const [triggerCandi, setTriggerCandi] = useState(Object.keys(triggerTypesPresets).map(x => ({ value: x, label: t(x) })))
@@ -222,6 +220,25 @@ export default function SearchOptions({
           ...prev, triggerTypes: v as any
         }))}
         maxDropdownHeight={310}
+        clearable
+      />
+
+      <Divider my="md" label={t("Characters")} />
+      <Switch
+        checked={showGroups}
+        onChange={(event) => {
+          setShowGroups(event.currentTarget.checked)
+        }}
+        label={t("Use groups instead")}
+      />
+      <Space h="sm" />
+      <MultiSelect
+        data={showGroups ? groupObj : chararObj}
+        value={opts.characters}
+        onChange={v => setOpts(prev => ({
+          ...prev, characters: v
+        }))}
+        maxDropdownHeight={220}
         clearable
       />
 
