@@ -7,7 +7,7 @@ export default function Layout({ children }: {
   return (
     <>
       <div className='pl-16'>
-        <nav className='fixed top-0 bottom-0 left-0 z-20'>
+        <nav className='fixed top-0 bottom-0 left-0 z-30'>
           <NavbarMini />
         </nav>
         <main className='h-screen'>
