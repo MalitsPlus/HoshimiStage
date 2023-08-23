@@ -6,7 +6,7 @@ import { forwardRef } from "react";
 
 type InternalIconButtonProps = {
   icon: TablerIcon,
-  iconSize: number,
+  iconSize?: number,
   floatingPosition: FloatingPosition,
   disabled?: boolean,
   label?: string,
