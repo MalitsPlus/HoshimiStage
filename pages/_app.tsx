@@ -1,14 +1,12 @@
-import { Center, ColorScheme, ColorSchemeProvider, MantineProvider, Overlay, Stack } from '@mantine/core';
-import { getAnalytics, logEvent } from 'firebase/analytics';
-import { signInAnonymously } from 'firebase/auth';
-import { t } from 'i18next';
+import { ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
+import { logEvent } from 'firebase/analytics';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import NextNProgress from 'nextjs-progressbar';
 import { createContext, useEffect, useState } from 'react';
-import tailwindColors, { black } from "tailwindcss/colors";
+import tailwindColors from "tailwindcss/colors";
 import Layout from '../components/layout/Layout';
-import MyButton from '../components/misc/MyButton';
-import { analytics, auth } from '../src/firebase/firebase';
+import { analytics } from '../src/firebase/firebase';
 import { default as i18n } from '../src/i18n';
 import '../styles/globals.css';
 
@@ -31,7 +29,7 @@ export default function App({ Component, pageProps }: AppProps) {
   }
 
   const [colorScheme, setColorScheme] = useState<ColorScheme>('dark');
-  const [mobileHintVisible, setMobileHintVisible] = useState(true);
+  // const [mobileHintVisible, setMobileHintVisible] = useState(true);
   const toggleColorScheme = (value?: ColorScheme) => {
     colorScheme === 'dark'
       ? document.documentElement.classList.remove('dark')
@@ -79,11 +77,12 @@ export default function App({ Component, pageProps }: AppProps) {
           }}
         >
           <AppContext.Provider value={appContext}>
-            <div className={`${mobileHintVisible ? "md:hidden" : "hidden"} fixed w-full h-full z-[10002] bg-zinc-800 opacity-95 flex flex-col gap-4 justify-center items-center text-center`}>
+            {/* <div className={`${mobileHintVisible ? "md:hidden" : "hidden"} fixed w-full h-full z-[10002] bg-zinc-800 opacity-95 flex flex-col gap-4 justify-center items-center text-center`}>
               <p className='whitespace-pre-line'>{t("mobile notification")}</p>
               <MyButton onClick={() => { setMobileHintVisible(false) }}>{t("Dismiss")}</MyButton>
-            </div>
+            </div> */}
             <Layout>
+              <NextNProgress height={1} color="#29D" />
               <Component {...pageProps} />
             </Layout>
           </AppContext.Provider>

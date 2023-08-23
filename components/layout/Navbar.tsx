@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { DarkToggler } from '../misc/DarkToggler';
 import { LanguageBtn } from '../misc/LanguageBtn';
+import { Pages } from '../../data/pages';
 
 interface NavbarLinkProps {
   icon: TablerIcon;
@@ -51,17 +52,15 @@ function NavbarLink({ icon: Icon, label, href, active, onClick }: NavbarLinkProp
   );
 }
 
-const menu = [
-  { icon: IconMusic, label: "Notemap", href: "/" },
-  { icon: IconQuestionCircle, label: "Help", href: "/help" },
-  { icon: IconSearch, label: "Card Search", href: "/search" },
-];
-
-export function NavbarMini() {
+export function NavbarMini({
+  className,
+}: {
+  className?: string,
+}) {
   const router = useRouter()
-  const [active, setActive] = useState(menu.findIndex(x => x.href === router.pathname))
+  const [active, setActive] = useState(Pages.findIndex(x => x.href === router.pathname))
 
-  const links = menu.map((link, index) => (
+  const links = Pages.map((link, index) => (
     <div key={link.label} className='flex justify-center'>
       <NavbarLink
         {...link}
@@ -69,10 +68,13 @@ export function NavbarMini() {
         onClick={() => setActive(index)}
       />
     </div>
-  ));
+  ))
 
   return (
-    <Navbar width={{ base: 64 }} className='h-screen shadow-md py-4'>
+    <Navbar
+      width={{ base: 64 }}
+      className={`h-screen shadow-md py-4 ${className}`}
+    >
       <Center>
         <Image src="/svg/hoshimi-production-logo.svg" alt="logo" width={44} height={30} />
       </Center>

@@ -8,7 +8,7 @@ import { Card, Divider, Pagination, Space } from "@mantine/core"
 import { WapSkill } from "hoshimi-venus/out/types/wap/skill_waps"
 import SkillIcon from "../media/SkillIcon"
 import NumberCompVertical from "../misc/NumberCompVertical"
-import { memo, useEffect, useState } from "react"
+import { Dispatch, SetStateAction, memo, useEffect, useState } from "react"
 
 
 const searchFilter = (opts: SkillSearchOpts): {
@@ -189,20 +189,20 @@ const OneResult = memo(function _({
 const PER_PAGE = 10
 export default function SearchResults({
   opts,
+  activePage,
+  setPage,
+  className,
 }: {
   opts: SkillSearchOpts,
+  activePage: number,
+  setPage: Dispatch<SetStateAction<number>>,
+  className?: string,
 }) {
   console.debug("SearchResults rendered")
-
-  const [activePage, setPage] = useState(1)
   const list = searchFilter(opts)
 
-  useEffect(() => {
-    setPage(1)
-  }, [opts])
-
   return (
-    <div className="space-y-4">
+    <div className={`space-y-4 ${className}`}>
       <Space h="xs" />
       <Pagination
         className="justify-center"

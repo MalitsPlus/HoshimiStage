@@ -112,9 +112,11 @@ const triggerObj = (() => {
 export default function SearchOptions({
   opts,
   setOpts,
+  className,
 }: {
   opts: SkillSearchOpts,
   setOpts: Dispatch<SetStateAction<SkillSearchOpts>>,
+  className?: string,
 }) {
   console.debug("SearchOptions rendered")
   const [exScore, setExScore] = useState(true)
@@ -126,7 +128,7 @@ export default function SearchOptions({
   const [triggerCandi, setTriggerCandi] = useState(Object.keys(triggerTypesPresets).map(x => ({ value: x, label: t(x) })))
 
   return (
-    <div>
+    <div className={className}>
       <Divider my="md" label={t("Initial Rarity")} />
       <ChipGroup value={opts.cardStars} onChange={v => { setOpts(prev => ({ ...prev, cardStars: v })) }} >
         <IconChip value="fivestar" iconAid="icon_rarity" />

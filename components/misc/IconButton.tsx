@@ -6,6 +6,7 @@ import { forwardRef } from "react";
 
 type InternalIconButtonProps = {
   icon: TablerIcon,
+  iconSize: number,
   floatingPosition: FloatingPosition,
   disabled?: boolean,
   label?: string,
@@ -17,7 +18,16 @@ export type IconButtonProps =
   & Partial<Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof InternalIconButtonProps | keyof UnstyledButtonProps>>
   & { ref?: any }
 
-function InternalIconButton({ icon: Icon, floatingPosition, label, disabled, className, onClick, ...props }: IconButtonProps) {
+function InternalIconButton({
+  icon: Icon,
+  floatingPosition,
+  label,
+  disabled,
+  className,
+  onClick,
+  iconSize,
+  ...props
+}: IconButtonProps) {
   return (
     <Tooltip label={label} position={floatingPosition} className='rounded-full'>
       <div>
@@ -32,7 +42,7 @@ function InternalIconButton({ icon: Icon, floatingPosition, label, disabled, cla
           )}
           {...props}
         >
-          <Icon stroke={1.5} />
+          <Icon size={iconSize} stroke={1.5} />
         </UnstyledButton>
       </div>
     </Tooltip>
