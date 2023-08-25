@@ -80,7 +80,7 @@ export default function CardSearch() {
             icon={IconFilter}
             iconSize={32}
             label={t("Filter") as string}
-            className="w-12 h-12 hover:bg-transparent dark:hover:bg-transparent"
+            className="w-12 h-12 bg-blue-100/70 dark:bg-zinc-700/70 hover:bg-blue-100/70 dark:hover:bg-zinc-700/70"
             onClick={() => setOpened(o => !o)}
           />
         </div>
