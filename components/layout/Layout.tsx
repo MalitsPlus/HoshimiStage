@@ -25,7 +25,7 @@ export default function Layout({ children }: {
           <Burger
             opened={opened}
             onClick={() => setOpened(o => !o)}
-            size="sm"
+            size="md"
           />
         </div>
         <nav className='fixed top-0 bottom-0 left-0 z-[66]'>
