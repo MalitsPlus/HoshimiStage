@@ -44,7 +44,9 @@ export default memo(function NumberCompVertical({
         styles={{
           input: {
             fontSize: 14,
+            lineHeight: 14,
             padding: 0,
+            margin: 0,
             width: 18,
             height: 16,
             minWidth: 18,

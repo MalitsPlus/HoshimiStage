@@ -82,7 +82,7 @@ export default function App({ Component, pageProps }: AppProps) {
               <MyButton onClick={() => { setMobileHintVisible(false) }}>{t("Dismiss")}</MyButton>
             </div> */}
             <Layout>
-              <NextNProgress height={2} color="#29D" />
+              <NextNProgress height={3} color="#29D" />
               <Component {...pageProps} />
             </Layout>
           </AppContext.Provider>

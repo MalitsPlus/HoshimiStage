@@ -64,7 +64,7 @@ export default function CardSearch() {
           />
         </div>
         {!opened && (
-          <div className="flex-none w-[348px] hidden lg:block lg:pl-4">
+          <div className="flex-none w-[360px] hidden lg:block lg:pl-4">
             <SearchOptions
               opts={opts}
               setOpts={setAndRefreshPage}
