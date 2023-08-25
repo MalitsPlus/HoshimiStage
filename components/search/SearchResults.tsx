@@ -141,7 +141,7 @@ const OneSkill = memo(function _({
 }) {
   const [level, setLevel] = useState(defaultLevel)
   return (
-    <div className={`flex space-x-2 ${highlight ? "" : "brightness-75"}`}>
+    <div className={`flex space-x-2`}>
       <div className="flex-none">
         <SkillIcon wSkillLevel={skill.wapSkillLevels[level - 1]} />
       </div>
@@ -151,7 +151,7 @@ const OneSkill = memo(function _({
           setValue={setLevel}
         />
       </div>
-      <div className="flex-1 text-sm whitespace-pre-line">
+      <div className={`flex-1 text-sm whitespace-pre-line ${highlight ? "" : "text-[#8b8b8b]"}`}>
         {skill.wapSkillLevels[level - 1].description}
       </div>
     </div>

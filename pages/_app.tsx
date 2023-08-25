@@ -54,6 +54,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <MantineProvider
           withGlobalStyles
           withNormalizeCSS
+          withCSSVariables
           theme={{
             colorScheme: colorScheme,
             colors: {

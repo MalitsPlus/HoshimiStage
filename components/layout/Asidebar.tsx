@@ -35,7 +35,7 @@ export function Asidebar({
           </div>
         ))}
       </div>
-      <div className='py-4 space-y-8'>
+      <div className='pt-4 pb-12 space-y-8'>
         <LanguageBtn />
         <DarkToggler />
       </div>

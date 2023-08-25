@@ -1,17 +1,16 @@
+import { IconFilter } from "@tabler/icons"
+import { logEvent } from "firebase/analytics"
 import {
   AttributeType, CardType, SkillCategoryType, SkillEfficacyType,
   SkillTargetType, SkillTriggerType
 } from "hoshimi-venus/out/types/proto/proto_enum"
+import { t } from "i18next"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { analytics } from "../../src/firebase/firebase"
+import { IconButton } from "../misc/IconButton"
 import SearchOptions from "./SearchOptions"
 import SearchResults from "./SearchResults"
 import { targetTypesPresets, triggerTypesPresets } from "./searchOptionsPresets"
-import { logEvent } from "firebase/analytics"
-import { analytics } from "../../src/firebase/firebase"
-import dynamic from "next/dynamic"
-import { IconButton } from "../misc/IconButton"
-import { IconFilter } from "@tabler/icons"
-import { t } from "i18next"
 
 export type SkillSearchOpts = {
   cardStars: ("fivestar" | "else")[],
@@ -63,14 +62,16 @@ export default function CardSearch() {
             setPage={setPage}
           />
         </div>
-        {!opened && (
-          <div className="flex-none w-[360px] hidden lg:block lg:pl-4">
-            <SearchOptions
-              opts={opts}
-              setOpts={setAndRefreshPage}
-            />
-          </div>
-        )}
+        <div className={
+          `${opened ? "block" : "hidden"} 
+          fixed z-30 top-0 left-0 right-0 w-screen h-screen p-4 bg-white dark:bg-[--mantine-color-dark-7] 
+          lg:static lg:z-0 lg:flex-none lg:w-[360px] lg:p-0 lg:h-fit lg:block lg:pl-4`
+        }>
+          <SearchOptions
+            opts={opts}
+            setOpts={setAndRefreshPage}
+          />
+        </div>
       </div>
       <div className="lg:hidden">
         <div className="fixed z-40 top-0 right-0 w-12 h-12">
@@ -83,15 +84,6 @@ export default function CardSearch() {
             onClick={() => setOpened(o => !o)}
           />
         </div>
-        {opened && (
-          <div className="fixed z-30 top-0 left-0 right-0 w-screen h-screen bg-zinc-800 lg:hidden">
-            <SearchOptions
-              opts={opts}
-              setOpts={setAndRefreshPage}
-              className="px-4"
-            />
-          </div>
-        )}
       </div>
     </>
   )
