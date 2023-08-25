@@ -74,13 +74,13 @@ export default function CardSearch() {
         </div>
       </div>
       <div className="lg:hidden">
-        <div className="fixed z-40 top-0 right-0 w-12 h-12">
+        <div className="fixed z-40 bottom-12 right-0 w-12 h-12">
           <IconButton
             floatingPosition="top-end"
             icon={IconFilter}
             iconSize={32}
             label={t("Filter") as string}
-            className="w-12 h-12"
+            className="w-12 h-12 hover:bg-transparent dark:hover:bg-transparent"
             onClick={() => setOpened(o => !o)}
           />
         </div>
