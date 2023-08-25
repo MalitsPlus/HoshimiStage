@@ -57,12 +57,12 @@ const CharaUpper = ({
     <div className="aspect-auto w-32 h-64">
       <UnstyledButton
         onClick={onCharaClick}
-        className={`relative aspect-auto w-32 h-64 ${pointer ? "cursor-pointer" : "cursor-default"}`}
+        className={`relative aspect-auto w-full h-full ${pointer ? "cursor-pointer" : "cursor-default"}`}
       >
         <ImageAsset
           aid={"img_card_upper_1_" + assetId}
           aspect="1/2"
-          className="w-32 h-64"
+          className="w-full h-full"
         />
         <div className="absolute aspect-square w-6 top-0 left-0">
           <ImageAsset
