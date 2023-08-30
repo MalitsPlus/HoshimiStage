@@ -1,4 +1,4 @@
-import { Chip, ChipGroupProps, Divider, Group, MultiSelect, Space, Switch } from "@mantine/core"
+import { Button, Chip, ChipGroupProps, Divider, Group, MultiSelect, Space, Switch } from "@mantine/core"
 import { getAllCharas } from "hoshimi-venus/out/db/repository/chara_repository"
 import { AttributeType, CardType, SkillCategoryType, SkillEfficacyType, SkillTargetType, SkillTriggerType } from "hoshimi-venus/out/types/proto/proto_enum"
 import { t } from "i18next"
@@ -7,6 +7,7 @@ import { Dispatch, SetStateAction, useState } from "react"
 import ImageAsset from "../misc/ImageAsset"
 import { SkillSearchOpts } from "./CardSearch"
 import { ScoringEfficacies, groupPresets, targetTypesPresets, triggerTypesPresets } from "./searchOptionsPresets"
+import MyButton from "../misc/MyButton"
 
 const ChipGroup = <T extends string | number>({
   children,
@@ -124,8 +125,27 @@ export default function SearchOptions({
   const [targetCandi, setTargetCandi] = useState(Object.keys(targetTypesPresets).map(x => ({ value: x, label: t(x) })))
   const [triggerCandi, setTriggerCandi] = useState(Object.keys(triggerTypesPresets).map(x => ({ value: x, label: t(x) })))
 
+  const resetFilter = () => {
+    setOpts({
+      cardStars: ["fivestar"],
+      skillTypes: [],
+      cardTypes: [],
+      cardAttributes: [],
+      efficacyTypes: [],
+      targetTypes: [],
+      triggerTypes: [],
+      characters: [],
+    })
+  }
+
   return (
     <div className={className}>
+      <Space h="md" />
+      <div className="float-right">
+        <MyButton onClick={resetFilter}>
+          {t("Reset Filter")}
+        </MyButton>
+      </div>
       <Divider my="md" label={t("Initial Rarity")} />
       <ChipGroup value={opts.cardStars} onChange={v => { setOpts(prev => ({ ...prev, cardStars: v })) }} >
         <IconChip value="fivestar" iconAid="icon_rarity" />

@@ -41,8 +41,8 @@ export default function CardSearch() {
     characters: [],
   })
 
-  const setAndRefreshPage: Dispatch<SetStateAction<SkillSearchOpts>> = (
-    _: SkillSearchOpts | ((_: SkillSearchOpts) => SkillSearchOpts)
+  const setAndRefreshPage: typeof setOpts = (
+    _: Parameters<typeof setOpts>[0]
   ) => {
     setOpts(_)
     setPage(1)
