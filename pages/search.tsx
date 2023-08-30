@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { analytics } from "../src/firebase/firebase";
 import CardSearch from "../components/search/CardSearch";
 
-export default function Notemap() {
+export default function Search() {
   useEffect(() => {
     logEvent(analytics, "open_cardsearch")
   }, [])

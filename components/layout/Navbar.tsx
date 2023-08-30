@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { DarkToggler } from '../misc/DarkToggler';
 import { LanguageBtn } from '../misc/LanguageBtn';
 import { Pages } from '../../data/pages';
+import { t } from 'i18next';
 
 interface NavbarLinkProps {
   icon: TablerIcon;
@@ -32,7 +33,7 @@ interface NavbarLinkProps {
 
 function NavbarLink({ icon: Icon, label, href, active, onClick }: NavbarLinkProps) {
   return (
-    <Tooltip label={label} position="right" className='rounded-full'>
+    <Tooltip label={t(label)} position="right" className='rounded-full'>
       <div>
         <Link href={href} passHref legacyBehavior>
           <UnstyledButton

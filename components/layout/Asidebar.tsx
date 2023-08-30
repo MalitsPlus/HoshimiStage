@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { UnstyledButton } from '@mantine/core';
 import { LanguageBtn } from '../misc/LanguageBtn';
 import { DarkToggler } from '../misc/DarkToggler';
+import { t } from 'i18next';
 
 export function Asidebar({
   opened,
@@ -28,7 +29,7 @@ export function Asidebar({
               >
                 <div className='flex justify-center items-center gap-1 text-2xl'>
                   <menu.icon size={36} stroke={1.5} />
-                  {menu.label}
+                  {t(menu.label)}
                 </div>
               </UnstyledButton>
             </Link>

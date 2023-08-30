@@ -1,15 +1,12 @@
 import { Chip, ChipGroupProps, Divider, Group, MultiSelect, Space, Switch } from "@mantine/core"
-import { AttributeType, CardType, SkillCategoryType, SkillEfficacyType } from "hoshimi-venus/out/types/proto/proto_enum"
-import { getAllCharas, getAllGroups } from "hoshimi-venus/out/db/repository/chara_repository"
-import { ImageProps } from "next/image"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import ImageAsset from "../misc/ImageAsset"
+import { getAllCharas } from "hoshimi-venus/out/db/repository/chara_repository"
+import { AttributeType, CardType, SkillCategoryType, SkillEfficacyType, SkillTargetType, SkillTriggerType } from "hoshimi-venus/out/types/proto/proto_enum"
 import { t } from "i18next"
+import { ImageProps } from "next/image"
+import { Dispatch, SetStateAction, useState } from "react"
+import ImageAsset from "../misc/ImageAsset"
 import { SkillSearchOpts } from "./CardSearch"
-import { SkillTargetType } from "hoshimi-venus/out/types/proto/proto_enum"
-import { ScoringEfficacies, groupPresets, targetTypesPresets } from "./searchOptionsPresets"
-import { triggerTypesPresets } from "./searchOptionsPresets"
-import { SkillTriggerType } from "hoshimi-venus/out/types/proto/proto_enum"
+import { ScoringEfficacies, groupPresets, targetTypesPresets, triggerTypesPresets } from "./searchOptionsPresets"
 
 const ChipGroup = <T extends string | number>({
   children,
