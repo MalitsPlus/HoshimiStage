@@ -5,7 +5,7 @@ import { LiveCard } from "hoshimi-venus/out/types/card_types"
 import { ActSkill, CardStatus, Live } from "hoshimi-venus/out/types/concert_types"
 import { AttributeType, MusicChartType, SkillEfficacyType, SkillFailureType } from "hoshimi-venus/out/types/proto/proto_enum"
 import { CustomNote } from "hoshimi-venus/out/types/trans_types"
-import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps"
+import { Custmap, WapQuest } from "hoshimi-venus/out/types/wap/quest_waps"
 import { t } from "i18next"
 import { Fragment, memo } from "react"
 import { HighlightEfficacies, PriviAndHighlightEfficacies, PrivilegedEfficacies } from "../../src/static/highlight_efficacies"
@@ -15,10 +15,11 @@ import EffectRich from "./EffectRich"
 type NoteFlowProps = {
   attribute: AttributeType,
   ingameIndex: number,
-  customNotes: CustomNote[],
+  customNotes?: CustomNote[],
   live?: Live,
   wapQuest?: WapQuest,
-  onToggleNote: (ingamePos: number, sequence: number) => void,
+  custMap?: Custmap,
+  onToggleNote?: (ingamePos: number, sequence: number) => void,
 }
 
 const ActivatedSkill = ({
@@ -74,20 +75,21 @@ const NoteFlow = ({
   ingameIndex,
   live,
   wapQuest,
+  custMap,
   customNotes,
   onToggleNote,
 }: NoteFlowProps) => {
   console.debug("rendered noteflow")
-  if (live === undefined && wapQuest === undefined) {
+  if (live === undefined && wapQuest === undefined && custMap === undefined) {
     return null
   }
 
-  const patterns = live?.quest.musicChartPatterns ?? wapQuest?.musicChartPatterns!
+  const patterns = live?.quest.musicChartPatterns ?? wapQuest?.musicChartPatterns ?? custMap?.musicChartPatterns
   let prevASequence = 0
 
   return (
-    <div className="flex flex-col h-[98%] w-20 justify-start items-center">
-      {patterns.map((ptn, idx, arr) => {
+    <div className="flex flex-col h-[95%] w-20 justify-start items-center">
+      {patterns && patterns.map((ptn, idx, arr) => {
         let interval = 0
         if (ptn.position === ingameIndex) {
           if (ptn.type === MusicChartType.ActiveSkill) {
@@ -120,7 +122,7 @@ const NoteFlow = ({
         const pickupEfficacies = efficacies?.filter(it => HighlightEfficacies.includes(it))
         const normalEfficacies = efficacies?.filter(it => !PriviAndHighlightEfficacies.includes(it))
 
-        const customOpponent = customNotes.some(
+        const customOpponent = customNotes?.some(
           it => it.ingamePos === ingameIndex
             && it.sequence === ptn.sequence
             && it.privilege === "opponent"
@@ -135,7 +137,7 @@ const NoteFlow = ({
                 className="h-1 w-1 grow shrink flex justify-center items-center cursor-pointer"
                 onClick={() => {
                   if (ptn.position === ingameIndex) {
-                    onToggleNote(ingameIndex, ptn.sequence)
+                    onToggleNote && onToggleNote(ingameIndex, ptn.sequence)
                   }
                 }}
               >
@@ -157,7 +159,7 @@ const NoteFlow = ({
                           : attribute === AttributeType.Dance ? "border-dance-acc"
                             : attribute === AttributeType.Vocal ? "border-vocal-acc"
                               : attribute === AttributeType.Visual ? "border-visual-acc"
-                                : "bg-slate-600" : "",
+                                : "border-zinc-400" : "",
                       customOpponent ? "bg-zinc-600"
                         : attribute === AttributeType.Dance ? "bg-dance"
                           : attribute === AttributeType.Vocal ? "bg-vocal"

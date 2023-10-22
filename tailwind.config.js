@@ -24,6 +24,9 @@ module.exports = {
         vocal: '#fe4b9d',
         dance: '#38bbff',
         visual: '#feb100',
+        "vocal-trans": '#fe4b9d88',
+        "dance-trans": '#38bbff88',
+        "visual-trans": '#feb10088',
         'vocal-acc': '#cb015c',
         'dance-acc': '#0088d1',
         'visual-acc': '#b37d00',
@@ -74,6 +77,7 @@ module.exports = {
         '16': 'repeat(16, minmax(0, 1fr))',
         '17': 'repeat(17, minmax(0, 1fr))',
         '18': 'repeat(18, minmax(0, 1fr))',
+        "hero": "[full-start] minmax(2rem,1fr) [standard-start] 3.75rem [narrow-start] minmax(1rem,67.5rem) [narrow-end] 3.75rem [standard-end] minmax(2rem,1fr) [full-end]",
       },
       order: {
         '13': '13',

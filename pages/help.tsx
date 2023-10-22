@@ -23,7 +23,7 @@ export default function Help() {
 
           <h2>Overview</h2>
           <p>
-            For those who have a willingness to form powerful parties whenever the official have launched
+            To those who have a willingness to form powerful parties when the official have launched
             out new Lives, they must dig deeper into how a Live is going to work under the hood
             and what's happenning at some specific nodes. To that end, a number of trials and errors
             are good enough for those Lives which are rechallengeable. However, when things come to
