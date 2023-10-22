@@ -40,7 +40,7 @@ export function Formations() {
   const [laneInfos, setLaneInfos] = useState<LaneInfo[]>()
   const [mainAttr, setMainAttr] = useState<string>()
   const [isBattle, setIsBattle] = useState(false)
-  const [commiter, setCommiter] = useState<string>("")
+  const [committer, setCommitter] = useState<string>("")
   const [activePage, setActivePage] = useState(1)
   const [committing, setCommitting] = useState(false)
   const [displayFormations, setDisplayFormations] = useState<TFormationM[]>()
@@ -75,7 +75,7 @@ export function Formations() {
 
   const queryList = async () => {
     const params: Record<string, string> = {}
-    if (commiter !== "") params.u = commiter
+    if (committer !== "") params.u = committer
     if (selectedPattern) params.p = selectedPattern
     if (mainAttr) params.a = mainAttr
     if (isBattle) params.b = "true"; else params.b = "false"
@@ -190,10 +190,10 @@ export function Formations() {
             </div>
             <div>
               <TextInput
-                label="Commiter"
+                label="Committer"
                 className="w-[15rem]"
-                value={commiter}
-                onChange={(event) => setCommiter(event.currentTarget.value)}
+                value={committer}
+                onChange={(event) => setCommitter(event.currentTarget.value)}
               />
             </div>
             <div className="flex flex-row justify-between">
