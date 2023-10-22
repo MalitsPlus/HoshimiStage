@@ -1,13 +1,13 @@
-import { Button, Chip, ChipGroupProps, Divider, Group, MultiSelect, Space, Switch } from "@mantine/core"
+import { Chip, ChipGroupProps, Divider, Group, MultiSelect, Space, Switch } from "@mantine/core"
 import { getAllCharas } from "hoshimi-venus/out/db/repository/chara_repository"
 import { AttributeType, CardType, SkillCategoryType, SkillEfficacyType, SkillTargetType, SkillTriggerType } from "hoshimi-venus/out/types/proto/proto_enum"
-import { t } from "i18next"
+import i18next, { t } from "i18next"
 import { ImageProps } from "next/image"
 import { Dispatch, SetStateAction, useState } from "react"
 import ImageAsset from "../misc/ImageAsset"
+import MyButton from "../misc/MyButton"
 import { SkillSearchOpts } from "./CardSearch"
 import { ScoringEfficacies, groupPresets, targetTypesPresets, triggerTypesPresets } from "./searchOptionsPresets"
-import MyButton from "../misc/MyButton"
 
 const ChipGroup = <T extends string | number>({
   children,
@@ -74,7 +74,7 @@ const groupObj = groupPresets.map(group => ({
   value: group.id, label: t(group.name)
 }))
 
-const efficacyObj = (() => {
+const getEfficacyObj = () => {
   const r = []
   for (const [k, v] of Object.entries(SkillEfficacyType)) {
     if (Number.isNaN(+k)) {
@@ -83,9 +83,9 @@ const efficacyObj = (() => {
     r.push({ value: k, label: t(v.toString()) })
   }
   return r
-})()
+}
 
-const targetObj = (() => {
+const getTargetObj = () => {
   const r = []
   for (const [k, v] of Object.entries(SkillTargetType)) {
     if (Number.isNaN(+k)) {
@@ -94,9 +94,9 @@ const targetObj = (() => {
     r.push({ value: k, label: t(v.toString()) })
   }
   return r
-})()
+}
 
-const triggerObj = (() => {
+const getTriggerObj = () => {
   const r = []
   for (const [k, v] of Object.entries(SkillTriggerType)) {
     if (Number.isNaN(+k)) {
@@ -105,7 +105,7 @@ const triggerObj = (() => {
     r.push({ value: k, label: t(v.toString()) })
   }
   return r
-})()
+}
 
 export default function SearchOptions({
   opts,
@@ -121,9 +121,21 @@ export default function SearchOptions({
   const [pcsTarget, setPcsTarget] = useState(false)
   const [pcsTrigger, setPcsTrigger] = useState(false)
   const [showGroups, setShowGroups] = useState(false)
-  const [effCandi, setEffCandi] = useState(efficacyObj.filter(x => !ScoringEfficacies.includes(+x.value)))
+  const [effCandi, setEffCandi] = useState(getEfficacyObj().filter(x => !ScoringEfficacies.includes(+x.value)))
   const [targetCandi, setTargetCandi] = useState(Object.keys(targetTypesPresets).map(x => ({ value: x, label: t(x) })))
   const [triggerCandi, setTriggerCandi] = useState(Object.keys(triggerTypesPresets).map(x => ({ value: x, label: t(x) })))
+
+  i18next.on('languageChanged', () => {
+    setEffCandi(exScore
+      ? getEfficacyObj().filter(x => !ScoringEfficacies.includes(+x.value))
+      : getEfficacyObj())
+    setTargetCandi(pcsTarget
+      ? getTargetObj()
+      : Object.keys(targetTypesPresets).map(x => ({ value: x, label: t(x) })))
+    setTriggerCandi(pcsTrigger
+      ? getTriggerObj()
+      : Object.keys(triggerTypesPresets).map(x => ({ value: x, label: t(x) })))
+  })
 
   const resetFilter = () => {
     setOpts({
@@ -179,8 +191,8 @@ export default function SearchOptions({
         onChange={(event) => {
           setExScore(event.currentTarget.checked)
           setEffCandi(event.currentTarget.checked
-            ? efficacyObj.filter(x => !ScoringEfficacies.includes(+x.value))
-            : efficacyObj
+            ? getEfficacyObj().filter(x => !ScoringEfficacies.includes(+x.value))
+            : getEfficacyObj()
           )
         }}
         label={t("Exclude Scoring Efficacies")}
@@ -202,7 +214,7 @@ export default function SearchOptions({
         onChange={(event) => {
           setPcsTarget(event.currentTarget.checked)
           setTargetCandi(event.currentTarget.checked
-            ? targetObj
+            ? getTargetObj()
             : Object.keys(targetTypesPresets).map(x => ({ value: x, label: t(x) }))
           )
         }}
@@ -225,7 +237,7 @@ export default function SearchOptions({
         onChange={(event) => {
           setPcsTrigger(event.currentTarget.checked)
           setTriggerCandi(event.currentTarget.checked
-            ? triggerObj
+            ? getTriggerObj()
             : Object.keys(triggerTypesPresets).map(x => ({ value: x, label: t(x) }))
           )
         }}
