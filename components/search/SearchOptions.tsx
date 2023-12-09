@@ -4,6 +4,7 @@ import { AttributeType, CardType, SkillCategoryType, SkillEfficacyType, SkillTar
 import i18next, { t } from "i18next"
 import { ImageProps } from "next/image"
 import { Dispatch, SetStateAction, useState } from "react"
+import { getSafeObject } from "../../src/api/apiUtils"
 import ImageAsset from "../misc/ImageAsset"
 import MyButton from "../misc/MyButton"
 import { SkillSearchOpts } from "./CardSearch"
@@ -66,13 +67,21 @@ const IconChip = <T extends { [_: number]: string }>({
   )
 }
 
-const chararObj = getAllCharas().map(chara => ({
-  value: chara.id, label: t(chara.name)
-}))
+const getCharaObj = () => getSafeObject(
+  () => {
+    return getAllCharas().map(chara => ({
+      value: chara.id, label: t(chara.name)
+    }))
+  }, "charaObj"
+)
 
-const groupObj = groupPresets.map(group => ({
-  value: group.id, label: t(group.name)
-}))
+const getGroupObj = () => getSafeObject(
+  () => {
+    return groupPresets.map(group => ({
+      value: group.id, label: t(group.name)
+    }))
+  }, "groupObj"
+)
 
 const getEfficacyObj = () => {
   const r = []
@@ -264,7 +273,7 @@ export default function SearchOptions({
       />
       <Space h="sm" />
       <MultiSelect
-        data={showGroups ? groupObj : chararObj}
+        data={showGroups ? getGroupObj() : getCharaObj()}
         value={opts.characters}
         onChange={v => setOpts(prev => ({
           ...prev, characters: v

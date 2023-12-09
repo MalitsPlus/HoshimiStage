@@ -1,12 +1,11 @@
+import { Badge } from "@mantine/core"
+import { getRawMusic } from "hoshimi-venus/out/db/dao/quest_dao"
 import { t } from "i18next"
 import { TFormation } from "../../src/atlas/query"
-import { getRawMusic } from "hoshimi-venus/out/db/dao/quest_dao"
-import { JacketIcon } from "../media/JacketIcon"
-import { Badge } from "@mantine/core"
-import CharaIcon from "../media/CharaIcon"
-import { getCard } from "hoshimi-venus/out/db/repository/card_repository"
-import { AllCards } from "../../src/utils/data_repository"
+import { getAllCards } from "../../src/utils/data_repository"
 import { getCardAttribute } from "../../src/utils/misc"
+import CharaIcon from "../media/CharaIcon"
+import { JacketIcon } from "../media/JacketIcon"
 
 export function Team({
   formation,
@@ -86,7 +85,7 @@ export function Team({
       <div className="grid grid-cols-5 grid-flow-row justify-between divide-x">
         {
           formation.indexes.map((idx, i) => {
-            const card = idx.cardId ? AllCards.find(it => it.id === idx.cardId) : undefined
+            const card = idx.cardId ? getAllCards().find(it => it.id === idx.cardId) : undefined
             return (
               <div
                 key={idx.index}

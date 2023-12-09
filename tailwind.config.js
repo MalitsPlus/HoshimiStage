@@ -64,11 +64,20 @@ module.exports = {
           'to': {
             transform: 'rotate(-360deg)'
           }
+        },
+        'spin': {
+          'from': {
+            transform: 'rotate(0deg)'
+          },
+          'to': {
+            transform: 'rotate(360deg)'
+          }
         }
       },
       animation: {
         'pulse-quick': 'pulse-strong 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;',
-        'spin-reverse': 'spin-reverse 1s linear infinite;'
+        'spin-reverse': 'spin-reverse 1s linear infinite;',
+        'spin-cubic-bezier': 'spin 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;'
       },
       gridTemplateColumns: {
         '13': 'repeat(13, minmax(0, 1fr))',

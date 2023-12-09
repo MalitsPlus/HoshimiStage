@@ -9,6 +9,7 @@ import Layout from '../components/layout/Layout';
 import { analytics } from '../src/firebase/firebase';
 import { default as i18n } from '../src/i18n';
 import '../styles/globals.css';
+import { initApi } from '../src/api/apiUtils';
 
 const defaultLang = "en"
 
@@ -43,6 +44,8 @@ export default function App({ Component, pageProps }: AppProps) {
     //   console.debug(userCredential.user.uid)
     // })
   }, [])
+
+  initApi()
 
   return (
     <>

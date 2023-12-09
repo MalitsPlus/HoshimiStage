@@ -17,7 +17,7 @@
     "@tabler/icons": "^1.119.0",
     "classnames": "^2.3.2",
     "firebase": "^9.15.0",
-    "hoshimi-venus": "^0.16.91",
+    "hoshimi-venus": "^0.21.1",
     "i18next": "^22.0.6",
     "immutability-helper": "^3.1.1",
     "jose": "^4.15.4",
@@ -28,7 +28,8 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-dnd-touch-backend": "^16.0.1",
     "react-dom": "18.2.0",
-    "react-i18next": "^12.0.0"
+    "react-i18next": "^12.0.0",
+    "swr": "^2.2.4"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.9",

@@ -21,7 +21,7 @@ const nextConfig = {
           {
             key: "Content-Security-Policy",
             value: `
-              connect-src 'self' hoshimi-backend.vibbit.me *.googleapis.com *.google-analytics.com;
+              connect-src 'self' hoshimi-backend.vibbit.me hoshimi-db.vibbit.me *.googleapis.com *.google-analytics.com;
               img-src 'self' blob: data: idoly-assets-curator.vercel.app res.cloudinary.com
             `.replace(/\s{2,}/g, " ").trim(),
           },
@@ -33,6 +33,16 @@ const nextConfig = {
       },
     ]
   },
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/search",
+        permanent: false,
+        statusCode: 307,
+      }
+    ]
+  }
 }
 
 module.exports = nextConfig

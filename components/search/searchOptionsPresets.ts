@@ -1,12 +1,17 @@
-import { getAllGroups } from "hoshimi-venus/out/db/repository/chara_repository";
 import { GameSetting } from "hoshimi-venus/out/db/repository/setting_repository";
 import { SkillTargetType, SkillTriggerType } from "hoshimi-venus/out/types/proto/proto_enum";
 
-export const groupPresets = getAllGroups().map(g => ({
-  id: g.assetId,
-  name: g.name,
-  charas: g.mappings.map(c => c.characterId),
-}))
+export let groupPresets: {
+  id: string;
+  name: string;
+  charas: string[];
+}[] = []
+
+export const setGroupPresets = (
+  value: typeof groupPresets
+) => {
+  groupPresets = value
+}
 
 export const targetTypesPresets = {
   self: [

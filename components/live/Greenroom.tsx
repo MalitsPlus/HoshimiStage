@@ -5,7 +5,7 @@ import { Card } from "hoshimi-venus/out/types/proto/proto_master"
 import { t } from "i18next"
 import { ImageProps } from "next/image"
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react"
-import { AllCards } from "../../src/utils/data_repository"
+import { getAllCards } from "../../src/utils/data_repository"
 import { charaDropAction } from "../../src/utils/live_utils"
 import { getCardAttribute, isCardInParty } from "../../src/utils/misc"
 import CharaIconDropZone from "../media/CharaIconDropZone"
@@ -155,7 +155,7 @@ export default function Greenroom({
         <div className="grow">
           <div className="flex flex-row p-2 justify-evenly items-center align-middle bg-neutral-300 dark:bg-neutral-800 rounded-lg">
             {Object.entries(localParty).map(([k, ptcard]) => {
-              const card = AllCards.find(it => it.id === ptcard.cardId)
+              const card = getAllCards().find(it => it.id === ptcard.cardId)
               return (
                 <CharaIconDropZone
                   key={k}
@@ -180,7 +180,7 @@ export default function Greenroom({
           md:grid-cols-[repeat(5,_minmax(min-content,_1fr))]
           lg:grid-cols-[repeat(8,_minmax(min-content,_1fr))]
           xl:grid-cols-[repeat(12,_minmax(min-content,_1fr))]">
-            {AllCards
+            {getAllCards()
               .filter(card => cardFilter(card, starChips, typeChips, attrChips))
               .map((card, index) => {
                 const canDrag = !isCardInParty(card, localParty)

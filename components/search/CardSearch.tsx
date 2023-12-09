@@ -5,7 +5,7 @@ import {
   SkillTargetType, SkillTriggerType
 } from "hoshimi-venus/out/types/proto/proto_enum"
 import { t } from "i18next"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { analytics } from "../../src/firebase/firebase"
 import { IconButton } from "../misc/IconButton"
 import SearchOptions from "./SearchOptions"

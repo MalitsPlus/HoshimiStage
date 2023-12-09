@@ -1,14 +1,14 @@
-import { WapCard } from "hoshimi-venus/out/types/wap/card_waps"
-import { SkillSearchOpts } from "./CardSearch"
-import { AllWapCards } from "../../src/utils/data_repository"
+import { Card, Pagination, Space } from "@mantine/core"
 import { SkillTargetType, SkillTriggerType } from "hoshimi-venus/out/types/proto/proto_enum"
-import { groupPresets, targetTypesPresets, triggerTypesPresets } from "./searchOptionsPresets"
-import CharaUpper from "../media/CharaUpper"
-import { Card, Divider, Pagination, Space } from "@mantine/core"
+import { WapCard } from "hoshimi-venus/out/types/wap/card_waps"
 import { WapSkill } from "hoshimi-venus/out/types/wap/skill_waps"
+import { Dispatch, SetStateAction, memo, useState } from "react"
+import { getAllWapCards } from "../../src/utils/data_repository"
+import CharaUpper from "../media/CharaUpper"
 import SkillIcon from "../media/SkillIcon"
 import NumberCompVertical from "../misc/NumberCompVertical"
-import { Dispatch, SetStateAction, memo, useEffect, useState } from "react"
+import { SkillSearchOpts } from "./CardSearch"
+import { groupPresets, targetTypesPresets, triggerTypesPresets } from "./searchOptionsPresets"
 
 
 const searchFilter = (opts: SkillSearchOpts): {
@@ -17,7 +17,7 @@ const searchFilter = (opts: SkillSearchOpts): {
   const result: {
     skillIndexes: number[], card: WapCard, id: string,
   }[] = []
-  for (const x of AllWapCards) {
+  for (const x of getAllWapCards()) {
 
     // character conditions
     if (opts.characters.length !== 0) {

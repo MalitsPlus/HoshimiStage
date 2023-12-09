@@ -1,20 +1,20 @@
-import { Button, Chip, Modal, NumberInput, Space, TextInput, Textarea, UnstyledButton } from "@mantine/core"
+import { Chip, Modal, NumberInput, Space, TextInput, Textarea, UnstyledButton } from "@mantine/core"
 import { getCustmap, getMusicPatternIds } from "hoshimi-venus/out/db/repository/quest_repository"
+import { AttributeType } from "hoshimi-venus/out/types/proto/proto_enum"
 import { Music } from "hoshimi-venus/out/types/proto/proto_master"
 import { Custmap } from "hoshimi-venus/out/types/wap/quest_waps"
+import { t } from "i18next"
 import { Dispatch, SetStateAction, useState } from "react"
-import { AllCards } from "../../src/utils/data_repository"
+import { TFormation, addFormation } from "../../src/atlas/query"
+import { getAllCards } from "../../src/utils/data_repository"
 import { getCardAttribute } from "../../src/utils/misc"
 import Greenroom from "../live/Greenroom"
+import NoteFlow from "../live/NoteFlow"
 import { StageParty, index2GamePos } from "../live/Stage"
 import CharaIcon from "../media/CharaIcon"
 import { JacketIcon } from "../media/JacketIcon"
-import { Jackets } from "./Jackets"
-import { t } from "i18next"
 import MyButton from "../misc/MyButton"
-import NoteFlow from "../live/NoteFlow"
-import { AttributeType } from "hoshimi-venus/out/types/proto/proto_enum"
-import { TFormation, addFormation } from "../../src/atlas/query"
+import { Jackets } from "./Jackets"
 
 type Reliability = "Barely" | "Medium" | "Solid"
 
@@ -196,7 +196,7 @@ export function NewTeam({
             {
               Object.entries(stageParty).map(([k, ptcard]) => {
                 const idx = +k
-                const card = AllCards.find(it => it.id === ptcard.cardId)
+                const card = getAllCards().find(it => it.id === ptcard.cardId)
                 return (
                   <div className="flex flex-col items-center gap-2" key={card?.id ?? k}>
                     <CharaIcon
