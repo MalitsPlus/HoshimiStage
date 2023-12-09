@@ -30,6 +30,10 @@ export default function Search() {
     logEvent(analytics, "open_cardsearch")
   }, [])
 
+  if (error) {
+    console.error(error)
+  }
+
   if (error) return (<div>Failed to load</div>)
   if (!data) return (<Loading />)
 
