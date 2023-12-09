@@ -20,10 +20,23 @@ export default function Help() {
       <div className="px-4 py-4">
         <article className="prose lg:prose-xl prose-zinc dark:prose-invert">
           <h1>HoshimiStage</h1>
-
+          <h2>Sunset of the Simulation function</h2>
+          <p>
+            Live simulation has been deprecated in a recent update because lacking of information
+            and maintenance has resulted it loses reliability which should be considered its
+            premier principle.
+          </p>
+          <p>
+            You still can access it by explicitly indicate the path <Link href="/notemap">like this</Link>, 
+            however please note the results from the simulation should be considered not reliable and
+            for reference purpose only, also there will not be update for that function anymore.
+          </p>
+          <p>
+            The help text below is retained for reference.
+          </p>
           <h2>Overview</h2>
           <p>
-            To those who have a willingness to form powerful parties when the official have launched
+            For those who have a willingness to form powerful parties when the official have launched
             out new Lives, they must dig deeper into how a Live is going to work under the hood
             and what's happenning at some specific nodes. To that end, a number of trials and errors
             are good enough for those Lives which are rechallengeable. However, when things come to
@@ -87,7 +100,7 @@ export default function Help() {
 
           <h3>Do I have to adjust parameters completely match my unit?</h3>
           <p>
-            Generally speaking, beacause HoshimiStage has no feature to calculate score, you needn't
+            Generally speaking, because HoshimiStage has no feature to calculate score, you needn't
             to adjust parameters to completely match your card.
           </p>
           <p>
