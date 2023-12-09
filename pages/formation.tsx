@@ -22,7 +22,7 @@ async function fetchData() {
 
 export default function Formation() {
 
-  const { data, error } = useSWR("search", fetchData, {
+  const { data, error } = useSWR("notemap", fetchData, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false

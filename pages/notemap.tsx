@@ -1,8 +1,10 @@
 import { logEvent } from "firebase/analytics";
+import { setInitCard, setInitCharacter, setInitQuest, setInitSetting, setInitSkill } from "hoshimi-venus";
 import Head from "next/head";
 import { useEffect } from "react";
+import useSWR from "swr";
 import Venue from "../components/live/Venue";
-import { analytics } from "../src/firebase/firebase";
+import { Loading } from "../components/misc/loading";
 import {
   initApi,
   initCard,
@@ -11,10 +13,9 @@ import {
   initSetting,
   initSkill
 } from "../src/api/apiUtils";
-import { InferGetServerSidePropsType } from "next";
-import { setInitCard, setInitCharacter, setInitQuest, setInitSetting, setInitSkill } from "hoshimi-venus";
+import { analytics } from "../src/firebase/firebase";
 
-export async function getServerSideProps() {
+async function fetchData() {
   initApi()
   const results = await Promise.all([
     await initCard(),
@@ -26,12 +27,21 @@ export async function getServerSideProps() {
   return { props: { results: results } }
 }
 
-export default function Notemap({ results }:
-  InferGetServerSidePropsType<typeof getServerSideProps>
-) {
+export default function Notemap() {
+  const { data, error } = useSWR("notemap", fetchData, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false
+  })
+  
   useEffect(() => {
     logEvent(analytics, "open_notemap")
   }, [])
+
+  if (error) return (<div>Failed to load</div>)
+  if (!data) return (<Loading />)
+
+  const results = data.props.results
 
   if (results.every(it => it)) {
     setInitCard(results[0])
