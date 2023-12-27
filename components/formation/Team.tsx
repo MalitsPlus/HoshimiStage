@@ -1,4 +1,4 @@
-import { Badge } from "@mantine/core"
+import { Badge, UnstyledButton } from "@mantine/core"
 import { getRawMusic } from "hoshimi-venus/out/db/dao/quest_dao"
 import { t } from "i18next"
 import { TFormation } from "../../src/atlas/query"
@@ -6,11 +6,14 @@ import { getAllCards } from "../../src/utils/data_repository"
 import { getCardAttribute } from "../../src/utils/misc"
 import CharaIcon from "../media/CharaIcon"
 import { JacketIcon } from "../media/JacketIcon"
+import classNames from "classnames"
 
 export function Team({
   formation,
+  cloneTeam,
 }: {
   formation: TFormation,
+  cloneTeam: (formation: TFormation) => void,
 }) {
   const music = getRawMusic(formation.musicId)
 
@@ -30,6 +33,17 @@ export function Team({
           <Badge mr={4} variant="filled" className="normal-case">
             {formation.user}
           </Badge>
+          <UnstyledButton
+            className={classNames("bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700",
+              "dark:bg-emerald-600 dark:hover:bg-emerald-700 dark:active:bg-emerald-800 ",
+              "disabled:dark:bg-zinc-600",
+              "rounded-md text-white font-medium text-[0.875rem] w-[100px] text-center",
+              "active:transform-none transition duration-150 p-2",
+            )}
+            onClick={() => cloneTeam(formation)}
+          >
+            {t("Clone")}
+          </UnstyledButton>
         </div>
         <div>
           {new Date(formation.time).toLocaleString(undefined, {

@@ -4,7 +4,7 @@ import { AttributeType } from "hoshimi-venus/out/types/proto/proto_enum"
 import { Music } from "hoshimi-venus/out/types/proto/proto_master"
 import { Custmap } from "hoshimi-venus/out/types/wap/quest_waps"
 import { t } from "i18next"
-import { Dispatch, SetStateAction, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { TFormation, addFormation } from "../../src/atlas/query"
 import { getAllCards } from "../../src/utils/data_repository"
 import { getCardAttribute } from "../../src/utils/misc"
@@ -15,6 +15,7 @@ import CharaIcon from "../media/CharaIcon"
 import { JacketIcon } from "../media/JacketIcon"
 import MyButton from "../misc/MyButton"
 import { Jackets } from "./Jackets"
+import { getRawMusic } from "hoshimi-venus/out/db/dao/quest_dao"
 
 type Reliability = "Barely" | "Medium" | "Solid"
 
@@ -41,9 +42,11 @@ const ThreeAttrBtn = ({
 export function NewTeam({
   setOpened,
   postCommit,
+  clonedFormation,
 }: {
   setOpened: Dispatch<SetStateAction<boolean>>,
   postCommit: () => Promise<void>,
+  clonedFormation?: TFormation,
 }) {
 
   const [selectedMusic, setSelectedMusic] = useState<Music>()
@@ -143,6 +146,30 @@ export function NewTeam({
       setPattern(ptns[0])
     }
   }
+
+  useEffect(() => {
+    if (clonedFormation) {
+      setMusic(getRawMusic(clonedFormation.musicId))
+      setPattern(clonedFormation.chartPatternId)
+      setStageParty({
+        0: { cardId: clonedFormation.indexes[0].cardId, ingamePos: 4 },
+        1: { cardId: clonedFormation.indexes[1].cardId, ingamePos: 2 },
+        2: { cardId: clonedFormation.indexes[2].cardId, ingamePos: 1 },
+        3: { cardId: clonedFormation.indexes[3].cardId, ingamePos: 3 },
+        4: { cardId: clonedFormation.indexes[4].cardId, ingamePos: 5 },
+      })
+      setMainScorer(clonedFormation.indexes.map(it => it.isMainScorer))
+      setComments(clonedFormation.indexes.map(it => it.comment))
+      clonedFormation.indexes.forEach(idx => {
+        setAttribute(idx.index + 1, AttributeType[idx.attribute])
+      })
+      setMainAttr(clonedFormation.mainAttr)
+      setIsBattle(clonedFormation.isBattle)
+      setMustPhoto(clonedFormation.needPhotos)
+      setReliability(clonedFormation.reliability)
+      setCommitter(clonedFormation.user)
+    }
+  }, [])
 
   return (
     <>

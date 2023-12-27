@@ -7,7 +7,7 @@ import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
-import { TFormationM, listFormations } from "../../src/atlas/query";
+import { TFormation, TFormationM, listFormations } from "../../src/atlas/query";
 import CustDragLayer from "../media/CustDragLayer";
 import { JacketIcon } from "../media/JacketIcon";
 import MyButton from "../misc/MyButton";
@@ -45,6 +45,7 @@ export function Formations() {
   const [committing, setCommitting] = useState(false)
   const [displayFormations, setDisplayFormations] = useState<TFormationM[]>()
   const [dialogOpened, setDialogOpened] = useState(false)
+  const [clonedFormation, setClonedFormation] = useState<TFormation>()
 
   const setPattern = (ptn: string) => {
     setSelectedPattern(ptn)
@@ -96,6 +97,11 @@ export function Formations() {
     }, 3000);
   }
 
+  const openClonedFormation = (formation: TFormation) => {
+    setClonedFormation(formation)
+    setNewTeamOpened(true)
+  }
+
   useEffect(() => {
     queryList()
   }, [])
@@ -105,13 +111,16 @@ export function Formations() {
       <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
         <Modal
           opened={newTeamOpened}
-          onClose={() => setNewTeamOpened(false)}
+          onClose={() => {
+            setNewTeamOpened(false)
+          }}
           title="Edit party"
           size="auto"
         >
           <NewTeam
             setOpened={setNewTeamOpened}
             postCommit={postCommit}
+            clonedFormation={clonedFormation}
           />
         </Modal>
         <Modal
@@ -211,7 +220,10 @@ export function Formations() {
                   "rounded-md text-white font-medium text-[0.875rem] w-[100px] text-center",
                   "active:transform-none transition duration-150 p-2",
                 )}
-                onClick={() => setNewTeamOpened(true)}
+                onClick={() => {
+                  setClonedFormation(undefined)
+                  setNewTeamOpened(true)
+                }}
               >
                 {t("New")}
               </UnstyledButton>
@@ -229,7 +241,10 @@ export function Formations() {
               displayFormations
                 ?.slice((activePage - 1) * 10, activePage * 10)
                 .map(it =>
-                  <Team formation={it} key={it._id} />
+                  <Team formation={it}
+                    key={it._id}
+                    cloneTeam={openClonedFormation}
+                  />
                 )
             }
             <Pagination
