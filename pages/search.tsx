@@ -1,12 +1,10 @@
-import { logEvent } from "firebase/analytics";
-import Head from "next/head";
-import { useEffect } from "react";
-import { analytics } from "../src/firebase/firebase";
-import CardSearch from "../components/search/CardSearch";
-import { initApi, initCard, initCharacter, initSetting, initSkill } from "../src/api/apiUtils";
 import { setInitCard, setInitCharacter, setInitSetting, setInitSkill } from "hoshimi-venus";
+import Head from "next/head";
 import useSWR from "swr";
 import { Loading } from "../components/misc/loading";
+import CardSearch from "../components/search/CardSearch";
+import { initApi, initCard, initCharacter, initSetting, initSkill } from "../src/api/apiUtils";
+import { InferGetStaticPropsType } from "next";
 
 async function fetchData() {
   initApi()
@@ -25,10 +23,6 @@ export default function Search() {
     revalidateOnFocus: false,
     revalidateOnReconnect: false
   })
-
-  useEffect(() => {
-    logEvent(analytics, "open_cardsearch")
-  }, [])
 
   if (error) {
     console.error(error)

@@ -1,5 +1,4 @@
 import { initializeApp } from "firebase/app";
-import { Analytics, getAnalytics } from "firebase/analytics";
 import { addDoc, collection, doc, getDoc, getFirestore, Timestamp } from "firebase/firestore";
 import { browserLocalPersistence, initializeAuth, signInAnonymously } from "firebase/auth";
 import { Live } from "hoshimi-venus/out/types/concert_types";
@@ -20,10 +19,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 
 // Initialize Analytics
-let analytics: Analytics
-if (typeof window !== "undefined") {
-  analytics = getAnalytics(app)
-}
+// let analytics: Analytics
+// if (typeof window !== "undefined") {
+//   analytics = getAnalytics(app)
+// }
 
 // Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(app)
@@ -120,7 +119,6 @@ const auth = initializeAuth(app, {
 })
 
 export {
-  analytics,
   db,
   auth,
   addSimulation,

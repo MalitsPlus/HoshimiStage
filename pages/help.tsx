@@ -1,17 +1,11 @@
 /* eslint-disable react/no-unescaped-entities */
 import { Alert, Badge } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons";
-import { logEvent } from "firebase/analytics";
 import { t } from "i18next";
 import Head from "next/head";
 import Link from "next/link";
-import { useEffect } from "react";
-import { analytics } from "../src/firebase/firebase";
 
 export default function Help() {
-  useEffect(() => {
-    logEvent(analytics, "open_help")
-  }, [])
   return (
     <>
       <Head>

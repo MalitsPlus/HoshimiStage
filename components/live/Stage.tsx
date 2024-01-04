@@ -1,17 +1,19 @@
-import { ActionIcon, Alert, CopyButton, Dialog, Modal, Overlay, Space, TextInput } from '@mantine/core';
+import { ActionIcon, Alert, CopyButton, Modal, Overlay, Space, TextInput } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconAlertCircle, IconAnalyze, IconCheck, IconCopy } from '@tabler/icons';
-import { logEvent } from 'firebase/analytics';
-import { Timestamp } from 'firebase/firestore';
 import simulate from 'hoshimi-venus';
+import { getQuest } from 'hoshimi-venus/out/db/repository/quest_repository';
+import { UserCard } from 'hoshimi-venus/out/types/card_types';
 import { Live } from 'hoshimi-venus/out/types/concert_types';
 import { CustomNote, TransDeck } from 'hoshimi-venus/out/types/trans_types';
 import { WapQuest } from "hoshimi-venus/out/types/wap/quest_waps";
 import { t } from 'i18next';
+import { useRouter } from 'next/router';
 import { SetStateAction, useCallback, useEffect, useState } from "react";
 import { DndProvider } from 'react-dnd';
 import { TouchBackend } from "react-dnd-touch-backend";
-import { analytics, addSimulation, auth, getSimulation, FirestoreCard, FirestoreLive } from '../../src/firebase/firebase';
+import { FirestoreCard, FirestoreLive, addSimulation, getSimulation } from '../../src/firebase/firebase';
+import { getUserCard } from '../../src/utils/data_mgr';
 import { charaDropAction } from "../../src/utils/live_utils";
 import { isPartyFull } from '../../src/utils/misc';
 import { createInitState, getDefaultUserData, parseUserData, stringifyUserData } from '../../src/utils/user_data';
@@ -20,10 +22,6 @@ import Greenroom from "./Greenroom";
 import Kockpit from "./Kockpit";
 import Lane from "./Lane";
 import StatusPannel from './StatusPannel';
-import { useRouter } from 'next/router';
-import { getQuest } from 'hoshimi-venus/out/db/repository/quest_repository';
-import { UserCard } from 'hoshimi-venus/out/types/card_types';
-import { getUserCard } from '../../src/utils/data_mgr';
 
 let didInit = false
 
@@ -128,7 +126,7 @@ export default function Stage() {
       }
       setLive(result)
       setLoading(false)
-      logEvent(analytics, "click_simulate")
+      window.umami?.track("click simulate")
       addSimulation(result, "").then((id) => {
         setLiveId(id)
       })

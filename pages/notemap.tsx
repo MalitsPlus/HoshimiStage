@@ -1,7 +1,5 @@
-import { logEvent } from "firebase/analytics";
 import { setInitCard, setInitCharacter, setInitQuest, setInitSetting, setInitSkill } from "hoshimi-venus";
 import Head from "next/head";
-import { useEffect } from "react";
 import useSWR from "swr";
 import Venue from "../components/live/Venue";
 import { Loading } from "../components/misc/loading";
@@ -13,7 +11,6 @@ import {
   initSetting,
   initSkill
 } from "../src/api/apiUtils";
-import { analytics } from "../src/firebase/firebase";
 
 async function fetchData() {
   initApi()
@@ -33,10 +30,6 @@ export default function Notemap() {
     revalidateOnFocus: false,
     revalidateOnReconnect: false
   })
-  
-  useEffect(() => {
-    logEvent(analytics, "open_notemap")
-  }, [])
 
   if (error) return (<div>Failed to load</div>)
   if (!data) return (<Loading />)

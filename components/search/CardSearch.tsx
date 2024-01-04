@@ -1,12 +1,10 @@
 import { IconFilter } from "@tabler/icons"
-import { logEvent } from "firebase/analytics"
 import {
   AttributeType, CardType, SkillCategoryType, SkillEfficacyType,
   SkillTargetType, SkillTriggerType
 } from "hoshimi-venus/out/types/proto/proto_enum"
 import { t } from "i18next"
-import { useEffect, useState } from "react"
-import { analytics } from "../../src/firebase/firebase"
+import { useState } from "react"
 import { IconButton } from "../misc/IconButton"
 import SearchOptions from "./SearchOptions"
 import SearchResults from "./SearchResults"
@@ -47,10 +45,6 @@ export default function CardSearch() {
     setOpts(_)
     setPage(1)
   }
-
-  useEffect(() => {
-    logEvent(analytics, "open_search")
-  }, [])
 
   return (
     <>

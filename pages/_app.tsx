@@ -1,15 +1,14 @@
 import { ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
-import { logEvent } from 'firebase/analytics';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import NextNProgress from 'nextjs-progressbar';
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useState } from 'react';
 import tailwindColors from "tailwindcss/colors";
 import Layout from '../components/layout/Layout';
-import { analytics } from '../src/firebase/firebase';
+import { initApi } from '../src/api/apiUtils';
 import { default as i18n } from '../src/i18n';
 import '../styles/globals.css';
-import { initApi } from '../src/api/apiUtils';
+import Script from 'next/script';
 
 const defaultLang = "en"
 
@@ -17,6 +16,7 @@ export const AppContext = createContext({
   lng: defaultLang,
   onLanguageChange: (nl: string) => { },
 })
+
 
 export default function App({ Component, pageProps }: AppProps) {
   const [lang, setLang] = useState(defaultLang)
@@ -37,13 +37,6 @@ export default function App({ Component, pageProps }: AppProps) {
       : document.documentElement.classList.add('dark')
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'))
   }
-
-  useEffect(() => {
-    logEvent(analytics, "open_app")
-    // signInAnonymously(auth).then((userCredential) => {
-    //   console.debug(userCredential.user.uid)
-    // })
-  }, [])
 
   initApi()
 
@@ -92,6 +85,12 @@ export default function App({ Component, pageProps }: AppProps) {
           </AppContext.Provider>
         </MantineProvider>
       </ColorSchemeProvider>
+      <Script
+        async
+        src={process.env.NEXT_PUBLIC_UMAMI_URL}
+        data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
+        data-domains={process.env.NEXT_PUBLIC_UMAMI_HOST}
+      />
     </>
   )
 }

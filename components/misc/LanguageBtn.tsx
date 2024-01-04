@@ -25,7 +25,10 @@ export function LanguageBtn() {
         <HoverCard.Dropdown>
           <SegmentedControl
             value={lng}
-            onChange={(value) => onLanguageChange(value)}
+            onChange={(value) => {
+              onLanguageChange(value)
+              window?.umami?.track("change language", { newLang: value })
+            }}
             data={[
               {
                 value: "en",

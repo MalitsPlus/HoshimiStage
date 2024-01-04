@@ -1,12 +1,9 @@
-import { logEvent } from "firebase/analytics";
-import Head from "next/head";
-import { useEffect } from "react";
-import { analytics } from "../src/firebase/firebase";
-import { Formations } from "../components/formation/Formations";
-import { initApi, initCard, initCharacter, initQuest, initSetting, initSkill } from "../src/api/apiUtils";
 import { setInitCard, setInitCharacter, setInitQuest, setInitSetting, setInitSkill } from "hoshimi-venus";
+import Head from "next/head";
 import useSWR from "swr";
+import { Formations } from "../components/formation/Formations";
 import { Loading } from "../components/misc/loading";
+import { initApi, initCard, initCharacter, initQuest, initSetting, initSkill } from "../src/api/apiUtils";
 
 async function fetchData() {
   initApi()
@@ -27,10 +24,6 @@ export default function Formation() {
     revalidateOnFocus: false,
     revalidateOnReconnect: false
   })
-
-  useEffect(() => {
-    logEvent(analytics, "open_formation")
-  }, [])
 
   if (error) return (<div>Failed to load</div>)
   if (!data) return (<Loading />)

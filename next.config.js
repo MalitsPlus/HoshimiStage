@@ -21,7 +21,7 @@ const nextConfig = {
           {
             key: "Content-Security-Policy",
             value: `
-              connect-src 'self' hoshimi-backend.vibbit.me hoshimi-db.vibbit.me *.googleapis.com *.google-analytics.com;
+              connect-src 'self' *.vibbit.me *.googleapis.com;
               img-src 'self' blob: data: idoly-assets-curator.vercel.app res.cloudinary.com
             `.replace(/\s{2,}/g, " ").trim(),
           },
