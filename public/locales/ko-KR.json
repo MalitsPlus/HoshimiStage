@@ -219,5 +219,10 @@
     "StaminaContinuousConsumption": "스태미너 지속 소비",
     "ActiveSkillChanceAssignment": "A 스킬 발동",
     "StrengthEffectErasingAll": "강화 효과 제거 (전체)",
-    "StrengthEffectAssignmentAll": "효과 부여 (전체)"
+    "StrengthEffectAssignmentAll": "효과 부여 (전체)",
+    "StrengthEffectGradeLimit": "강화 단 수 제한",
+    "StatusEffectChange": "강화 효과 이전",
+    "PassiveSkillCoolTimeReset": "패시브 스킬 CT 초기화",
+    "PassiveSkillImpossible": "패시브 스킬 금지",
+    "CoverWeaknessEffect": "방어"
 }
